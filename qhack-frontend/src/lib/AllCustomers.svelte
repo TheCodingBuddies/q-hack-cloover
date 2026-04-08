@@ -27,11 +27,18 @@
 
   let customers: Customer[] = $state([]);
   let isLoading = $state(true);
+  let error = $state<string | null>(null);
   let searchTerm = $state('');
 
   onMount(async () => {
-    customers = await customerService.getAllCustomers();
-    isLoading = false;
+    try {
+      customers = await customerService.getAllCustomers();
+    } catch (err) {
+      error = 'Failed to load customers. Please try again later.';
+      console.error(err);
+    } finally {
+      isLoading = false;
+    }
   });
 
   function getProjects(c: Customer) {
@@ -81,6 +88,11 @@
     <div class="loading-state">
       <div class="spinner"></div>
       <p>Loading customers...</p>
+    </div>
+  {:else if error}
+    <div class="empty-state-container card">
+      <p class="error-message">{error}</p>
+      <button class="primary-button" onclick={() => window.location.reload()}>Try Again</button>
     </div>
   {:else if filteredCustomers.length === 0}
     <div class="empty-state-container card">

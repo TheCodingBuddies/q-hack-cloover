@@ -53,10 +53,27 @@ const dummyCustomers: Customer[] = [
 ];
 
 export const customerService = {
+  /**
+   * Holt alle Kunden vom Backend.
+   */
   async getAllCustomers(): Promise<Customer[]> {
-    return new Promise((resolve) => {
-      setTimeout(() => resolve([...dummyCustomers]), 200);
-    });
+    try {
+      // Vorbereitung für den Backend-Call (Beispiel URL: http://localhost:8080/customers)
+      // Aktuell nutzen wir noch Dummy-Daten, falls der Endpoint nicht existiert.
+      const response = await fetch('http://localhost:8080/customers').catch(() => null);
+
+      if (response && response.ok) {
+        return await response.json();
+      }
+
+      // Fallback auf Dummy-Daten für die Entwicklung
+      return new Promise((resolve) => {
+        setTimeout(() => resolve([...dummyCustomers]), 200);
+      });
+    } catch (err) {
+      console.error('Error fetching all customers:', err);
+      return [...dummyCustomers]; // Fallback
+    }
   },
 
   /**
