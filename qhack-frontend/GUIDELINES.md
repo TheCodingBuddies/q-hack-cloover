@@ -8,3 +8,4 @@ In diesem Projekt gelten die folgenden Prinzipien für die Softwareentwicklung:
 - **Regressionsvermeidung**: Vorhandene Features werden durch neue Änderungen oder Patches nicht beschädigt. Wir stellen durch sorgfältige Entwicklung und Tests sicher, dass die bestehende Funktionalität erhalten bleibt.
 - **UI/UX Best Practices & Barrierefreiheit**: Das Frontend wird nach aktuellen Best Practices für UI/UX gestaltet, wobei der Fokus auf einer intuitiven Benutzerführung für das MVP-Kernfeature liegt. Barrierefreiheit (a11y) wird von Beginn an durch semantisches HTML berücksichtigt.
 - **Typensicherheit (TS)**: Wir nutzen TypeScript konsequent, um Fehler frühzeitig zu vermeiden. Dies beschleunigt die Entwicklung im MVP, da Laufzeitfehler reduziert werden.
+- **Text im Frontend soll immer auf Englisch sein**: Der Usecase für das MVP ist international orientiert und unterstützt daher ausschließlich Englisch als Sprache für die Benutzeroberfläche.

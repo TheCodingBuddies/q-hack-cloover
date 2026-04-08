@@ -5,6 +5,7 @@
   let lastName = '';
   let birthDate = '';
   let zip = '';
+  let city = '';
   let street = '';
   let houseNumber = '';
 
@@ -13,12 +14,13 @@
 
   function validate() {
     errors = {};
-    if (!firstName.trim()) errors.firstName = 'Vorname ist erforderlich';
-    if (!lastName.trim()) errors.lastName = 'Nachname ist erforderlich';
-    if (!birthDate) errors.birthDate = 'Geburtsdatum ist erforderlich';
-    if (!zip.trim()) errors.zip = 'PLZ ist erforderlich';
-    if (!street.trim()) errors.street = 'Straße ist erforderlich';
-    if (!houseNumber.trim()) errors.houseNumber = 'Hausnummer ist erforderlich';
+    if (!firstName.trim()) errors.firstName = 'First name is required';
+    if (!lastName.trim()) errors.lastName = 'Last name is required';
+    if (!birthDate) errors.birthDate = 'Date of birth is required';
+    if (!zip.trim()) errors.zip = 'ZIP code is required';
+    if (!city.trim()) errors.city = 'City is required';
+    if (!street.trim()) errors.street = 'Street is required';
+    if (!houseNumber.trim()) errors.houseNumber = 'House number is required';
 
     return Object.keys(errors).length === 0;
   }
@@ -32,20 +34,22 @@
         birthDate,
         address: {
           zip,
+          city,
           street,
           houseNumber
         }
       };
 
       // Mock-Save
-      console.log('Speichere Kunde:', newCustomer);
-      successMessage = 'Kunde erfolgreich gespeichert! (Mock)';
+      console.log('Saving customer:', newCustomer);
+      successMessage = 'Customer successfully saved! (Mock)';
       
       // Felder leeren nach Speichern (optional für MVP, hier gemacht für UX)
       firstName = '';
       lastName = '';
       birthDate = '';
       zip = '';
+      city = '';
       street = '';
       houseNumber = '';
     }
@@ -55,19 +59,19 @@
 <main class="container">
   <div class="form-card card">
     <div class="form-header">
-      <h1>Neuen Kunden anlegen</h1>
-      <p class="subtitle">Trage die Basisdaten deines neuen Kunden ein.</p>
+      <h1>Add new customer</h1>
+      <p class="subtitle">Enter the basic details of your new customer.</p>
     </div>
 
     <form onsubmit={(e) => { e.preventDefault(); handleSave(); }}>
       <div class="form-grid">
         <div class="form-group">
-          <label for="firstName">Vorname *</label>
+          <label for="firstName">First name *</label>
           <input 
             type="text" 
             id="firstName" 
             bind:value={firstName} 
-            placeholder="z.B. Max"
+            placeholder="e.g. Max"
             aria-invalid={!!errors.firstName}
             class:error={!!errors.firstName}
           />
@@ -75,12 +79,12 @@
         </div>
 
         <div class="form-group">
-          <label for="lastName">Nachname *</label>
+          <label for="lastName">Last name *</label>
           <input 
             type="text" 
             id="lastName" 
             bind:value={lastName} 
-            placeholder="z.B. Mustermann"
+            placeholder="e.g. Smith"
             aria-invalid={!!errors.lastName}
             class:error={!!errors.lastName}
           />
@@ -88,7 +92,7 @@
         </div>
 
         <div class="form-group full-width">
-          <label for="birthDate">Geburtsdatum *</label>
+          <label for="birthDate">Date of birth *</label>
           <input 
             type="date" 
             id="birthDate" 
@@ -100,15 +104,15 @@
         </div>
 
         <div class="address-section full-width">
-          <h2 class="section-title">Adresse</h2>
+          <h2 class="section-title">Address</h2>
           
           <div class="form-group">
-            <label for="street">Straße *</label>
+            <label for="street">Street *</label>
             <input 
               type="text" 
               id="street" 
               bind:value={street} 
-              placeholder="Hauptstraße"
+              placeholder="Main Street"
               aria-invalid={!!errors.street}
               class:error={!!errors.street}
             />
@@ -117,7 +121,7 @@
 
           <div class="row">
             <div class="form-group">
-              <label for="houseNumber">Hausnummer *</label>
+              <label for="houseNumber">House number *</label>
               <input 
                 type="text" 
                 id="houseNumber" 
@@ -130,7 +134,7 @@
             </div>
 
             <div class="form-group">
-              <label for="zip">PLZ *</label>
+              <label for="zip">ZIP *</label>
               <input 
                 type="text" 
                 id="zip" 
@@ -141,12 +145,25 @@
               />
               {#if errors.zip}<span class="error-text">{errors.zip}</span>{/if}
             </div>
+
+            <div class="form-group">
+              <label for="city">City *</label>
+              <input 
+                type="text" 
+                id="city" 
+                bind:value={city} 
+                placeholder="London"
+                aria-invalid={!!errors.city}
+                class:error={!!errors.city}
+              />
+              {#if errors.city}<span class="error-text">{errors.city}</span>{/if}
+            </div>
           </div>
         </div>
       </div>
 
       <div class="form-actions">
-        <button type="submit" class="btn-save">Kunde speichern</button>
+        <button type="submit" class="btn-save">Save customer</button>
       </div>
 
       {#if successMessage}

@@ -29,7 +29,7 @@
     </div>
     <div class="nav-links">
       <button class="nav-link" class:active={currentPath === '/'} onclick={() => navigate('/')}>Home</button>
-      <button class="btn-primary" onclick={() => navigate('/add-customer')}>Kunde hinzufügen</button>
+      <button class="btn-primary" onclick={() => navigate('/add-customer')}>Add customer</button>
     </div>
   </div>
 </nav>
@@ -43,13 +43,13 @@
     <section id="hero">
       <div class="hero-content">
         <span class="badge">MVP Version</span>
-        <h1>Die Zukunft der <span class="text-gradient">Auftragsverwaltung</span></h1>
-        <p>Verwalte deine Kunden und Aufträge mit moderner KI-Unterstützung. Schnell, einfach und effizient.</p>
+        <h1>The future of <span class="text-gradient">Order Management</span></h1>
+        <p>Manage your customers and orders with modern AI support. Fast, simple, and efficient.</p>
         <div class="hero-actions">
           <button class="btn-primary btn-lg" onclick={() => navigate('/add-customer')}>
-            Jetzt ersten Kunden anlegen
+            Create your first customer now
           </button>
-          <button class="btn-secondary btn-lg">Mehr erfahren</button>
+          <button class="btn-secondary btn-lg">Learn more</button>
         </div>
       </div>
     </section>
