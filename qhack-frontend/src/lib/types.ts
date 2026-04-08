@@ -82,3 +82,53 @@ export interface CustomerResponseDto {
   birthDate: string;
   properties?: PropertyResponseDto[];
 }
+
+export interface OfferData {
+  lead_summary: {
+    location: {
+      postal_code: string;
+      city: string;
+      country: string;
+    };
+    primary_product: string;
+    building_assumptions: string[];
+  };
+  market_context: {
+    summary: string;
+    drivers: string[];
+    why_now: string[];
+  };
+  subsidies: Array<{
+    name: string;
+    status: string;
+    relevance: string;
+    estimated_effect_eur: number;
+    notes: string;
+  }>;
+  recommended_offer: {
+    package_name: string;
+    products: string[];
+    reasoning: string[];
+    estimated_cost_range_eur: { min: number; max: number };
+    estimated_annual_savings_eur: { min: number; max: number };
+    estimated_payback_years: { min: number; max: number };
+  };
+  alternative_offers: Array<{
+    package_name: string;
+    products: string[];
+    positioning: string;
+    estimated_cost_range_eur: { min: number; max: number };
+  }>;
+  financing_options: Array<{
+    scenario: string;
+    down_payment_eur: number;
+    loan_amount_eur: number;
+    term_months: number;
+    apr_percent: number;
+    monthly_payment_eur: number;
+    notes: string;
+  }>;
+  sales_talking_points: string[];
+  missing_information: string[];
+  disclaimer: string;
+}

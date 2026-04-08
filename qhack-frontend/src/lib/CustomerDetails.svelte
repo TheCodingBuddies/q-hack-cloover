@@ -133,7 +133,12 @@
             <span class="project-tag">Project</span>
             <div class="main-header-title-row">
               <h2>{project.name}</h2>
-              <button class="btn-present">Present project</button>
+              <div class="header-actions">
+                <button class="btn-present" onclick={() => {
+                  window.history.pushState({}, '', `/customer/${customerId}/offer`);
+                  window.dispatchEvent(new PopStateEvent('popstate'));
+                }}>Show offer</button>
+              </div>
             </div>
           </div>
         </div>
@@ -334,6 +339,13 @@
     align-items: center;
     justify-content: space-between;
     margin-bottom: 1.25rem;
+    gap: 1rem;
+  }
+
+  .header-actions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
   }
 
   .main-header h2 {

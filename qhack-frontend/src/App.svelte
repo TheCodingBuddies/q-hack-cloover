@@ -3,6 +3,7 @@
   import CustomerSearch from './lib/CustomerSearch.svelte';
   import AllCustomers from './lib/AllCustomers.svelte';
   import CustomerDetails from './lib/CustomerDetails.svelte';
+  import OfferDetails from './lib/OfferDetails.svelte';
   import { onMount } from 'svelte';
 
   let currentPath = '';
@@ -10,6 +11,11 @@
   // Hilfsfunktion zum Extrahieren der Kunden-ID aus dem Pfad
   function getCustomerId(path: string): string | null {
     const match = path.match(/^\/customer\/([^\/]+)$/);
+    return match ? match[1] : null;
+  }
+
+  function getOfferCustomerId(path: string): string | null {
+    const match = path.match(/^\/customer\/([^\/]+)\/offer$/);
     return match ? match[1] : null;
   }
 
@@ -50,6 +56,8 @@
     </div>
   {:else if currentPath === '/all-customer'}
     <AllCustomers/>
+  {:else if getOfferCustomerId(currentPath)}
+    <OfferDetails customerId={getOfferCustomerId(currentPath) || ''} />
   {:else if getCustomerId(currentPath)}
     <div class="page-container">
       <CustomerDetails customerId={getCustomerId(currentPath) || ''} />
