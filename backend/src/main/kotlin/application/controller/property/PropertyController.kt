@@ -32,7 +32,16 @@ class PropertyController(private val propertyService: PropertyService, private v
                         openAiService.getSunnyScore("${data.street}, ${data.houseNumber}, ${data.city}, ${data.postCode}")
                             ?: return@post call.respond(HttpStatusCode.InternalServerError, "Could not get sunny score")
                     val id = propertyService.addProperty(data, response.sunnyPlace, response.explanation)
-                    call.respond(HttpStatusCode.OK, PropertyResponseDto(id, response))
+                    call.respond(
+                        HttpStatusCode.OK, PropertyResponseDto(
+                            id = id,
+                            postCode = data.postCode,
+                            street = data.street,
+                            city = data.city,
+                            houseNumber = data.houseNumber,
+                            sunnyScore = response
+                        )
+                    )
                 } catch (e: NotFoundException) {
                     call.respond(HttpStatusCode.NotFound, e.message ?: "Customer not found")
                 }
