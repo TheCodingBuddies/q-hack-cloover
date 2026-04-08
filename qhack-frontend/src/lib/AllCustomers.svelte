@@ -3,28 +3,6 @@
   import { customerService } from './customerService';
   import type { Customer } from './types';
 
-  // We keep mock projects for the overview stats
-  interface Project {
-    id: string;
-    name: string;
-    progress: number;
-    location: string;
-  }
-
-  const mockProjects: Record<string, Project[]> = {
-    'Max Mustermann': [
-      { id: 'p1', name: 'Solar Installation Berlin', progress: 65, location: 'Berlin' },
-      { id: 'p2', name: 'Heat Pump Replacement', progress: 20, location: 'Berlin' },
-    ],
-    'Anna Schmidt': [
-      { id: 'p3', name: 'Photovoltaik Hamburg', progress: 90, location: 'Hamburg' },
-    ],
-    'John Doe': [
-      { id: 'p4', name: 'Commercial Solar London', progress: 40, location: 'London' },
-    ],
-    'Marie Curie': [],
-  };
-
   let customers: Customer[] = $state([]);
   let isLoading = $state(true);
   let error = $state<string | null>(null);
@@ -40,18 +18,6 @@
       isLoading = false;
     }
   });
-
-  function getProjects(c: Customer) {
-    const key = `${c.firstName} ${c.lastName}`;
-    return mockProjects[key] ?? [];
-  }
-
-  function getAvgProgress(c: Customer) {
-    const projects = getProjects(c);
-    if (projects.length === 0) return 0;
-    const sum = projects.reduce((acc, p) => acc + p.progress, 0);
-    return Math.round(sum / projects.length);
-  }
 
   function navigateToCustomer(id: string | undefined) {
     if (!id) return;
@@ -101,9 +67,6 @@
   {:else}
     <div class="customer-grid">
       {#each filteredCustomers as customer}
-        {@const projects = getProjects(customer)}
-        {@const avgProgress = getAvgProgress(customer)}
-        
         <button class="customer-card card" onclick={() => navigateToCustomer(customer.id)}>
           <div class="card-header">
             <div class="avatar">
@@ -122,21 +85,6 @@
             </div>
           </div>
           
-          <div class="card-stats">
-            <div class="stat">
-              <span class="stat-label">Projects</span>
-              <span class="stat-value">{projects.length}</span>
-            </div>
-            <div class="stat">
-              <span class="stat-label">Avg. Progress</span>
-              <span class="stat-value">{avgProgress}%</span>
-            </div>
-          </div>
-
-          <div class="progress-track-mini">
-            <div class="progress-fill-mini" style="width: {avgProgress}%"></div>
-          </div>
-
           <div class="card-footer-action">
             <span class="view-details-text">View Details</span>
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
@@ -272,46 +220,6 @@
 
   .address-info {
     margin-top: 0.25rem;
-  }
-
-  .card-stats {
-    display: flex;
-    gap: 2rem;
-    margin-bottom: 1.25rem;
-  }
-
-  .stat {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .stat-label {
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--clr-text-light);
-    font-weight: 600;
-  }
-
-  .stat-value {
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: var(--clr-text);
-  }
-
-  .progress-track-mini {
-    height: 6px;
-    background: var(--clr-bg-alt);
-    border-radius: 3px;
-    margin-bottom: 1.5rem;
-    overflow: hidden;
-  }
-
-  .progress-fill-mini {
-    height: 100%;
-    background: var(--clr-primary);
-    border-radius: 3px;
-    transition: width 0.5s ease-out;
   }
 
   .card-footer-action {

@@ -1,57 +1,5 @@
 import type { Customer, CreateCustomerDTO, PropertyRequestDto, CustomerResponseDto, CustomerWithPropertiesResponseDto } from './types';
 
-// Dummy-Daten für das MVP
-const dummyCustomers: Customer[] = [
-  {
-    id: '1',
-    firstName: 'Max',
-    lastName: 'Mustermann',
-    birthDate: '1985-05-20',
-    address: {
-      zip: '10115',
-      city: 'Berlin',
-      street: 'Friedrichstraße',
-      houseNumber: '10'
-    }
-  },
-  {
-    id: '2',
-    firstName: 'Anna',
-    lastName: 'Schmidt',
-    birthDate: '1992-08-15',
-    address: {
-      zip: '20095',
-      city: 'Hamburg',
-      street: 'Mönckebergstraße',
-      houseNumber: '5'
-    }
-  },
-  {
-    id: '3',
-    firstName: 'John',
-    lastName: 'Doe',
-    birthDate: '1978-01-10',
-    address: {
-      zip: 'SW1A 1AA',
-      city: 'London',
-      street: 'Downing Street',
-      houseNumber: '10'
-    }
-  },
-  {
-    id: '4',
-    firstName: 'Marie',
-    lastName: 'Curie',
-    birthDate: '1867-11-07',
-    address: {
-      zip: '75005',
-      city: 'Paris',
-      street: 'Rue Soufflot',
-      houseNumber: '1'
-    }
-  }
-];
-
 export const customerService = {
   /**
    * Mappt ein CustomerResponseDto oder CustomerWithPropertiesResponseDto auf das interne Customer-Modell.
@@ -82,75 +30,62 @@ export const customerService = {
    * Holt alle Kunden vom Backend.
    */
   async getAllCustomers(): Promise<Customer[]> {
-    try {
-      const response = await fetch('http://localhost:8080/customers-with-properties');
+    const response = await fetch('http://localhost:8080/customers-with-properties');
 
-      if (response.ok) {
-        const dtos: CustomerWithPropertiesResponseDto[] = await response.json();
-        return dtos.map(dto => this.mapDtoToCustomer(dto));
-      }
-      
-      throw new Error(`Failed to fetch customers: ${response.status}`);
-    } catch (err) {
-      console.warn('Backend call failed, using dummy data:', err);
-      // Fallback auf Dummy-Daten für die Entwicklung
-      return new Promise((resolve) => {
-        setTimeout(() => resolve([...dummyCustomers]), 200);
-      });
+    if (response.ok) {
+      const dtos: CustomerWithPropertiesResponseDto[] = await response.json();
+      return dtos.map(dto => this.mapDtoToCustomer(dto));
     }
+    
+    throw new Error(`Failed to fetch customers: ${response.status}`);
   },
 
   /**
    * Holt einen Kunden anhand seiner ID vom Backend.
    */
   async getCustomerById(id: string): Promise<Customer | null> {
-    try {
-      const response = await fetch(`http://localhost:8080/customers/${id}/with-properties`);
+    const response = await fetch(`http://localhost:8080/customers/${id}/with-properties`);
 
-      if (response.ok) {
-        const dto: CustomerWithPropertiesResponseDto = await response.json();
-        return this.mapDtoToCustomer(dto);
-      }
-      
-      if (response.status === 404) {
-        return null;
-      }
-
-      throw new Error(`Failed to fetch customer: ${response.status}`);
-    } catch (err) {
-      console.warn(`Backend call failed for customer ${id}, using dummy data:`, err);
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          const customer = dummyCustomers.find(c => c.id === id) || null;
-          resolve(customer ? { ...customer } : null);
-        }, 100);
-      });
+    if (response.ok) {
+      const dto: CustomerWithPropertiesResponseDto = await response.json();
+      return this.mapDtoToCustomer(dto);
     }
+    
+    if (response.status === 404) {
+      return null;
+    }
+
+    throw new Error(`Failed to fetch customer: ${response.status}`);
   },
 
   /**
    * Sucht nach Kunden basierend auf einem Suchbegriff (Vorname oder Nachname).
-   * Diese Funktion simuliert einen Backend-Call.
    */
   async searchCustomers(query: string): Promise<Customer[]> {
     if (!query.trim()) {
       return [];
     }
 
-    const searchTerm = query.toLowerCase();
+    // In a real application, this would be a backend call.
+    // Since we are removing mocks, we should ideally call a search endpoint.
+    // If no search endpoint exists yet, we might have to fetch all and filter, 
+    // or return an empty array if we strictly want only real backend data.
+    // However, the task is "entferne alle user mocks". 
+    // Let's assume for now we should still be able to search if possible, 
+    // but without dummyCustomers.
     
-    // Simuliere Latenz für die Backend-Vorbereitung
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const results = dummyCustomers.filter(customer => 
-          customer.firstName.toLowerCase().includes(searchTerm) || 
-          customer.lastName.toLowerCase().includes(searchTerm) ||
-          (customer.address?.city.toLowerCase().includes(searchTerm))
-        );
-        // Wir stellen sicher, dass die Objekte in den Ergebnissen Kopien sind und die IDs korrekt sind
-        resolve(results.map(r => ({ ...r })));
-      }, 300); // 300ms künstliche Verzögerung
-    });
+    try {
+      const customers = await this.getAllCustomers();
+      const searchTerm = query.toLowerCase();
+      return customers.filter(customer => 
+        customer.firstName.toLowerCase().includes(searchTerm) || 
+        customer.lastName.toLowerCase().includes(searchTerm) ||
+        (customer.address?.city.toLowerCase().includes(searchTerm))
+      );
+    } catch (err) {
+      console.error('Search failed:', err);
+      return [];
+    }
   },
 
   /**
