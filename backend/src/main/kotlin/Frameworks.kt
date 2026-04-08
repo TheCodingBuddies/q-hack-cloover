@@ -1,6 +1,7 @@
 package com.qhack
 
 import com.qhack.application.controller.customer.CustomerController
+import com.qhack.application.services.customer.CustomerRepository
 import com.qhack.application.services.customer.CustomerService
 import io.ktor.server.application.*
 import org.koin.dsl.module
@@ -11,8 +12,9 @@ fun Application.configureFrameworks() {
     install(Koin) {
         slf4jLogger()
         modules(module {
-            single<CustomerService>{CustomerService()}
-            single<CustomerController>{CustomerController(get())}
+            single { CustomerRepository() }
+            single { CustomerService(get()) }
+            single { CustomerController(get()) }
         })
     }
 }

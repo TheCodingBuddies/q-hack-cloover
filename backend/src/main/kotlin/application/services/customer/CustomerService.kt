@@ -1,8 +1,8 @@
 package com.qhack.application.services.customer
 
-class CustomerService {
+class CustomerService(private val customerRepository: CustomerRepository) {
 
-    fun addCustomer() {
-        print("ToDo: add customer")
+    fun addCustomer(data: CustomerData): Int {
+        return customerRepository.addCustomer(data)
     }
 }
