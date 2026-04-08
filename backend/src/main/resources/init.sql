@@ -30,7 +30,8 @@ CREATE TABLE properties
     city         VARCHAR(100) NOT NULL,
     house_number VARCHAR(10)  NOT NULL,
     customer_id  INT          NOT NULL REFERENCES customers (id) ON DELETE CASCADE,
-    sunny_score  INT
+    sunny_score  INT,
+    explanation  TEXT
 );
 
 

@@ -11,4 +11,5 @@ object PropertyTable : IntIdTable("properties") {
     val houseNumber = varchar("house_number", 10)
     val customerId = reference("customer_id", Customers, onDelete = ReferenceOption.CASCADE)
     val sunnyScore = integer("sunny_score").nullable()
+    val explanation = text("explanation").nullable()
 }

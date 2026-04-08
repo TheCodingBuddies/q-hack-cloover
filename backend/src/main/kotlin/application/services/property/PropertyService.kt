@@ -9,10 +9,10 @@ class PropertyService(
     private val propertyRepository: PropertyRepository,
     private val customerRepository: CustomerRepository
 ) {
-    suspend fun addProperty(data: PropertyData): Int {
+    suspend fun addProperty(data: PropertyData, sunnyScore: Int, explanation: String): Int {
         if (!customerRepository.exists(data.customerId)) {
             throw NotFoundException("Customer with id ${data.customerId} does not exist")
         }
-        return propertyRepository.addProperty(data)
+        return propertyRepository.addProperty(data, sunnyScore, explanation)
     }
 }

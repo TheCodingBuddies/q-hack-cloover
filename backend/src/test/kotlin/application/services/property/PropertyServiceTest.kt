@@ -11,10 +11,10 @@ import kotlin.test.assertFailsWith
 
 class FakePropertyRepository : PropertyRepository {
     private var nextId = 1
-    val properties = mutableListOf<PropertyData>()
-
-    override suspend fun addProperty(data: PropertyData): Int {
-        properties.add(data)
+    val properties = mutableListOf<Triple<PropertyData, Int, String>>()
+    
+    override suspend fun addProperty(data: PropertyData, sunnyScore: Int, explanation: String): Int {
+        properties.add(Triple(data, sunnyScore, explanation))
         return nextId++
     }
 }
@@ -39,12 +39,14 @@ class PropertyServiceTest {
         )
 
         // When
-        val result = service.addProperty(propertyData)
+        val result = service.addProperty(propertyData, 85, "Sunny balcony")
 
         // Then
         assertEquals(1, result)
         assertEquals(1, propertyRepo.properties.size)
-        assertEquals(propertyData, propertyRepo.properties[0])
+        assertEquals(propertyData, propertyRepo.properties[0].first)
+        assertEquals(85, propertyRepo.properties[0].second)
+        assertEquals("Sunny balcony", propertyRepo.properties[0].third)
     }
 
     @Test
@@ -64,7 +66,7 @@ class PropertyServiceTest {
 
         // When / Then
         assertFailsWith<NotFoundException> {
-            service.addProperty(propertyData)
+            service.addProperty(propertyData, 85, "Sunny balcony")
         }
     }
 }
