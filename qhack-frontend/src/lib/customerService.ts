@@ -1,4 +1,4 @@
-import type { Customer, CreateCustomerDTO, PropertyRequestDto, CustomerResponseDto } from './types';
+import type { Customer, CreateCustomerDTO, PropertyRequestDto, CustomerResponseDto, CustomerWithPropertiesResponseDto } from './types';
 
 // Dummy-Daten für das MVP
 const dummyCustomers: Customer[] = [
@@ -54,6 +54,31 @@ const dummyCustomers: Customer[] = [
 
 export const customerService = {
   /**
+   * Mappt ein CustomerResponseDto oder CustomerWithPropertiesResponseDto auf das interne Customer-Modell.
+   * Nutzt die erste Property für die Adresse, falls vorhanden.
+   */
+  mapDtoToCustomer(dto: CustomerResponseDto | CustomerWithPropertiesResponseDto): Customer {
+    let address = undefined;
+    if (dto.properties && dto.properties.length > 0) {
+      const prop = dto.properties[0];
+      address = {
+        street: prop.street,
+        houseNumber: prop.houseNumber,
+        city: prop.city,
+        zip: prop.postCode
+      };
+    }
+
+    return {
+      id: dto.id.toString(),
+      firstName: dto.firstName,
+      lastName: dto.lastName,
+      birthDate: dto.birthDate,
+      address
+    };
+  },
+
+  /**
    * Holt alle Kunden vom Backend.
    */
   async getAllCustomers(): Promise<Customer[]> {
@@ -62,12 +87,7 @@ export const customerService = {
 
       if (response.ok) {
         const dtos: CustomerResponseDto[] = await response.json();
-        return dtos.map(dto => ({
-          id: dto.id.toString(),
-          firstName: dto.firstName,
-          lastName: dto.lastName,
-          birthDate: dto.birthDate
-        }));
+        return dtos.map(dto => this.mapDtoToCustomer(dto));
       }
       
       throw new Error(`Failed to fetch customers: ${response.status}`);
@@ -81,15 +101,31 @@ export const customerService = {
   },
 
   /**
-   * Holt einen Kunden anhand seiner ID.
+   * Holt einen Kunden anhand seiner ID vom Backend.
    */
   async getCustomerById(id: string): Promise<Customer | null> {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const customer = dummyCustomers.find(c => c.id === id) || null;
-        resolve(customer);
-      }, 100);
-    });
+    try {
+      const response = await fetch(`http://localhost:8080/customers/${id}/with-properties`);
+
+      if (response.ok) {
+        const dto: CustomerWithPropertiesResponseDto = await response.json();
+        return this.mapDtoToCustomer(dto);
+      }
+      
+      if (response.status === 404) {
+        return null;
+      }
+
+      throw new Error(`Failed to fetch customer: ${response.status}`);
+    } catch (err) {
+      console.warn(`Backend call failed for customer ${id}, using dummy data:`, err);
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          const customer = dummyCustomers.find(c => c.id === id) || null;
+          resolve(customer ? { ...customer } : null);
+        }, 100);
+      });
+    }
   },
 
   /**

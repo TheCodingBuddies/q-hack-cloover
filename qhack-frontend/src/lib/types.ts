@@ -46,6 +46,32 @@ export interface PropertyRequestDto {
   houseNumber: string;
 }
 
+export interface SunnyScoreResponse {
+  address: string;
+  sunnyPlace: string;
+  explanation: string;
+}
+
+export interface PropertyResponseDto {
+  id: number;
+  postCode: string;
+  street: string;
+  city: string;
+  houseNumber: string;
+  sunnyScore?: SunnyScoreResponse;
+}
+
+/**
+ * Data Transfer Object for customer with properties response from the backend.
+ */
+export interface CustomerWithPropertiesResponseDto {
+  id: number;
+  firstName: string;
+  lastName: string;
+  birthDate: string;
+  properties: PropertyResponseDto[];
+}
+
 /**
  * Data Transfer Object for customer response from the backend.
  */
@@ -54,4 +80,5 @@ export interface CustomerResponseDto {
   firstName: string;
   lastName: string;
   birthDate: string;
+  properties?: PropertyResponseDto[];
 }

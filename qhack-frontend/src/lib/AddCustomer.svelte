@@ -62,22 +62,12 @@
       try {
         const response = await customerService.saveCustomer(customerDTO);
         
-        if (response.success) {
+        if (response.success && response.id) {
           successMessage = 'Customer successfully created';
           
-          // Felder leeren nach Speichern
-          firstName = '';
-          lastName = '';
-          birthDate = '';
-          zip = '';
-          city = '';
-          street = '';
-          houseNumber = '';
-          customerProfile = '';
-          energyConsumption = '';
-          existingSystems = '';
-          financialProfile = '';
-          conversationHistory = '';
+          // Navigiere zur Customer-Page nach erfolgreichem Speichern
+          window.history.pushState({}, '', `/customer/${response.id}`);
+          window.dispatchEvent(new PopStateEvent('popstate'));
         } else {
           errors.general = 'An error occurred';
         }

@@ -22,9 +22,8 @@
   let isLoading = $state(true);
   let error: string | null = $state(null);
 
-  // Mock projects for the specific customer
-  let projects: Project[] = $state([]);
-  let selectedProject: Project | null = $state(null);
+  // Single mock project for the customer
+  let project: Project | null = $state(null);
 
   onMount(async () => {
     try {
@@ -32,38 +31,24 @@
       if (!customer) {
         error = 'Customer not found';
       } else {
-        // Mock some projects for the UI demonstration, similar to AllCustomers.svelte
+        // Mock a single project for the UI demonstration, similar to AllCustomers.svelte
         const city = customer.address?.city || 'Unknown';
         const fullAddress = customer.address 
           ? `${customer.address.street} ${customer.address.houseNumber}, ${customer.address.zip} ${customer.address.city}`
           : 'No address provided';
 
-        projects = [
-          {
-            id: 'p1',
-            name: 'Solar Installation ' + city,
-            progress: 65,
-            location: fullAddress,
-            offerPreview: `**Offer #2024-001**\n\nSolar panel installation for residential property.\n\n- 12x 400W panels\n- 1x 10kWh battery storage\n- Grid feed-in setup\n\n**Total: €18,400**\n\nValidity: 30 days`,
-            aiHints: [
-              'Ask about current electricity bill to calculate ROI',
-              'Roof orientation is south-west — ideal for yield',
-              'Customer mentioned interest in EV charging in future',
-            ],
-          },
-          {
-            id: 'p2',
-            name: 'Energy Efficiency Upgrade',
-            progress: 20,
-            location: fullAddress,
-            offerPreview: `**Offer #2024-002**\n\nHeat pump replacement project.\n\nDetails pending customer site visit.`,
-            aiHints: [
-              'Building year: 1985 — check insulation status',
-              'Ask for current heating costs',
-            ],
-          },
-        ];
-        selectedProject = projects[0];
+        project = {
+          id: 'p1',
+          name: 'Solar Installation ' + city,
+          progress: 65,
+          location: fullAddress,
+          offerPreview: `**Offer #2024-001**\n\nSolar panel installation for residential property.\n\n- 12x 400W panels\n- 1x 10kWh battery storage\n- Grid feed-in setup\n\n**Total: €18,400**\n\nValidity: 30 days`,
+          aiHints: [
+            'Ask about current electricity bill to calculate ROI',
+            'Roof orientation is south-west — ideal for yield',
+            'Customer mentioned interest in EV charging in future',
+          ],
+        };
       }
     } catch (err) {
       error = 'Failed to load customer data';
@@ -71,10 +56,6 @@
       isLoading = false;
     }
   });
-
-  function selectProject(p: Project) {
-    selectedProject = p;
-  }
 
   function progressLabel(p: number) {
     if (p < 25) return 'Just started';
@@ -121,18 +102,15 @@
   let editProjectForm = $state({ name: '', location: '' });
 
   function openEditProject() {
-    if (!selectedProject) return;
-    editProjectForm = { name: selectedProject.name, location: selectedProject.location };
+    if (!project) return;
+    editProjectForm = { name: project.name, location: project.location };
     editingProject = true;
   }
 
   function saveEditProject() {
-    if (!selectedProject) return;
-    selectedProject.name = editProjectForm.name;
-    selectedProject.location = editProjectForm.location;
-    // Update in projects list
-    const idx = projects.findIndex(p => p.id === selectedProject?.id);
-    if (idx !== -1) projects[idx] = { ...selectedProject };
+    if (!project) return;
+    project.name = editProjectForm.name;
+    project.location = editProjectForm.location;
     editingProject = false;
   }
 
@@ -157,48 +135,21 @@
       <button class="btn-primary" onclick={() => window.history.back()}>Go Back</button>
     </div>
   {:else if customer}
-    <!-- Sidebar -->
-    <aside class="sidebar">
-      <div class="sidebar-header">Customer Projects</div>
-      <div class="customer-info-sidebar">
-        <div class="customer-avatar-large">{customer.firstName[0]}{customer.lastName[0]}</div>
-        <div class="customer-name-sidebar">{customer.firstName} {customer.lastName}</div>
-      </div>
-
-      <div class="project-list">
-        {#each projects as project}
-          <button
-            class="project-btn"
-            class:active={selectedProject?.id === project.id}
-            onclick={() => selectProject(project)}
-          >
-            <span class="project-btn-name">{project.name}</span>
-            <div class="project-btn-progress">
-              <div class="project-btn-track">
-                <div class="project-btn-fill" style="width: {project.progress}%"></div>
-              </div>
-              <span class="project-btn-pct">{project.progress}%</span>
-            </div>
-          </button>
-        {/each}
-      </div>
-    </aside>
-
     <!-- Main content -->
     <main class="main">
-      {#if selectedProject}
+      {#if project}
         <div class="main-header">
           <div class="main-header-left">
             <span class="project-tag">Project</span>
             <div class="main-header-title-row">
-              <h2>{selectedProject.name}</h2>
+              <h2>{project.name}</h2>
               <button class="btn-present">Present project</button>
             </div>
             <div class="progress-bar-wrapper">
               <div class="progress-track">
-                <div class="progress-fill" style="width: {selectedProject.progress}%"></div>
+                <div class="progress-fill" style="width: {project.progress}%"></div>
               </div>
-              <span class="progress-label">{selectedProject.progress}% — {progressLabel(selectedProject.progress)}</span>
+              <span class="progress-label">{project.progress}% — {progressLabel(project.progress)}</span>
             </div>
           </div>
         </div>
@@ -208,7 +159,7 @@
           <div class="offer-preview card">
             <div class="panel-title">Offer preview</div>
             <div class="offer-text">
-              {#each selectedProject.offerPreview.split('\n') as line}
+              {#each project.offerPreview.split('\n') as line}
                 {#if line.startsWith('**') && line.endsWith('**')}
                   <strong>{line.slice(2, -2)}</strong><br/>
                 {:else if line.startsWith('- ')}
@@ -258,11 +209,11 @@
               </div>
               <div class="info-row">
                 <span class="info-label">Project name</span>
-                <span>{selectedProject.name}</span>
+                <span>{project.name}</span>
               </div>
               <div class="info-row">
                 <span class="info-label">Location</span>
-                <span>{selectedProject.location}</span>
+                <span>{project.location}</span>
               </div>
             </div>
 
@@ -272,7 +223,7 @@
                 AI hints
               </div>
               <ul class="ai-list">
-                {#each selectedProject.aiHints as hint}
+                {#each project.aiHints as hint}
                   <li>{hint}</li>
                 {/each}
               </ul>
@@ -282,7 +233,7 @@
       {:else}
         <div class="empty-state">
           <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-4 0v2"/></svg>
-          <p>No projects yet for {customer.firstName} {customer.lastName}</p>
+          <p>No project yet for {customer.firstName} {customer.lastName}</p>
         </div>
       {/if}
     </main>
@@ -337,7 +288,7 @@
   </div>
 {/if}
 
-{#if editingProject && selectedProject}
+{#if editingProject && project}
   <div class="modal-backdrop" role="presentation" onkeydown={onModalKeydown}>
     <div class="modal-card card" tabindex="-1" role="dialog" aria-modal="true" aria-labelledby="edit-project-title">
       <div class="modal-header">
@@ -364,125 +315,14 @@
 
 <style>
   .layout {
-    display: flex;
-    height: calc(100vh - 80px); /* 80px for nav */
-    margin: -2rem; /* counteract main container padding if any */
+    display: block;
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
   }
 
-  /* Sidebar */
-  .sidebar {
-    width: 280px;
-    background: white;
-    border-right: 1px solid var(--clr-border);
-    display: flex;
-    flex-direction: column;
-    flex-shrink: 0;
-  }
-
-  .sidebar-header {
-    padding: 1.5rem 1.25rem 0.5rem;
-    font-size: 0.75rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--clr-text-light);
-  }
-
-  .customer-info-sidebar {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 1rem 1.25rem 1.5rem;
-    border-bottom: 1px solid var(--clr-border);
-    margin-bottom: 1rem;
-  }
-
-  .customer-avatar-large {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    background: var(--clr-primary);
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.25rem;
-    font-weight: 700;
-    margin-bottom: 0.75rem;
-  }
-
-  .customer-name-sidebar {
-    font-weight: 700;
-    color: var(--clr-text);
-  }
-
-  .project-list {
-    padding: 0 0 1.5rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    overflow-y: auto;
-  }
-
-  .project-btn {
-    display: flex;
-    flex-direction: column;
-    width: calc(100% - 2rem);
-    margin: 0 1rem;
-    padding: 0.75rem 0.875rem;
-    background: white;
-    border: 1px solid var(--clr-border);
-    border-radius: 8px;
-    text-align: left;
-    color: var(--clr-text);
-    transition: all 0.15s;
-  }
-
-  .project-btn:hover {
-    border-color: var(--clr-accent);
-    box-shadow: var(--shadow-sm);
-  }
-
-  .project-btn.active {
-    border-color: var(--clr-accent);
-    background: #ecfdf5;
-    box-shadow: var(--shadow-sm);
-  }
-
-  .project-btn-name {
-    font-size: 0.875rem;
-    font-weight: 600;
-  }
-
-  .project-btn-progress {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-top: 0.5rem;
-  }
-
-  .project-btn-track {
-    flex: 1;
-    height: 4px;
-    background: #e2e8f0;
-    border-radius: 2px;
-    overflow: hidden;
-  }
-
-  .project-btn-fill {
-    height: 100%;
-    background: var(--clr-accent);
-  }
-
-  .project-btn-pct {
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: var(--clr-text-light);
-  }
-
-  /* Main content */
   .main {
-    flex: 1;
+    width: 100%;
     background: #f8fafc;
     overflow-y: auto;
     padding: 2.5rem;
@@ -835,9 +675,6 @@
   }
 
   @media (max-width: 768px) {
-    .sidebar {
-      display: none;
-    }
     .right-panels {
       grid-template-columns: 1fr;
     }
