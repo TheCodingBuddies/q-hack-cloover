@@ -83,10 +83,10 @@ export const customerService = {
    */
   async getAllCustomers(): Promise<Customer[]> {
     try {
-      const response = await fetch('http://localhost:8080/customers');
+      const response = await fetch('http://localhost:8080/customers-with-properties');
 
       if (response.ok) {
-        const dtos: CustomerResponseDto[] = await response.json();
+        const dtos: CustomerWithPropertiesResponseDto[] = await response.json();
         return dtos.map(dto => this.mapDtoToCustomer(dto));
       }
       

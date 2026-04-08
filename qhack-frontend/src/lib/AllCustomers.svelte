@@ -111,7 +111,14 @@
             </div>
             <div class="customer-meta">
               <h3>{customer.firstName} {customer.lastName}</h3>
-              <span class="city">{customer.address?.city || 'Unknown'}</span>
+              <div class="address-info">
+                {#if customer.address}
+                  <span class="street">{customer.address.street} {customer.address.houseNumber}</span>
+                  <span class="city">{customer.address.zip} {customer.address.city}</span>
+                {:else}
+                  <span class="city">No address provided</span>
+                {/if}
+              </div>
             </div>
           </div>
           
@@ -251,8 +258,20 @@
   }
 
   .city {
-    font-size: 0.875rem;
+    font-size: 0.85rem;
     color: var(--clr-text-light);
+    display: block;
+  }
+
+  .street {
+    font-size: 0.85rem;
+    color: var(--clr-text-light);
+    display: block;
+    margin-bottom: 0.125rem;
+  }
+
+  .address-info {
+    margin-top: 0.25rem;
   }
 
   .card-stats {
