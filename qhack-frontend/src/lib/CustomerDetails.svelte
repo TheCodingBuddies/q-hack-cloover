@@ -33,12 +33,17 @@
         error = 'Customer not found';
       } else {
         // Mock some projects for the UI demonstration, similar to AllCustomers.svelte
+        const city = customer.address?.city || 'Unknown';
+        const fullAddress = customer.address 
+          ? `${customer.address.street} ${customer.address.houseNumber}, ${customer.address.zip} ${customer.address.city}`
+          : 'No address provided';
+
         projects = [
           {
             id: 'p1',
-            name: 'Solar Installation ' + customer.address.city,
+            name: 'Solar Installation ' + city,
             progress: 65,
-            location: `${customer.address.street} ${customer.address.houseNumber}, ${customer.address.zip} ${customer.address.city}`,
+            location: fullAddress,
             offerPreview: `**Offer #2024-001**\n\nSolar panel installation for residential property.\n\n- 12x 400W panels\n- 1x 10kWh battery storage\n- Grid feed-in setup\n\n**Total: €18,400**\n\nValidity: 30 days`,
             aiHints: [
               'Ask about current electricity bill to calculate ROI',
@@ -50,7 +55,7 @@
             id: 'p2',
             name: 'Energy Efficiency Upgrade',
             progress: 20,
-            location: `${customer.address.street} ${customer.address.houseNumber}, ${customer.address.zip} ${customer.address.city}`,
+            location: fullAddress,
             offerPreview: `**Offer #2024-002**\n\nHeat pump replacement project.\n\nDetails pending customer site visit.`,
             aiHints: [
               'Building year: 1985 — check insulation status',
@@ -89,10 +94,10 @@
       firstName: customer.firstName,
       lastName: customer.lastName,
       birthDate: customer.birthDate,
-      street: customer.address.street,
-      houseNumber: customer.address.houseNumber,
-      zip: customer.address.zip,
-      city: customer.address.city,
+      street: customer.address?.street || '',
+      houseNumber: customer.address?.houseNumber || '',
+      zip: customer.address?.zip || '',
+      city: customer.address?.city || '',
     };
     editingCustomer = true;
   }
@@ -236,7 +241,11 @@
               </div>
               <div class="info-row">
                 <span class="info-label">Address</span>
-                <span>{customer.address.street} {customer.address.houseNumber}, {customer.address.zip} {customer.address.city}</span>
+                {#if customer.address}
+                  <span>{customer.address.street} {customer.address.houseNumber}, {customer.address.zip} {customer.address.city}</span>
+                {:else}
+                  <span class="no-address-text">No address provided</span>
+                {/if}
               </div>
             </div>
 

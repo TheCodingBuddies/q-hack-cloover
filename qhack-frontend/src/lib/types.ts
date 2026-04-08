@@ -18,7 +18,7 @@ export interface Customer {
   firstName: string;
   lastName: string;
   birthDate: string;
-  address: Address;
+  address?: Address;
   details?: CustomerDetails;
 }
 
@@ -44,4 +44,14 @@ export interface PropertyRequestDto {
   street: string;
   city: string;
   houseNumber: string;
+}
+
+/**
+ * Data Transfer Object for customer response from the backend.
+ */
+export interface CustomerResponseDto {
+  id: number;
+  firstName: string;
+  lastName: string;
+  birthDate: string;
 }

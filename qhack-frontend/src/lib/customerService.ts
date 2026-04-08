@@ -1,4 +1,4 @@
-import type { Customer, CreateCustomerDTO, PropertyRequestDto } from './types';
+import type { Customer, CreateCustomerDTO, PropertyRequestDto, CustomerResponseDto } from './types';
 
 // Dummy-Daten für das MVP
 const dummyCustomers: Customer[] = [
@@ -58,21 +58,25 @@ export const customerService = {
    */
   async getAllCustomers(): Promise<Customer[]> {
     try {
-      // Vorbereitung für den Backend-Call (Beispiel URL: http://localhost:8080/customers)
-      // Aktuell nutzen wir noch Dummy-Daten, falls der Endpoint nicht existiert.
-      const response = await fetch('http://localhost:8080/customers').catch(() => null);
+      const response = await fetch('http://localhost:8080/customers');
 
-      if (response && response.ok) {
-        return await response.json();
+      if (response.ok) {
+        const dtos: CustomerResponseDto[] = await response.json();
+        return dtos.map(dto => ({
+          id: dto.id.toString(),
+          firstName: dto.firstName,
+          lastName: dto.lastName,
+          birthDate: dto.birthDate
+        }));
       }
-
+      
+      throw new Error(`Failed to fetch customers: ${response.status}`);
+    } catch (err) {
+      console.warn('Backend call failed, using dummy data:', err);
       // Fallback auf Dummy-Daten für die Entwicklung
       return new Promise((resolve) => {
         setTimeout(() => resolve([...dummyCustomers]), 200);
       });
-    } catch (err) {
-      console.error('Error fetching all customers:', err);
-      return [...dummyCustomers]; // Fallback
     }
   },
 
@@ -105,7 +109,7 @@ export const customerService = {
         const results = dummyCustomers.filter(customer => 
           customer.firstName.toLowerCase().includes(searchTerm) || 
           customer.lastName.toLowerCase().includes(searchTerm) ||
-          customer.address.city.toLowerCase().includes(searchTerm)
+          (customer.address?.city.toLowerCase().includes(searchTerm))
         );
         // Wir stellen sicher, dass die Objekte in den Ergebnissen Kopien sind und die IDs korrekt sind
         resolve(results.map(r => ({ ...r })));

@@ -62,7 +62,7 @@
   let filteredCustomers = $derived(
     customers.filter(c => 
       `${c.firstName} ${c.lastName}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      c.address.city.toLowerCase().includes(searchTerm.toLowerCase())
+      (c.address?.city.toLowerCase().includes(searchTerm.toLowerCase()))
     )
   );
 </script>
@@ -111,7 +111,7 @@
             </div>
             <div class="customer-meta">
               <h3>{customer.firstName} {customer.lastName}</h3>
-              <span class="city">{customer.address.city}</span>
+              <span class="city">{customer.address?.city || 'Unknown'}</span>
             </div>
           </div>
           

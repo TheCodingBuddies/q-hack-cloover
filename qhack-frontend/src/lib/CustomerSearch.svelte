@@ -77,8 +77,12 @@
             <div class="customer-meta">Born: {new Date(customer.birthDate).toLocaleDateString()}</div>
           </div>
           <div class="customer-address">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-            <span>{customer.address.street} {customer.address.houseNumber}, {customer.address.zip} {customer.address.city}</span>
+            {#if customer.address}
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+              <span>{customer.address.street} {customer.address.houseNumber}, {customer.address.zip} {customer.address.city}</span>
+            {:else}
+              <span class="no-address">No address provided</span>
+            {/if}
           </div>
         </a>
       {/each}
