@@ -1,0 +1,8 @@
+rootProject.name = "cloover"
+
+dependencyResolutionManagement {
+    repositories {
+        mavenCentral()
+        maven("https://packages.confluent.io/maven/")
+    }
+}
