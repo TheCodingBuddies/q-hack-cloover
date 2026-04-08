@@ -21,7 +21,9 @@ import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
-import io.ktor.server.plugins.cors.routing.*
+import io.ktor.server.request.*
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
 import kotlinx.serialization.json.Json
 import org.koin.dsl.module
 import org.koin.ktor.plugin.Koin
@@ -56,9 +58,17 @@ fun Application.configureFrameworks() {
             single<OfferController> { OfferController(get()) }
         })
     }
-    install(CORS) {
-        allowHost("localhost:5173")
-        allowHeader(HttpHeaders.ContentType)
-        anyMethod()
+
+    intercept(ApplicationCallPipeline.Plugins) {
+        val origin = call.request.headers[HttpHeaders.Origin]
+        if (origin != null) {
+            call.response.header(HttpHeaders.AccessControlAllowOrigin, origin)
+            call.response.header(HttpHeaders.AccessControlAllowHeaders, "Content-Type, Authorization")
+            call.response.header(HttpHeaders.AccessControlAllowMethods, "GET, POST, PUT, PATCH, DELETE, OPTIONS")
+            if (call.request.httpMethod == HttpMethod.Options) {
+                call.respond(HttpStatusCode.OK)
+                return@intercept finish()
+            }
+        }
     }
 }

@@ -46,39 +46,25 @@ export interface PropertyRequestDto {
   houseNumber: string;
 }
 
-export interface SunnyScoreResponse {
-  address: string;
-  sunnyPlace: string;
-  explanation: string;
-}
-
-export interface PropertyResponseDto {
-  id: number;
+/**
+ * Property as returned inside a customer response from the backend.
+ */
+export interface PropertyDto {
   postCode: string;
   street: string;
   city: string;
   houseNumber: string;
-  sunnyScore?: SunnyScoreResponse;
+  sunnyScore?: number | null;
 }
 
 /**
- * Data Transfer Object for customer with properties response from the backend.
+ * Full customer response from the backend, including optional property.
+ * Matches: GET /customers and GET /customer/{id}
  */
-export interface CustomerWithPropertiesResponseDto {
+export interface CustomerWithPropertyResponseDto {
   id: number;
   firstName: string;
   lastName: string;
-  birthDate: string;
-  properties: PropertyResponseDto[];
-}
-
-/**
- * Data Transfer Object for customer response from the backend.
- */
-export interface CustomerResponseDto {
-  id: number;
-  firstName: string;
-  lastName: string;
-  birthDate: string;
-  properties?: PropertyResponseDto[];
+  birthDate: string | null;
+  property: PropertyDto | null;
 }
