@@ -34,6 +34,12 @@ CREATE TABLE properties
     explanation  TEXT
 );
 
+CREATE TABLE products
+(
+    id          SERIAL PRIMARY KEY,
+    name        VARCHAR(100) NOT NULL,
+);
+
 
 -- ============ TEST DATA ============
 
@@ -44,5 +50,10 @@ VALUES ('Max', 'Mustermann', '1985-05-15'),
        ('Thomas', 'Schmidt', '1978-03-02'),
        ('Sabine', 'Fischer', '1995-07-12'),
        ('Klaus', 'Weber', '1965-12-30');
+
+INSERT INTO products (name)
+VALUES ('Wall Box'),
+       ('Solar Panel'),
+       ('Heat Pump');
 
 COMMIT;
