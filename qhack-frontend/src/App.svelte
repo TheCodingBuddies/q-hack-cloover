@@ -54,7 +54,7 @@
     <section id="hero">
       <div class="hero-content">
         <span class="badge">MVP Version</span>
-        <h1>The future of <span class="text-gradient">Order Management</span></h1>
+        <h1>Your <span class="text-gradient">Sales Coach</span> for renewable energy solutions</h1>
         <p>Manage your customers and orders with modern AI support. Fast, simple, and efficient.</p>
         
         <div class="hero-search">
