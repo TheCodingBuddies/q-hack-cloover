@@ -5,5 +5,6 @@ data class PropertyData(
     val street: String,
     val city: String,
     val houseNumber: String,
-    val customerId: Int
+    val customerId: Int,
+    val sunnyScore: Int? = null
 )
