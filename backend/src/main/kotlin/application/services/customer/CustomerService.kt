@@ -8,4 +8,8 @@ class CustomerService(private val customerRepository: CustomerRepository) {
     suspend fun addCustomer(data: CustomerData): Int {
         return customerRepository.addCustomer(data)
     }
+
+    suspend fun getAllCustomers(): List<Pair<Int, CustomerData>> {
+        return customerRepository.getAllCustomers()
+    }
 }

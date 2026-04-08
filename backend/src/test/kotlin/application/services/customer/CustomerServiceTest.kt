@@ -10,15 +10,20 @@ import kotlin.test.assertEquals
 
 class FakeCustomerRepository : CustomerRepository {
     private var nextId = 1
-    val customers = mutableListOf<CustomerData>()
+    val customersList = mutableListOf<Pair<Int, CustomerData>>()
 
     override suspend fun addCustomer(data: CustomerData): Int {
-        customers.add(data)
-        return nextId++
+        val id = nextId++
+        customersList.add(id to data)
+        return id
     }
 
     override suspend fun exists(customerId: Int): Boolean {
-        return customerId in 1..<nextId
+        return customersList.any { it.first == customerId }
+    }
+
+    override suspend fun getAllCustomers(): List<Pair<Int, CustomerData>> {
+        return customersList
     }
 }
 
@@ -40,8 +45,29 @@ class CustomerServiceTest {
 
         // Then
         assertEquals(1, result)
-        assertEquals(1, repository.customers.size)
-        assertEquals(customerData, repository.customers[0])
+        assertEquals(1, repository.customersList.size)
+        assertEquals(customerData, repository.customersList[0].second)
+    }
+
+    @Test
+    fun `getAllCustomers should return all customers from repository`() = runBlocking {
+        // Given
+        val repository = FakeCustomerRepository()
+        val service = CustomerService(repository)
+        val customer1 = CustomerData("John", "Doe", LocalDate.of(1990, 1, 1))
+        val customer2 = CustomerData("Jane", "Smith", null)
+        repository.addCustomer(customer1)
+        repository.addCustomer(customer2)
+
+        // When
+        val result = service.getAllCustomers()
+
+        // Then
+        assertEquals(2, result.size)
+        assertEquals(1, result[0].first)
+        assertEquals(customer1, result[0].second)
+        assertEquals(2, result[1].first)
+        assertEquals(customer2, result[1].second)
     }
 
     @Test
@@ -60,7 +86,7 @@ class CustomerServiceTest {
 
         // Then
         assertEquals(1, result)
-        assertEquals(1, repository.customers.size)
-        assertEquals(customerData, repository.customers[0])
+        assertEquals(1, repository.customersList.size)
+        assertEquals(customerData, repository.customersList[0].second)
     }
 }

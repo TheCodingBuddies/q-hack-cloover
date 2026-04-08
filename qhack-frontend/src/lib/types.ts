@@ -35,3 +35,13 @@ export interface CreateCustomerDTO {
   };
   optional?: CustomerDetails;
 }
+
+/**
+ * Data Transfer Object for property details as expected by the backend.
+ */
+export interface PropertyRequestDto {
+  postCode: string;
+  street: string;
+  city: string;
+  houseNumber: string;
+}

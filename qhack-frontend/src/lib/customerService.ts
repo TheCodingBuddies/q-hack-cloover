@@ -1,4 +1,4 @@
-import type { Customer, CreateCustomerDTO } from './types';
+import type { Customer, CreateCustomerDTO, PropertyRequestDto } from './types';
 
 // Dummy-Daten für das MVP
 const dummyCustomers: Customer[] = [
@@ -118,41 +118,66 @@ export const customerService = {
    */
   async saveCustomer(dto: CreateCustomerDTO): Promise<{ success: boolean; id?: string; error?: string }> {
     try {
-      // Wir senden das DTO flach an den Endpunkt, wie vom Backend DTO erwartet
-      const requestData = {
+      // 1. Erstelle den Kundenstamm (First Name, Last Name, Birth Date)
+      const customerRequestData = {
         firstName: dto.required.firstName,
         lastName: dto.required.lastName,
-        birthDate: dto.required.birthDate,
-        // Da das Backend-Snippet nur diese 3 Felder nutzt, aber wir im Frontend mehr haben, 
-        // senden wir der Vollständigkeit halber auch die anderen Daten mit (als flaches Objekt).
-        // Das Kotlin Snippet zeigt nur die Extraktion der 3 Felder, ignoriert aber evtl. andere.
-        // ...dto.required.address,
-        // ...dto.optional
+        birthDate: dto.required.birthDate
       };
 
-      const response = await fetch('http://localhost:8080/add-customer', {
+      const customerResponse = await fetch('http://localhost:8080/add-customer', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(requestData)
+        body: JSON.stringify(customerRequestData)
       });
 
-      if (!response.ok) {
-        throw new Error(`Server responded with ${response.status}`);
+      if (!customerResponse.ok) {
+        throw new Error(`Failed to create customer: Server responded with ${customerResponse.status}`);
       }
 
-      const responseText = await response.text();
+      const responseText = await customerResponse.text();
       // Extrahiere die ID aus "Customer added with id: <id>"
       const idMatch = responseText.match(/id: (.*)$/);
-      const id = idMatch ? idMatch[1] : undefined;
+      const customerId = idMatch ? idMatch[1] : undefined;
+
+      if (!customerId) {
+        throw new Error('Customer created, but no ID was returned from server');
+      }
+
+      // 2. Füge die Adresse (Property) hinzu
+      const propertyRequestData: PropertyRequestDto = {
+        postCode: dto.required.address.zip,
+        street: dto.required.address.street,
+        city: dto.required.address.city,
+        houseNumber: dto.required.address.houseNumber
+      };
+
+      const propertyResponse = await fetch(`http://localhost:8080/customer/${customerId}/add-property`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(propertyRequestData)
+      });
+
+      if (!propertyResponse.ok) {
+        // Der Kunde wurde angelegt, aber die Adresse schlug fehl
+        console.warn('Customer created, but failed to add property:', propertyResponse.status);
+        return {
+          success: true,
+          id: customerId,
+          error: 'Customer created, but address could not be saved.'
+        };
+      }
 
       return {
         success: true,
-        id
+        id: customerId
       };
     } catch (err) {
-      console.error('Error saving customer:', err);
+      console.error('Error saving customer and property:', err);
       return {
         success: false,
         error: err instanceof Error ? err.message : 'Unknown error occurred'

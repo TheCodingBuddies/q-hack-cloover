@@ -63,7 +63,7 @@
         const response = await customerService.saveCustomer(customerDTO);
         
         if (response.success) {
-          successMessage = `Customer successfully saved!${response.id ? ' (ID: ' + response.id + ')' : ''}`;
+          successMessage = 'Customer successfully created';
           
           // Felder leeren nach Speichern
           firstName = '';
@@ -79,10 +79,10 @@
           financialProfile = '';
           conversationHistory = '';
         } else {
-          errors.general = response.error || 'An error occurred while saving.';
+          errors.general = 'An error occurred';
         }
       } catch (err) {
-        errors.general = 'Backend connection failed. Please try again later.';
+        errors.general = 'An error occurred';
       } finally {
         isSaving = false;
       }

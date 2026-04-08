@@ -17,4 +17,14 @@ class CustomerRepositoryImpl : CustomerRepository, BaseRepository() {
     override suspend fun exists(customerId: Int): Boolean = dbQuery {
         !Customers.selectAll().where { Customers.id eq customerId }.empty()
     }
+
+    override suspend fun getAllCustomers(): List<Pair<Int, CustomerData>> = dbQuery {
+        Customers.selectAll().map {
+            it[Customers.id].value to CustomerData(
+                firstName = it[Customers.firstName],
+                lastName = it[Customers.lastName],
+                birthDate = it[Customers.birthDate]
+            )
+        }
+    }
 }
