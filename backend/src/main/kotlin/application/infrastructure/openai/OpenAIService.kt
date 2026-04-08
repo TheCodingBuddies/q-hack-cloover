@@ -5,13 +5,14 @@ import io.github.cdimascio.dotenv.dotenv
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
+import io.ktor.client.statement.*
 import io.ktor.http.*
 import kotlinx.serialization.Serializable
 import org.slf4j.LoggerFactory
 
 @Serializable
 data class OpenAIRequest(
-    val model: String = "gpt-4o-mini",
+    val model: String = "gpt-4o",
     val messages: List<OpenAIMessage>,
     val temperature: Double = 0.0
 )
@@ -54,7 +55,7 @@ class OpenAIService(
         """.trimIndent()
 
         return try {
-            val response: OpenAIResponse = httpClient.post("https://api.openai.com/v1/chat/completions") {
+            val httpResponse: HttpResponse = httpClient.post("https://api.openai.com/v1/chat/completions") {
                 header(HttpHeaders.Authorization, "Bearer $apiKey")
                 contentType(ContentType.Application.Json)
                 setBody(
@@ -68,8 +69,15 @@ class OpenAIService(
                         )
                     )
                 )
-            }.body()
+            }
 
+            if (!httpResponse.status.isSuccess()) {
+                val errorBody = httpResponse.bodyAsText()
+                logger.error("OpenAI API error: Status: ${httpResponse.status}, Body: $errorBody")
+                return null
+            }
+
+            val response: OpenAIResponse = httpResponse.body()
             val content = response.choices.firstOrNull()?.message?.content?.trim()
                 ?: return null
 
