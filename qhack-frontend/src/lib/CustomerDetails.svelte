@@ -6,7 +6,6 @@
   interface Project {
     id: string;
     name: string;
-    progress: number;
     location: string;
     offerPreview: string;
     aiHints: string[];
@@ -40,7 +39,6 @@
         project = {
           id: 'p1',
           name: 'Solar Installation ' + city,
-          progress: 65,
           location: fullAddress,
           offerPreview: `**Offer #2024-001**\n\nSolar panel installation for residential property.\n\n- 12x 400W panels\n- 1x 10kWh battery storage\n- Grid feed-in setup\n\n**Total: €18,400**\n\nValidity: 30 days`,
           aiHints: [
@@ -56,14 +54,6 @@
       isLoading = false;
     }
   });
-
-  function progressLabel(p: number) {
-    if (p < 25) return 'Just started';
-    if (p < 50) return 'In progress';
-    if (p < 75) return 'Advanced';
-    if (p < 100) return 'Nearly done';
-    return 'Complete';
-  }
 
   // Edit customer
   let editingCustomer = $state(false);
@@ -144,12 +134,6 @@
             <div class="main-header-title-row">
               <h2>{project.name}</h2>
               <button class="btn-present">Present project</button>
-            </div>
-            <div class="progress-bar-wrapper">
-              <div class="progress-track">
-                <div class="progress-fill" style="width: {project.progress}%"></div>
-              </div>
-              <span class="progress-label">{project.progress}% — {progressLabel(project.progress)}</span>
             </div>
           </div>
         </div>
@@ -367,33 +351,6 @@
     font-weight: 600;
     color: var(--clr-text);
     box-shadow: var(--shadow-sm);
-  }
-
-  .progress-bar-wrapper {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    max-width: 500px;
-  }
-
-  .progress-track {
-    flex: 1;
-    height: 8px;
-    background: #e2e8f0;
-    border-radius: 4px;
-    overflow: hidden;
-  }
-
-  .progress-fill {
-    height: 100%;
-    background: var(--clr-accent);
-  }
-
-  .progress-label {
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: var(--clr-text-light);
-    white-space: nowrap;
   }
 
   .main-body {
