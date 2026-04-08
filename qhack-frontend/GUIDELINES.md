@@ -9,3 +9,4 @@ In diesem Projekt gelten die folgenden Prinzipien für die Softwareentwicklung:
 - **UI/UX Best Practices & Barrierefreiheit**: Das Frontend wird nach aktuellen Best Practices für UI/UX gestaltet, wobei der Fokus auf einer intuitiven Benutzerführung für das MVP-Kernfeature liegt. Barrierefreiheit (a11y) wird von Beginn an durch semantisches HTML berücksichtigt.
 - **Typensicherheit (TS)**: Wir nutzen TypeScript konsequent, um Fehler frühzeitig zu vermeiden. Dies beschleunigt die Entwicklung im MVP, da Laufzeitfehler reduziert werden.
 - **Text im Frontend soll immer auf Englisch sein**: Der Usecase für das MVP ist international orientiert und unterstützt daher ausschließlich Englisch als Sprache für die Benutzeroberfläche.
+- **UI Optik soll einheitlich bleiben**: Die ui soll sich an an folgender Website orientieren: cloover.energy
