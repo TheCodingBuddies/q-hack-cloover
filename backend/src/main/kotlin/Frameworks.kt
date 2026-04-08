@@ -8,7 +8,9 @@ import com.qhack.application.infrastructure.property.PropertyRepository
 import com.qhack.application.infrastructure.property.PropertyRepositoryImpl
 import com.qhack.application.services.customer.CustomerService
 import com.qhack.application.services.property.PropertyService
+import io.ktor.http.*
 import io.ktor.server.application.*
+import io.ktor.server.plugins.cors.routing.*
 import org.koin.dsl.module
 import org.koin.ktor.plugin.Koin
 import org.koin.logger.slf4jLogger
@@ -24,5 +26,14 @@ fun Application.configureFrameworks() {
             single<CustomerController> { CustomerController(get()) }
             single<PropertyController> { PropertyController(get()) }
         })
+    }
+    install(CORS) {
+        allowHost("localhost:5173")
+        allowHeader(HttpHeaders.ContentType)
+        allowMethod(HttpMethod.Options)
+        allowMethod(HttpMethod.Post)
+        allowMethod(HttpMethod.Put)
+        allowMethod(HttpMethod.Delete)
+        allowMethod(HttpMethod.Patch)
     }
 }

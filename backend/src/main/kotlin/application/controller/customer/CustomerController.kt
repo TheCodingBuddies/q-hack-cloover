@@ -12,6 +12,9 @@ import io.ktor.server.routing.*
 class CustomerController(private val customerService: CustomerService) {
     fun registerRoutes(route: Route) {
         route.route("/add-customer") {
+            options {
+                call.respond(HttpStatusCode.OK)
+            }
             post {
                 val request = call.receive<CustomerRequestDto>()
                 val data = CustomerData(

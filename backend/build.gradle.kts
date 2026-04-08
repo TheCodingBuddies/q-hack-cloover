@@ -12,7 +12,7 @@ application {
 }
 
 kotlin {
-    jvmToolchain(23)
+    jvmToolchain(20)
 }
 
 dependencies {
@@ -30,6 +30,7 @@ dependencies {
     implementation(libs.ktor.server.auth)
     implementation(libs.ktor.server.host.common)
     implementation(libs.ktor.server.status.pages)
+    implementation("io.ktor:ktor-server-cors:${libs.versions.ktor.get()}")
     implementation(libs.ktor.server.netty)
     implementation(libs.logback.classic)
     implementation("io.github.cdimascio:dotenv-kotlin:6.4.1")
