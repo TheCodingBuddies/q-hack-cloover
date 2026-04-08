@@ -1,6 +1,6 @@
 package com.qhack.application.controller.customer
 
-import com.qhack.application.services.customer.CustomerData
+import com.qhack.application.domain.customer.CustomerData
 import com.qhack.application.services.customer.CustomerRequestDto
 import com.qhack.application.services.customer.CustomerService
 import io.ktor.http.*
