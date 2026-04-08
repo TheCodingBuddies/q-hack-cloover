@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { Customer } from './types';
+  import type { CreateCustomerDTO } from './types';
   import { customerService } from './customerService';
 
   let firstName = '';
@@ -9,6 +9,13 @@
   let city = '';
   let street = '';
   let houseNumber = '';
+
+  // Optional fields
+  let customerProfile = '';
+  let energyConsumption = '';
+  let existingSystems = '';
+  let financialProfile = '';
+  let conversationHistory = '';
 
   let errors: Record<string, string> = {};
   let isSaving = false;
@@ -31,20 +38,29 @@
     successMessage = '';
     if (validate()) {
       isSaving = true;
-      const newCustomer: Customer = {
-        firstName,
-        lastName,
-        birthDate,
-        address: {
-          zip,
-          city,
-          street,
-          houseNumber
+      const customerDTO: CreateCustomerDTO = {
+        required: {
+          firstName,
+          lastName,
+          birthDate,
+          address: {
+            zip,
+            city,
+            street,
+            houseNumber
+          }
+        },
+        optional: {
+          customerProfile: customerProfile.trim() || undefined,
+          energyConsumption: energyConsumption.trim() || undefined,
+          existingSystems: existingSystems.trim() || undefined,
+          financialProfile: financialProfile.trim() || undefined,
+          conversationHistory: conversationHistory.trim() || undefined
         }
       };
 
       try {
-        const response = await customerService.saveCustomer(newCustomer);
+        const response = await customerService.saveCustomer(customerDTO);
         
         if (response.success) {
           successMessage = 'Customer successfully saved!';
@@ -57,6 +73,11 @@
           city = '';
           street = '';
           houseNumber = '';
+          customerProfile = '';
+          energyConsumption = '';
+          existingSystems = '';
+          financialProfile = '';
+          conversationHistory = '';
         } else {
           errors.general = response.error || 'An error occurred while saving.';
         }
@@ -173,6 +194,60 @@
             </div>
           </div>
         </div>
+
+        <div class="details-section full-width">
+          <h2 class="section-title">Additional Details <span class="optional">(Optional)</span></h2>
+          
+          <div class="form-group">
+            <label for="customerProfile">Customer Profile</label>
+            <input 
+              type="text" 
+              id="customerProfile" 
+              bind:value={customerProfile} 
+              placeholder="e.g. 4-person household, single-family house built in 1985"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="energyConsumption">Energy Consumption</label>
+            <input 
+              type="text" 
+              id="energyConsumption" 
+              bind:value={energyConsumption} 
+              placeholder="e.g. 4,500 kWh/year electricity, gas heating"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="existingSystems">Existing Systems</label>
+            <input 
+              type="text" 
+              id="existingSystems" 
+              bind:value={existingSystems} 
+              placeholder="e.g. Already 5 kWp solar system, no battery storage"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="financialProfile">Financial Profile</label>
+            <input 
+              type="text" 
+              id="financialProfile" 
+              bind:value={financialProfile} 
+              placeholder="e.g. Medium income, open to financing"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="conversationHistory">Conversation History</label>
+            <textarea 
+              id="conversationHistory" 
+              bind:value={conversationHistory} 
+              placeholder="e.g. Customer mentioned concerns about rising gas prices..."
+              rows="3"
+            ></textarea>
+          </div>
+        </div>
       </div>
 
       <div class="form-actions">
@@ -271,9 +346,34 @@
     background-color: white;
   }
 
+  textarea {
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--clr-border);
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.2s;
+    background-color: var(--clr-bg-alt);
+    font-family: inherit;
+    resize: vertical;
+  }
+
+  textarea:focus {
+    outline: none;
+    border-color: var(--clr-accent);
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+    background-color: white;
+  }
+
   input.error {
     border-color: var(--clr-error);
     background-color: #fffafb;
+  }
+
+  .optional {
+    font-weight: 400;
+    font-size: 0.875rem;
+    color: var(--clr-text-light);
+    margin-left: 0.5rem;
   }
 
   .error-text {
