@@ -1,2 +1,2 @@
 # q-hack-cloover
-Submission of the q-hackathon cloover challenge
+Submission of the q-hackathon cloover challenge 2026
