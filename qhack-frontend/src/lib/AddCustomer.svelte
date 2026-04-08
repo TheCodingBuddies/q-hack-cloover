@@ -63,7 +63,7 @@
         const response = await customerService.saveCustomer(customerDTO);
         
         if (response.success) {
-          successMessage = 'Customer successfully saved!';
+          successMessage = `Customer successfully saved!${response.id ? ' (ID: ' + response.id + ')' : ''}`;
           
           // Felder leeren nach Speichern
           firstName = '';

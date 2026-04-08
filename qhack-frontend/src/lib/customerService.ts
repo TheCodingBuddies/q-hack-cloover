@@ -90,31 +90,49 @@ export const customerService = {
   },
 
   /**
-   * Speichert einen neuen Kunden.
-   * Diese Funktion simuliert einen Backend-POST-Request mit dem neuen DTO-Format.
+   * Speichert einen neuen Kunden gegen den Backend-Endpunkt.
    */
-  async saveCustomer(dto: CreateCustomerDTO): Promise<{ success: boolean; data?: Customer; error?: string }> {
-    // Simuliere Latenz für die Backend-Vorbereitung
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        // Im Backend/Mock konvertieren wir das DTO wieder in das Domain-Modell (Customer)
-        const customer: Customer = {
-          id: Math.random().toString(36).substr(2, 9),
-          ...dto.required,
-          details: dto.optional
-        };
+  async saveCustomer(dto: CreateCustomerDTO): Promise<{ success: boolean; id?: string; error?: string }> {
+    try {
+      // Wir senden das DTO flach an den Endpunkt, wie vom Backend DTO erwartet
+      const requestData = {
+        firstName: dto.required.firstName,
+        lastName: dto.required.lastName,
+        birthDate: dto.required.birthDate,
+        // Da das Backend-Snippet nur diese 3 Felder nutzt, aber wir im Frontend mehr haben, 
+        // senden wir der Vollständigkeit halber auch die anderen Daten mit (als flaches Objekt).
+        // Das Kotlin Snippet zeigt nur die Extraktion der 3 Felder, ignoriert aber evtl. andere.
+        // ...dto.required.address,
+        // ...dto.optional
+      };
 
-        // Im MVP fügen wir den Kunden einfach den lokalen Dummy-Daten hinzu
-        // (Hinweis: Dies hält nur für die aktuelle Session im Speicher)
-        dummyCustomers.push(customer);
-        
-        console.log('Backend-Mock: Customer saved successfully using DTO', dto);
-        
-        resolve({
-          success: true,
-          data: customer
-        });
-      }, 500); // 500ms künstliche Verzögerung für das Speichern
-    });
+      const response = await fetch('http://localhost:8080/add-customer', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(requestData)
+      });
+
+      if (!response.ok) {
+        throw new Error(`Server responded with ${response.status}`);
+      }
+
+      const responseText = await response.text();
+      // Extrahiere die ID aus "Customer added with id: <id>"
+      const idMatch = responseText.match(/id: (.*)$/);
+      const id = idMatch ? idMatch[1] : undefined;
+
+      return {
+        success: true,
+        id
+      };
+    } catch (err) {
+      console.error('Error saving customer:', err);
+      return {
+        success: false,
+        error: err instanceof Error ? err.message : 'Unknown error occurred'
+      };
+    }
   }
 };
