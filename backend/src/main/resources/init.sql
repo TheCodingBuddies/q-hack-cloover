@@ -7,6 +7,7 @@ BEGIN;
 -- ============ DROP TABLES (reverse dependency order) ============
 
 
+DROP TABLE IF EXISTS properties CASCADE;
 DROP TABLE IF EXISTS customers CASCADE;
 
 
@@ -19,6 +20,16 @@ CREATE TABLE customers
     first_name VARCHAR(60) NOT NULL,
     last_name  VARCHAR(60) NOT NULL,
     birth_date DATE
+);
+
+CREATE TABLE properties
+(
+    id           SERIAL PRIMARY KEY,
+    postcode     VARCHAR(10)  NOT NULL,
+    street       VARCHAR(100) NOT NULL,
+    city         VARCHAR(100) NOT NULL,
+    house_number VARCHAR(10)  NOT NULL,
+    customer_id  INT          NOT NULL REFERENCES customers (id) ON DELETE CASCADE
 );
 
 

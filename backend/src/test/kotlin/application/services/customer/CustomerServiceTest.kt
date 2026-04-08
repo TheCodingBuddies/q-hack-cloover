@@ -16,6 +16,10 @@ class FakeCustomerRepository : CustomerRepository {
         customers.add(data)
         return nextId++
     }
+
+    override suspend fun exists(customerId: Int): Boolean {
+        return customerId in 1..<nextId
+    }
 }
 
 class CustomerServiceTest {
