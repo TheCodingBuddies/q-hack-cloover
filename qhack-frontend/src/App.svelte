@@ -1,10 +1,10 @@
 <script lang="ts">
   import AddCustomer from './lib/AddCustomer.svelte';
   import CustomerSearch from './lib/CustomerSearch.svelte';
-  import CustomerDetails from './lib/CustomerDetails.svelte';
+  import AllCustomers from './lib/AllCustomers.svelte';
   import { onMount } from 'svelte';
-  
-  let currentPath = $state('');
+
+  let currentPath = '';
 
   onMount(() => {
     currentPath = window.location.pathname;
@@ -21,11 +21,6 @@
   function navigate(path: string) {
     window.history.pushState({}, '', path);
     currentPath = path;
-  }
-
-  function getCustomerIdFromPath(path: string): string | null {
-    const match = path.match(/^\/customer\/([^/]+)$/);
-    return match ? match[1] : null;
   }
 </script>
 
@@ -46,10 +41,8 @@
     <div class="page-container">
       <AddCustomer/>
     </div>
-  {:else if getCustomerIdFromPath(currentPath)}
-    <div class="page-container">
-      <CustomerDetails customerId={getCustomerIdFromPath(currentPath) || ''} />
-    </div>
+  {:else if currentPath === '/all-customer'}
+    <AllCustomers/>
   {:else}
     <section id="hero">
       <div class="hero-content">
@@ -59,6 +52,11 @@
         
         <div class="hero-search">
           <CustomerSearch />
+          <div class="search-actions">
+            <button class="btn-outline" onclick={() => navigate('/all-customer')}>
+              View all customers
+            </button>
+          </div>
         </div>
 
         <div class="hero-actions">
@@ -154,6 +152,27 @@
   .hero-search {
     margin: 2rem 0 3rem;
     width: 100%;
+  }
+
+  .search-actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+  }
+
+  .btn-outline {
+    background: transparent;
+    color: var(--clr-primary);
+    border: 1px solid var(--clr-border);
+    padding: 0.5rem 1.25rem;
+    border-radius: var(--radius-md);
+    font-weight: 500;
+    font-size: 0.875rem;
+  }
+
+  .btn-outline:hover {
+    border-color: var(--clr-primary);
+    background: var(--clr-bg-alt);
   }
 
   .badge {

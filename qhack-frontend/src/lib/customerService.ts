@@ -3,7 +3,6 @@ import type { Customer, CreateCustomerDTO } from './types';
 // Dummy-Daten für das MVP
 const dummyCustomers: Customer[] = [
   {
-    id: '1',
     firstName: 'Max',
     lastName: 'Mustermann',
     birthDate: '1985-05-20',
@@ -15,7 +14,6 @@ const dummyCustomers: Customer[] = [
     }
   },
   {
-    id: '2',
     firstName: 'Anna',
     lastName: 'Schmidt',
     birthDate: '1992-08-15',
@@ -27,7 +25,6 @@ const dummyCustomers: Customer[] = [
     }
   },
   {
-    id: '3',
     firstName: 'John',
     lastName: 'Doe',
     birthDate: '1978-01-10',
@@ -39,7 +36,6 @@ const dummyCustomers: Customer[] = [
     }
   },
   {
-    id: '4',
     firstName: 'Marie',
     lastName: 'Curie',
     birthDate: '1867-11-07',
@@ -53,15 +49,9 @@ const dummyCustomers: Customer[] = [
 ];
 
 export const customerService = {
-  /**
-   * Holt einen Kunden anhand seiner ID.
-   */
-  async getCustomerById(id: string): Promise<Customer | null> {
+  async getAllCustomers(): Promise<Customer[]> {
     return new Promise((resolve) => {
-      setTimeout(() => {
-        const customer = dummyCustomers.find(c => c.id === id);
-        resolve(customer || null);
-      }, 200);
+      setTimeout(() => resolve([...dummyCustomers]), 200);
     });
   },
 
@@ -99,7 +89,6 @@ export const customerService = {
       setTimeout(() => {
         // Im Backend/Mock konvertieren wir das DTO wieder in das Domain-Modell (Customer)
         const customer: Customer = {
-          id: Math.random().toString(36).substr(2, 9),
           ...dto.required,
           details: dto.optional
         };
