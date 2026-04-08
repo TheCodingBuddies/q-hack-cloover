@@ -1,34 +1,62 @@
 package com.qhack.application.services.customer
 
-import com.qhack.application.infrastructure.customer.CustomerData
+import com.qhack.application.domain.customer.CustomerData
 import com.qhack.application.infrastructure.customer.CustomerRepository
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.verify
+import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
+
+class FakeCustomerRepository : CustomerRepository {
+    private var nextId = 1
+    val customers = mutableListOf<CustomerData>()
+
+    override suspend fun addCustomer(data: CustomerData): Int {
+        customers.add(data)
+        return nextId++
+    }
+}
+
 class CustomerServiceTest {
-    private val repository = mockk<CustomerRepository>()
-    private val service = CustomerService(repository)
 
     @Test
-    fun `addCustomer should call repository and return id`() {
+    fun `addCustomer should call repository and return id`() = runBlocking {
         // Given
+        val repository = FakeCustomerRepository()
+        val service = CustomerService(repository)
         val customerData = CustomerData(
             firstName = "John",
             lastName = "Doe",
             birthDate = LocalDate.of(1990, 1, 1)
         )
-        val expectedId = 42
-        every { repository.addCustomer(customerData) } returns expectedId
 
         // When
         val result = service.addCustomer(customerData)
 
         // Then
-        assertEquals(expectedId, result)
-        verify(exactly = 1) { repository.addCustomer(customerData) }
+        assertEquals(1, result)
+        assertEquals(1, repository.customers.size)
+        assertEquals(customerData, repository.customers[0])
+    }
+
+    @Test
+    fun `addCustomer with null birthDate should call repository and return id`() = runBlocking {
+        // Given
+        val repository = FakeCustomerRepository()
+        val service = CustomerService(repository)
+        val customerData = CustomerData(
+            firstName = "Jane",
+            lastName = "Smith",
+            birthDate = null
+        )
+
+        // When
+        val result = service.addCustomer(customerData)
+
+        // Then
+        assertEquals(1, result)
+        assertEquals(1, repository.customers.size)
+        assertEquals(customerData, repository.customers[0])
     }
 }
