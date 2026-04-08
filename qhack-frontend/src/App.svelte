@@ -1,5 +1,6 @@
 <script lang="ts">
   import AddCustomer from './lib/AddCustomer.svelte';
+  import CustomerSearch from './lib/CustomerSearch.svelte';
   import { onMount } from 'svelte';
 
   let currentPath = '';
@@ -45,11 +46,15 @@
         <span class="badge">MVP Version</span>
         <h1>The future of <span class="text-gradient">Order Management</span></h1>
         <p>Manage your customers and orders with modern AI support. Fast, simple, and efficient.</p>
+        
+        <div class="hero-search">
+          <CustomerSearch />
+        </div>
+
         <div class="hero-actions">
           <button class="btn-primary btn-lg" onclick={() => navigate('/add-customer')}>
-            Create your first customer now
+            Create new customer
           </button>
-          <button class="btn-secondary btn-lg">Learn more</button>
         </div>
       </div>
     </section>
@@ -133,6 +138,12 @@
 
   .hero-content {
     max-width: 800px;
+    width: 100%;
+  }
+
+  .hero-search {
+    margin: 2rem 0 3rem;
+    width: 100%;
   }
 
   .badge {
@@ -185,20 +196,6 @@
   .btn-primary:hover {
     background: #1e293b;
     transform: translateY(-1px);
-  }
-
-  .btn-secondary {
-    background: white;
-    color: var(--clr-primary);
-    border: 1px solid var(--clr-border);
-    padding: 0.75rem 1.5rem;
-    border-radius: var(--radius-md);
-    font-weight: 600;
-  }
-
-  .btn-secondary:hover {
-    background: var(--clr-bg-alt);
-    border-color: var(--clr-text-light);
   }
 
   .btn-lg {
