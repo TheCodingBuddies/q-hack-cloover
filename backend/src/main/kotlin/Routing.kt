@@ -20,6 +20,7 @@ fun Application.configureRouting() {
     val customerController: CustomerController by inject()
     val propertyController: PropertyController by inject()
     val offerController: OfferController by inject()
+
     routing {
         customerController.registerRoutes(this)
         propertyController.registerRoutes(this)

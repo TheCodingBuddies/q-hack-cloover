@@ -1,14 +1,15 @@
 package com.qhack.application.controller.offer
 
-import com.qhack.application.services.offer.OfferRequestDto
 import com.qhack.application.services.offer.OfferResponseDto
 import com.qhack.application.services.offer.OfferService
+import com.qhack.application.services.openai.OfferLLMRequest
+import com.qhack.application.services.openai.OpenAIServiceMock
 import io.ktor.http.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
-class OfferController(private val offerService: OfferService) {
+class OfferController(private val offerService: OfferService, private val openAiService: OpenAIServiceMock) {
     fun registerRoutes(route: Route) {
         route.route("/offers") {
             get {
@@ -19,9 +20,13 @@ class OfferController(private val offerService: OfferService) {
             }
 
             post {
-                val request = call.receive<OfferRequestDto>()
-                val id = offerService.createOffer(request.toDomain())
-                call.respond(HttpStatusCode.Created, mapOf("id" to id))
+                val request = call.receive<OfferLLMRequest>()
+                val response = openAiService.generateOffer(request)
+                if (response != null) {
+                    call.respond(HttpStatusCode.OK, response)
+                } else {
+                    call.respond(HttpStatusCode.InternalServerError, "Could not generate offer")
+                }
             }
 
             get("/{id}") {

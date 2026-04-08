@@ -88,4 +88,59 @@ class OpenAIService(
             null
         }
     }
+
+    suspend fun generateOffer(request: OfferLLMRequest): OfferLLMResponse? {
+        val dotenv = dotenv()
+        val apiKey = dotenv["OPENAI_API_KEY"] ?: ""
+        if (apiKey.isBlank()) {
+            logger.warn("OpenAI API Key not configured, skipping Offer Generation request.")
+            return null
+        }
+
+        val prompt = """
+            Erstelle ein maßgeschneidertes Angebot für eine energetische Sanierung basierend auf folgenden Daten:
+            Postleitzahl: ${request.postalCode}
+            Stadt: ${request.city}
+            Land: ${request.country}
+            Gewünschtes Hauptprodukt: ${request.primaryProduct}
+            Baujahr des Gebäudes: ${request.constructionYear}
+            Aktueller Heizungstyp: ${request.heatingType}
+
+            Deine Antwort muss zwingend ein valides JSON-Objekt sein, das dem bereitgestellten Schema entspricht.
+            Antworte niemals mit Freitext vor oder nach dem JSON.
+        """.trimIndent()
+
+        return try {
+            val httpResponse: HttpResponse = httpClient.post("https://api.openai.com/v1/chat/completions") {
+                header(HttpHeaders.Authorization, "Bearer $apiKey")
+                contentType(ContentType.Application.Json)
+                setBody(
+                    OpenAIRequest(
+                        messages = listOf(
+                            OpenAIMessage(
+                                role = "system",
+                                content = "Du bist ein Experte für energetische Sanierung, Heizsysteme und staatliche Förderung in Deutschland."
+                            ),
+                            OpenAIMessage(role = "user", content = prompt)
+                        )
+                    )
+                )
+            }
+
+            if (!httpResponse.status.isSuccess()) {
+                val errorBody = httpResponse.bodyAsText()
+                logger.error("OpenAI API error during offer generation: Status: ${httpResponse.status}, Body: $errorBody")
+                return null
+            }
+
+            val response: OpenAIResponse = httpResponse.body()
+            val content = response.choices.firstOrNull()?.message?.content?.trim()
+                ?: return null
+
+            json.decodeFromString<OfferLLMResponse>(content)
+        } catch (e: Exception) {
+            logger.error("Error generating offer: ${e.message}", e)
+            null
+        }
+    }
 }
