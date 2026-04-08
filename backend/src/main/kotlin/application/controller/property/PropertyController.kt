@@ -1,7 +1,9 @@
 package com.qhack.application.controller.property
 
 import com.qhack.application.domain.property.PropertyData
+import com.qhack.application.infrastructure.openai.OpenAIService
 import com.qhack.application.services.property.PropertyRequestDto
+import com.qhack.application.services.property.PropertyResponseDto
 import com.qhack.application.services.property.PropertyService
 import io.ktor.http.*
 import io.ktor.server.plugins.NotFoundException
@@ -9,7 +11,7 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
-class PropertyController(private val propertyService: PropertyService) {
+class PropertyController(private val propertyService: PropertyService, private val openAiService: OpenAIService) {
     fun registerRoutes(route: Route) {
         route.route("/customer/{customerid}/add-property") {
             post {
@@ -27,7 +29,8 @@ class PropertyController(private val propertyService: PropertyService) {
 
                 try {
                     val id = propertyService.addProperty(data)
-                    call.respond(HttpStatusCode.OK, "Property added with id: $id")
+                    val response = openAiService.getSunnyScore("${data.street}, ${data.houseNumber}, ${data.city}, ${data.postCode}")
+                    call.respond(HttpStatusCode.OK, PropertyResponseDto(id, response))
                 } catch (e: NotFoundException) {
                     call.respond(HttpStatusCode.NotFound, e.message ?: "Customer not found")
                 }

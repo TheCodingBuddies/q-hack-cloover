@@ -9,3 +9,16 @@ data class PropertyRequestDto(
     val city: String,
     val houseNumber: String
 )
+
+@Serializable
+data class PropertyResponseDto(
+    val id: Int,
+    val sunnyScore: SunnyScoreResponse? = null
+)
+
+@Serializable
+data class SunnyScoreResponse(
+    val address: String,
+    val sunnyPlace: Int,
+    val explanation: String
+)

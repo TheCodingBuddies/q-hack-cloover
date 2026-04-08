@@ -42,7 +42,7 @@ fun Application.configureFrameworks() {
             single<CustomerService> { CustomerService(get()) }
             single<PropertyService> { PropertyService(get(), get()) }
             single<CustomerController> { CustomerController(get()) }
-            single<PropertyController> { PropertyController(get()) }
+            single<PropertyController> { PropertyController(get(), get()) }
         })
     }
     install(CORS) {

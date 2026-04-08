@@ -1,5 +1,6 @@
 package com.qhack.application.infrastructure.openai
 
+import com.qhack.application.services.property.SunnyScoreResponse
 import io.github.cdimascio.dotenv.dotenv
 import io.ktor.client.*
 import io.ktor.client.call.*
@@ -29,13 +30,6 @@ data class OpenAIResponse(
 @Serializable
 data class OpenAIChoice(
     val message: OpenAIMessage
-)
-
-@Serializable
-data class SunnyScoreResponse(
-    val address: String,
-    val sunnyPlace: Int,
-    val explanation: String
 )
 
 class OpenAIService(
