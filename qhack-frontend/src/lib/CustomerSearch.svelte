@@ -36,6 +36,10 @@
   }
 
   function navigateToCustomer(id: string) {
+    if (!id) {
+      console.error('Cannot navigate: No customer ID provided');
+      return;
+    }
     window.history.pushState({}, '', `/customer/${id}`);
     window.dispatchEvent(new PopStateEvent('popstate'));
   }

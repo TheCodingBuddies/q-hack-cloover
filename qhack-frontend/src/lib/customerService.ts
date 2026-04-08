@@ -3,6 +3,7 @@ import type { Customer, CreateCustomerDTO } from './types';
 // Dummy-Daten für das MVP
 const dummyCustomers: Customer[] = [
   {
+    id: '1',
     firstName: 'Max',
     lastName: 'Mustermann',
     birthDate: '1985-05-20',
@@ -14,6 +15,7 @@ const dummyCustomers: Customer[] = [
     }
   },
   {
+    id: '2',
     firstName: 'Anna',
     lastName: 'Schmidt',
     birthDate: '1992-08-15',
@@ -25,6 +27,7 @@ const dummyCustomers: Customer[] = [
     }
   },
   {
+    id: '3',
     firstName: 'John',
     lastName: 'Doe',
     birthDate: '1978-01-10',
@@ -36,6 +39,7 @@ const dummyCustomers: Customer[] = [
     }
   },
   {
+    id: '4',
     firstName: 'Marie',
     lastName: 'Curie',
     birthDate: '1867-11-07',
@@ -52,6 +56,18 @@ export const customerService = {
   async getAllCustomers(): Promise<Customer[]> {
     return new Promise((resolve) => {
       setTimeout(() => resolve([...dummyCustomers]), 200);
+    });
+  },
+
+  /**
+   * Holt einen Kunden anhand seiner ID.
+   */
+  async getCustomerById(id: string): Promise<Customer | null> {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const customer = dummyCustomers.find(c => c.id === id) || null;
+        resolve(customer);
+      }, 100);
     });
   },
 
@@ -74,7 +90,8 @@ export const customerService = {
           customer.lastName.toLowerCase().includes(searchTerm) ||
           customer.address.city.toLowerCase().includes(searchTerm)
         );
-        resolve(results);
+        // Wir stellen sicher, dass die Objekte in den Ergebnissen Kopien sind und die IDs korrekt sind
+        resolve(results.map(r => ({ ...r })));
       }, 300); // 300ms künstliche Verzögerung
     });
   },
