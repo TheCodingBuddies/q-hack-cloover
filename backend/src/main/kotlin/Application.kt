@@ -1,5 +1,6 @@
 package com.qhack
 
+import com.qhack.application.infrastructure.configureDatabases
 import io.ktor.server.application.*
 
 fun main(args: Array<String>) {
@@ -11,6 +12,5 @@ fun Application.module() {
     configureFrameworks()
     configureSerialization()
     configureDatabases()
-    configureSecurity()
     configureRouting()
 }
