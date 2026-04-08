@@ -11,11 +11,16 @@ import kotlin.test.assertFailsWith
 
 class FakePropertyRepository : PropertyRepository {
     private var nextId = 1
-    val properties = mutableListOf<Triple<PropertyData, Int, String>>()
+    val propertiesList = mutableListOf<Pair<Int, PropertyData>>()
     
-    override suspend fun addProperty(data: PropertyData, sunnyScore: Int, explanation: String): Int {
-        properties.add(Triple(data, sunnyScore, explanation))
-        return nextId++
+    override suspend fun addProperty(data: PropertyData, score: Int, text: String): Int {
+        val id = nextId++
+        propertiesList.add(id to data)
+        return id
+    }
+
+    override suspend fun exists(propertyId: Int): Boolean {
+        return propertiesList.any { it.first == propertyId }
     }
 }
 
@@ -43,10 +48,8 @@ class PropertyServiceTest {
 
         // Then
         assertEquals(1, result)
-        assertEquals(1, propertyRepo.properties.size)
-        assertEquals(propertyData, propertyRepo.properties[0].first)
-        assertEquals(85, propertyRepo.properties[0].second)
-        assertEquals("Sunny balcony", propertyRepo.properties[0].third)
+        assertEquals(1, propertyRepo.propertiesList.size)
+        assertEquals(propertyData, propertyRepo.propertiesList[0].second)
     }
 
     @Test

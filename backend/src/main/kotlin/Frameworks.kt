@@ -1,13 +1,18 @@
 package com.qhack
 
 import com.qhack.application.controller.customer.CustomerController
+import com.qhack.application.controller.offer.OfferController
 import com.qhack.application.controller.property.PropertyController
 import com.qhack.application.infrastructure.customer.CustomerRepository
 import com.qhack.application.infrastructure.customer.CustomerRepositoryImpl
-import com.qhack.application.services.openai.OpenAIService
+import com.qhack.application.infrastructure.offer.OfferRepository
+import com.qhack.application.infrastructure.offer.OfferRepositoryImpl
+import com.qhack.application.infrastructure.product.ProductRepository
+import com.qhack.application.infrastructure.product.ProductRepositoryImpl
 import com.qhack.application.infrastructure.property.PropertyRepository
 import com.qhack.application.infrastructure.property.PropertyRepositoryImpl
 import com.qhack.application.services.customer.CustomerService
+import com.qhack.application.services.offer.OfferService
 import com.qhack.application.services.openai.OpenAIServiceMock
 import com.qhack.application.services.property.PropertyService
 import io.ktor.client.*
@@ -40,11 +45,15 @@ fun Application.configureFrameworks() {
             }
             single<CustomerRepository> { CustomerRepositoryImpl() }
             single<PropertyRepository> { PropertyRepositoryImpl() }
+            single<ProductRepository> { ProductRepositoryImpl() }
+            single<OfferRepository> { OfferRepositoryImpl() }
             single<OpenAIServiceMock> { OpenAIServiceMock(httpClient = get()) }
             single<CustomerService> { CustomerService(get()) }
             single<PropertyService> { PropertyService(get(), get()) }
+            single<OfferService> { OfferService(get(), get(), get(), get()) }
             single<CustomerController> { CustomerController(get()) }
             single<PropertyController> { PropertyController(get(), get()) }
+            single<OfferController> { OfferController(get()) }
         })
     }
     install(CORS) {

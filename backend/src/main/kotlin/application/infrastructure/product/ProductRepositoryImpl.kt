@@ -28,4 +28,8 @@ class ProductRepositoryImpl : ProductRepository, BaseRepository() {
                 ProductData(name = it[ProductTable.name])
             }.singleOrNull()
     }
+
+    override suspend fun exists(productId: Int): Boolean = dbQuery {
+        ProductTable.selectAll().where { ProductTable.id eq productId }.any()
+    }
 }

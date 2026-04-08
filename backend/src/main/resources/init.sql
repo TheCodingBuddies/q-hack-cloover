@@ -7,6 +7,8 @@ BEGIN;
 -- ============ DROP TABLES (reverse dependency order) ============
 
 
+DROP TABLE IF EXISTS offers CASCADE;
+DROP TABLE IF EXISTS products CASCADE;
 DROP TABLE IF EXISTS properties CASCADE;
 DROP TABLE IF EXISTS customers CASCADE;
 
@@ -36,8 +38,17 @@ CREATE TABLE properties
 
 CREATE TABLE products
 (
+    id   SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE offers
+(
     id          SERIAL PRIMARY KEY,
-    name        VARCHAR(100) NOT NULL,
+    customer_id INT         NOT NULL REFERENCES customers (id) ON DELETE CASCADE,
+    property_id INT         NOT NULL REFERENCES properties (id) ON DELETE CASCADE,
+    product_id  INT         NOT NULL REFERENCES products (id) ON DELETE CASCADE,
+    status      VARCHAR(20) NOT NULL DEFAULT 'PENDING'
 );
 
 
