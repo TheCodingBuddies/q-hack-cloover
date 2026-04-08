@@ -71,5 +71,27 @@ export const customerService = {
         resolve(results);
       }, 300); // 300ms künstliche Verzögerung
     });
+  },
+
+  /**
+   * Speichert einen neuen Kunden.
+   * Diese Funktion simuliert einen Backend-POST-Request.
+   */
+  async saveCustomer(customer: Customer): Promise<{ success: boolean; data?: Customer; error?: string }> {
+    // Simuliere Latenz für die Backend-Vorbereitung
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        // Im MVP fügen wir den Kunden einfach den lokalen Dummy-Daten hinzu
+        // (Hinweis: Dies hält nur für die aktuelle Session im Speicher)
+        dummyCustomers.push({ ...customer });
+        
+        console.log('Backend-Mock: Customer saved successfully', customer);
+        
+        resolve({
+          success: true,
+          data: customer
+        });
+      }, 500); // 500ms künstliche Verzögerung für das Speichern
+    });
   }
 };

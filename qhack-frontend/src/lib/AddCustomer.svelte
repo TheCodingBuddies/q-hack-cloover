@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { Customer } from './types';
+  import { customerService } from './customerService';
 
   let firstName = '';
   let lastName = '';
@@ -10,6 +11,7 @@
   let houseNumber = '';
 
   let errors: Record<string, string> = {};
+  let isSaving = false;
   let successMessage = '';
 
   function validate() {
@@ -25,9 +27,10 @@
     return Object.keys(errors).length === 0;
   }
 
-  function handleSave() {
+  async function handleSave() {
     successMessage = '';
     if (validate()) {
+      isSaving = true;
       const newCustomer: Customer = {
         firstName,
         lastName,
@@ -40,18 +43,28 @@
         }
       };
 
-      // Mock-Save
-      console.log('Saving customer:', newCustomer);
-      successMessage = 'Customer successfully saved! (Mock)';
-      
-      // Felder leeren nach Speichern (optional für MVP, hier gemacht für UX)
-      firstName = '';
-      lastName = '';
-      birthDate = '';
-      zip = '';
-      city = '';
-      street = '';
-      houseNumber = '';
+      try {
+        const response = await customerService.saveCustomer(newCustomer);
+        
+        if (response.success) {
+          successMessage = 'Customer successfully saved!';
+          
+          // Felder leeren nach Speichern
+          firstName = '';
+          lastName = '';
+          birthDate = '';
+          zip = '';
+          city = '';
+          street = '';
+          houseNumber = '';
+        } else {
+          errors.general = response.error || 'An error occurred while saving.';
+        }
+      } catch (err) {
+        errors.general = 'Backend connection failed. Please try again later.';
+      } finally {
+        isSaving = false;
+      }
     }
   }
 </script>
@@ -163,8 +176,20 @@
       </div>
 
       <div class="form-actions">
-        <button type="submit" class="btn-save">Save customer</button>
+        <button type="submit" class="btn-save" disabled={isSaving}>
+          {#if isSaving}
+            Saving...
+          {:else}
+            Save customer
+          {/if}
+        </button>
       </div>
+
+      {#if errors.general}
+        <div class="alert alert-error" role="alert">
+          {errors.general}
+        </div>
+      {/if}
 
       {#if successMessage}
         <div class="alert alert-success" role="alert">
@@ -280,10 +305,15 @@
     transition: all 0.2s;
   }
 
-  .btn-save:hover {
+  .btn-save:hover:not(:disabled) {
     background-color: #1e293b;
     transform: translateY(-1px);
     box-shadow: var(--shadow-md);
+  }
+
+  .btn-save:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
   }
 
   .alert {
@@ -300,6 +330,12 @@
     background-color: #ecfdf5;
     color: var(--clr-success);
     border: 1px solid #d1fae5;
+  }
+
+  .alert-error {
+    background-color: #fef2f2;
+    color: var(--clr-error);
+    border: 1px solid #fee2e2;
   }
 
   @media (max-width: 600px) {
