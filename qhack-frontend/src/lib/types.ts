@@ -14,6 +14,7 @@ export interface CustomerDetails {
 }
 
 export interface Customer {
+  id: string;
   firstName: string;
   lastName: string;
   birthDate: string;

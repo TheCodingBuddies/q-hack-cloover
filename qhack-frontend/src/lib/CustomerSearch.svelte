@@ -2,10 +2,10 @@
   import { customerService } from './customerService';
   import type { Customer } from './types';
 
-  let searchQuery = '';
-  let results: Customer[] = [];
-  let isLoading = false;
-  let hasSearched = false;
+  let searchQuery = $state('');
+  let results: Customer[] = $state([]);
+  let isLoading = $state(false);
+  let hasSearched = $state(false);
 
   async function handleSearch() {
     if (!searchQuery.trim()) {
@@ -33,6 +33,11 @@
     searchTimeout = setTimeout(() => {
       handleSearch();
     }, 300);
+  }
+
+  function navigateToCustomer(id: string) {
+    window.history.pushState({}, '', `/customer/${id}`);
+    window.dispatchEvent(new PopStateEvent('popstate'));
   }
 </script>
 
@@ -62,7 +67,7 @@
   {:else if results.length > 0}
     <div class="results-list">
       {#each results as customer}
-        <div class="customer-card card">
+        <a href="/customer/{customer.id}" class="customer-card card" onclick={(e) => { e.preventDefault(); navigateToCustomer(customer.id); }}>
           <div class="customer-info">
             <div class="customer-name">{customer.firstName} {customer.lastName}</div>
             <div class="customer-meta">Born: {new Date(customer.birthDate).toLocaleDateString()}</div>
@@ -71,7 +76,7 @@
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
             <span>{customer.address.street} {customer.address.houseNumber}, {customer.address.zip} {customer.address.city}</span>
           </div>
-        </div>
+        </a>
       {/each}
     </div>
   {/if}
@@ -154,6 +159,8 @@
     align-items: center;
     transition: transform 0.2s, box-shadow 0.2s;
     cursor: pointer;
+    text-decoration: none;
+    color: inherit;
   }
 
   .customer-card:hover {

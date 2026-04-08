@@ -1,9 +1,10 @@
 <script lang="ts">
   import AddCustomer from './lib/AddCustomer.svelte';
   import CustomerSearch from './lib/CustomerSearch.svelte';
+  import CustomerDetails from './lib/CustomerDetails.svelte';
   import { onMount } from 'svelte';
-
-  let currentPath = '';
+  
+  let currentPath = $state('');
 
   onMount(() => {
     currentPath = window.location.pathname;
@@ -20,6 +21,11 @@
   function navigate(path: string) {
     window.history.pushState({}, '', path);
     currentPath = path;
+  }
+
+  function getCustomerIdFromPath(path: string): string | null {
+    const match = path.match(/^\/customer\/([^/]+)$/);
+    return match ? match[1] : null;
   }
 </script>
 
@@ -39,6 +45,10 @@
   {#if currentPath === '/add-customer'}
     <div class="page-container">
       <AddCustomer/>
+    </div>
+  {:else if getCustomerIdFromPath(currentPath)}
+    <div class="page-container">
+      <CustomerDetails customerId={getCustomerIdFromPath(currentPath) || ''} />
     </div>
   {:else}
     <section id="hero">
