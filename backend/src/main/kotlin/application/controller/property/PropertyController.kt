@@ -1,7 +1,8 @@
 package com.qhack.application.controller.property
 
 import com.qhack.application.domain.property.PropertyData
-import com.qhack.application.infrastructure.openai.OpenAIService
+import com.qhack.application.services.openai.OpenAIService
+import com.qhack.application.services.openai.OpenAIServiceMock
 import com.qhack.application.services.property.PropertyRequestDto
 import com.qhack.application.services.property.PropertyResponseDto
 import com.qhack.application.services.property.PropertyService
@@ -11,7 +12,7 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
-class PropertyController(private val propertyService: PropertyService, private val openAiService: OpenAIService) {
+class PropertyController(private val propertyService: PropertyService, private val openAiService: OpenAIServiceMock) {
     fun registerRoutes(route: Route) {
         route.route("/customer/{customerid}/add-property") {
             post {

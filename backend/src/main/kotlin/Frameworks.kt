@@ -4,10 +4,11 @@ import com.qhack.application.controller.customer.CustomerController
 import com.qhack.application.controller.property.PropertyController
 import com.qhack.application.infrastructure.customer.CustomerRepository
 import com.qhack.application.infrastructure.customer.CustomerRepositoryImpl
-import com.qhack.application.infrastructure.openai.OpenAIService
+import com.qhack.application.services.openai.OpenAIService
 import com.qhack.application.infrastructure.property.PropertyRepository
 import com.qhack.application.infrastructure.property.PropertyRepositoryImpl
 import com.qhack.application.services.customer.CustomerService
+import com.qhack.application.services.openai.OpenAIServiceMock
 import com.qhack.application.services.property.PropertyService
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
@@ -39,7 +40,7 @@ fun Application.configureFrameworks() {
             }
             single<CustomerRepository> { CustomerRepositoryImpl() }
             single<PropertyRepository> { PropertyRepositoryImpl() }
-            single<OpenAIService> { OpenAIService(httpClient = get()) }
+            single<OpenAIServiceMock> { OpenAIServiceMock(httpClient = get()) }
             single<CustomerService> { CustomerService(get()) }
             single<PropertyService> { PropertyService(get(), get()) }
             single<CustomerController> { CustomerController(get()) }

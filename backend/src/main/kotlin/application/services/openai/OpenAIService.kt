@@ -1,4 +1,4 @@
-package com.qhack.application.infrastructure.openai
+package com.qhack.application.services.openai
 
 import com.qhack.application.services.property.SunnyScoreResponse
 import io.github.cdimascio.dotenv.dotenv
@@ -8,6 +8,7 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
 import org.slf4j.LoggerFactory
 
 @Serializable
@@ -37,7 +38,7 @@ class OpenAIService(
     private val httpClient: HttpClient
 ) {
     private val logger = LoggerFactory.getLogger(OpenAIService::class.java)
-    private val json = kotlinx.serialization.json.Json { ignoreUnknownKeys = true }
+    private val json = Json { ignoreUnknownKeys = true }
 
     suspend fun getSunnyScore(address: String): SunnyScoreResponse? {
         val dotenv = dotenv()

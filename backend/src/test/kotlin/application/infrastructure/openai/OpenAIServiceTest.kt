@@ -1,5 +1,6 @@
 package com.qhack.application.infrastructure.openai
 
+import com.qhack.application.services.openai.OpenAIService
 import io.ktor.client.*
 import io.ktor.client.engine.mock.*
 import io.ktor.client.plugins.contentnegotiation.*
