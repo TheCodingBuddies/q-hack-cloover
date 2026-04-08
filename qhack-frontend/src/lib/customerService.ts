@@ -66,14 +66,7 @@ export const customerService = {
       return [];
     }
 
-    // In a real application, this would be a backend call.
-    // Since we are removing mocks, we should ideally call a search endpoint.
-    // If no search endpoint exists yet, we might have to fetch all and filter, 
-    // or return an empty array if we strictly want only real backend data.
-    // However, the task is "entferne alle user mocks". 
-    // Let's assume for now we should still be able to search if possible, 
-    // but without dummyCustomers.
-    
+    // We fetch all customers and filter locally as long as there is no search endpoint.
     try {
       const customers = await this.getAllCustomers();
       const searchTerm = query.toLowerCase();
