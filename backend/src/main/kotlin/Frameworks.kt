@@ -48,7 +48,7 @@ fun Application.configureFrameworks() {
             single<ProductRepository> { ProductRepositoryImpl() }
             single<OfferRepository> { OfferRepositoryImpl() }
             single<OpenAIServiceMock> { OpenAIServiceMock(httpClient = get()) }
-            single<CustomerService> { CustomerService(get()) }
+            single<CustomerService> { CustomerService(get(), get()) }
             single<PropertyService> { PropertyService(get(), get()) }
             single<OfferService> { OfferService(get(), get(), get(), get()) }
             single<CustomerController> { CustomerController(get()) }
@@ -59,10 +59,6 @@ fun Application.configureFrameworks() {
     install(CORS) {
         allowHost("localhost:5173")
         allowHeader(HttpHeaders.ContentType)
-        allowMethod(HttpMethod.Options)
-        allowMethod(HttpMethod.Post)
-        allowMethod(HttpMethod.Put)
-        allowMethod(HttpMethod.Delete)
-        allowMethod(HttpMethod.Patch)
+        anyMethod()
     }
 }

@@ -4,6 +4,7 @@ import com.qhack.application.domain.product.ProductData
 import com.qhack.application.infrastructure.BaseRepository
 import org.jetbrains.exposed.sql.insertAndGetId
 import org.jetbrains.exposed.sql.selectAll
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 
 class ProductRepositoryImpl : ProductRepository, BaseRepository() {
 
@@ -29,7 +30,7 @@ class ProductRepositoryImpl : ProductRepository, BaseRepository() {
             }.singleOrNull()
     }
 
-    override suspend fun exists(productId: Int): Boolean = dbQuery {
-        ProductTable.selectAll().where { ProductTable.id eq productId }.any()
+    override suspend fun exists(id: Int): Boolean = dbQuery {
+        !ProductTable.selectAll().where { ProductTable.id eq id }.empty()
     }
 }

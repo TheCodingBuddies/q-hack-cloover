@@ -1,6 +1,5 @@
 package com.qhack.application.domain.offer
 
-
 data class OfferData(
     val customerId: Int,
     val propertyId: Int,

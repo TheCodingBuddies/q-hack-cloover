@@ -22,11 +22,20 @@ data class CustomerResponseDto(
 )
 
 @Serializable
-data class CustomerWithPropertiesResponseDto(
+data class PropertyDto(
+    val postCode: String,
+    val street: String,
+    val city: String,
+    val houseNumber: String,
+    val sunnyScore: Int? = null,
+)
+
+@Serializable
+data class CustomerWithPropertyResponseDto(
     val id: Int,
     val firstName: String,
     val lastName: String,
     @Serializable(with = LocalDateSerializer::class)
     val birthDate: LocalDate? = null,
-    val properties: List<com.qhack.application.services.property.PropertyResponseDto> = emptyList()
+    val property: PropertyDto? = null,
 )

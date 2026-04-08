@@ -3,10 +3,9 @@ package com.qhack.application.controller.customer
 import com.qhack.application.domain.customer.CustomerData
 import com.qhack.application.services.customer.CustomerRequestDto
 import com.qhack.application.services.customer.CustomerResponseDto
+import com.qhack.application.services.customer.CustomerWithPropertyResponseDto
+import com.qhack.application.services.customer.PropertyDto
 import com.qhack.application.services.customer.CustomerService
-import com.qhack.application.services.customer.CustomerWithPropertiesResponseDto
-import com.qhack.application.services.property.PropertyResponseDto
-import com.qhack.application.services.property.SunnyScoreResponse
 import io.ktor.http.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
@@ -17,82 +16,54 @@ class CustomerController(private val customerService: CustomerService) {
     fun registerRoutes(route: Route) {
         route.route("/customers") {
             get {
-                val customers = customerService.getAllCustomers().map { (id, data) ->
-                    CustomerResponseDto(
+                val customers = customerService.getAllCustomersWithProperties().map { (id, data, property) ->
+                    CustomerWithPropertyResponseDto(
                         id = id,
                         firstName = data.firstName,
                         lastName = data.lastName,
-                        birthDate = data.birthDate
+                        birthDate = data.birthDate,
+                        property = property?.let {
+                            PropertyDto(
+                                postCode = it.postCode,
+                                street = it.street,
+                                city = it.city,
+                                houseNumber = it.houseNumber,
+                                sunnyScore = it.sunnyScore,
+                            )
+                        }
                     )
                 }
                 call.respond(HttpStatusCode.OK, customers)
             }
         }
 
-        route.route("/customers-with-properties") {
+        route.route("/customer/{customerid}") {
             get {
-                val data = customerService.getCustomersWithProperties()
-                val response = data.map { (customerId, pair) ->
-                    val (customer, properties) = pair
-                    CustomerWithPropertiesResponseDto(
+                val customerId = call.parameters["customerid"]?.toIntOrNull()
+                    ?: return@get call.respond(HttpStatusCode.BadRequest, "Invalid customer ID")
+
+                val result = customerService.getCustomerById(customerId)
+                    ?: return@get call.respond(HttpStatusCode.NotFound, "Customer not found")
+
+                val (data, property) = result
+                call.respond(
+                    HttpStatusCode.OK,
+                    CustomerWithPropertyResponseDto(
                         id = customerId,
-                        firstName = customer.firstName,
-                        lastName = customer.lastName,
-                        birthDate = customer.birthDate,
-                        properties = properties.map { (propertyId, propertyData) ->
-                            PropertyResponseDto(
-                                id = propertyId,
-                                postCode = propertyData.postCode,
-                                street = propertyData.street,
-                                city = propertyData.city,
-                                houseNumber = propertyData.houseNumber,
-                                sunnyScore = propertyData.sunnyScore?.let { score ->
-                                    SunnyScoreResponse(
-                                        address = "${propertyData.street} ${propertyData.houseNumber}, ${propertyData.postCode} ${propertyData.city}",
-                                        sunnyPlace = score,
-                                        explanation = "" // Explanation ist im PropertyData nicht enthalten, könnte man noch hinzufügen falls nötig
-                                    )
-                                }
+                        firstName = data.firstName,
+                        lastName = data.lastName,
+                        birthDate = data.birthDate,
+                        property = property?.let {
+                            PropertyDto(
+                                postCode = it.postCode,
+                                street = it.street,
+                                city = it.city,
+                                houseNumber = it.houseNumber,
+                                sunnyScore = it.sunnyScore,
                             )
                         }
                     )
-                }
-                call.respond(HttpStatusCode.OK, response)
-            }
-        }
-
-        route.route("/customers/{id}/with-properties") {
-            get {
-                val customerId = call.parameters["id"]?.toIntOrNull()
-                    ?: return@get call.respond(HttpStatusCode.BadRequest, "Invalid customer id")
-
-                val result = customerService.getCustomerWithProperties(customerId)
-                    ?: return@get call.respond(HttpStatusCode.NotFound, "Customer with id $customerId not found")
-
-                val (customer, properties) = result
-                val response = CustomerWithPropertiesResponseDto(
-                    id = customerId,
-                    firstName = customer.firstName,
-                    lastName = customer.lastName,
-                    birthDate = customer.birthDate,
-                    properties = properties.map { (propertyId, propertyData) ->
-                        PropertyResponseDto(
-                            id = propertyId,
-                            postCode = propertyData.postCode,
-                            street = propertyData.street,
-                            city = propertyData.city,
-                            houseNumber = propertyData.houseNumber,
-                            sunnyScore = propertyData.sunnyScore?.let { score ->
-                                SunnyScoreResponse(
-                                    address = "${propertyData.street} ${propertyData.houseNumber}, ${propertyData.postCode} ${propertyData.city}",
-                                    sunnyPlace = score,
-                                    explanation = ""
-                                )
-                            }
-                        )
-                    }
                 )
-                call.respond(HttpStatusCode.OK, response)
             }
         }
 

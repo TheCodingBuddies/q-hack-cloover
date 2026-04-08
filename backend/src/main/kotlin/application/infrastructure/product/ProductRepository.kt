@@ -6,5 +6,5 @@ interface ProductRepository {
     suspend fun addProduct(data: ProductData): Int
     suspend fun getAllProducts(): List<Pair<Int, ProductData>>
     suspend fun getProductById(id: Int): ProductData?
-    suspend fun exists(productId: Int): Boolean
+    suspend fun exists(id: Int): Boolean
 }
