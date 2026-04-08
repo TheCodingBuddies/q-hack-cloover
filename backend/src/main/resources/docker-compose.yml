@@ -6,9 +6,9 @@ services:
     container_name: qhack_cloover_db
     restart: unless-stopped
     environment:
-      POSTGRES_DB: cloover
-      POSTGRES_USER: cloover
-      POSTGRES_PASSWORD: cloover_secret
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
     ports:
       - "5432:5432"
     volumes:
