@@ -1,0 +1,4 @@
+FROM postgres:16-alpine
+
+# init.sql wird einmalig beim ersten Start ausgefuehrt
+COPY init.sql /docker-entrypoint-initdb.d/01_init.sql

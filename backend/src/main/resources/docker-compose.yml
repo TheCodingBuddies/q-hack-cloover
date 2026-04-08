@@ -1,0 +1,23 @@
+services:
+  db:
+    build:
+      context: .
+      dockerfile: Dockerfile.db
+    container_name: qhack_cloover_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: cloover
+      POSTGRES_USER: cloover
+      POSTGRES_PASSWORD: cloover_secret
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cloover -d cloover"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  pgdata:
