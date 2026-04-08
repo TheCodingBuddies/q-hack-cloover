@@ -3,6 +3,15 @@
   import { customerService } from './customerService';
   import type { Customer } from './types';
 
+  interface Project {
+    id: string;
+    name: string;
+    progress: number;
+    location: string;
+    offerPreview: string;
+    aiHints: string[];
+  }
+
   interface Props {
     customerId: string;
   }
@@ -11,15 +20,45 @@
   
   let customer: Customer | null = $state(null);
   let isLoading = $state(true);
-  let isSaving = $state(false);
   let error: string | null = $state(null);
-  let successMessage = $state('');
+
+  // Mock projects for the specific customer
+  let projects: Project[] = $state([]);
+  let selectedProject: Project | null = $state(null);
 
   onMount(async () => {
     try {
       customer = await customerService.getCustomerById(customerId);
       if (!customer) {
         error = 'Customer not found';
+      } else {
+        // Mock some projects for the UI demonstration, similar to AllCustomers.svelte
+        projects = [
+          {
+            id: 'p1',
+            name: 'Solar Installation ' + customer.address.city,
+            progress: 65,
+            location: `${customer.address.street} ${customer.address.houseNumber}, ${customer.address.zip} ${customer.address.city}`,
+            offerPreview: `**Offer #2024-001**\n\nSolar panel installation for residential property.\n\n- 12x 400W panels\n- 1x 10kWh battery storage\n- Grid feed-in setup\n\n**Total: €18,400**\n\nValidity: 30 days`,
+            aiHints: [
+              'Ask about current electricity bill to calculate ROI',
+              'Roof orientation is south-west — ideal for yield',
+              'Customer mentioned interest in EV charging in future',
+            ],
+          },
+          {
+            id: 'p2',
+            name: 'Energy Efficiency Upgrade',
+            progress: 20,
+            location: `${customer.address.street} ${customer.address.houseNumber}, ${customer.address.zip} ${customer.address.city}`,
+            offerPreview: `**Offer #2024-002**\n\nHeat pump replacement project.\n\nDetails pending customer site visit.`,
+            aiHints: [
+              'Building year: 1985 — check insulation status',
+              'Ask for current heating costs',
+            ],
+          },
+        ];
+        selectedProject = projects[0];
       }
     } catch (err) {
       error = 'Failed to load customer data';
@@ -28,31 +67,81 @@
     }
   });
 
-  async function handleSave() {
-    if (!customer) return;
-    
-    isSaving = true;
-    successMessage = '';
-    error = null;
+  function selectProject(p: Project) {
+    selectedProject = p;
+  }
 
-    try {
-      // In einem echten Backend würden wir hier eine updateCustomer Methode im Service haben.
-      // Für den MVP Mock loggen wir es einfach und simulieren Erfolg.
-      console.log('Updating customer:', customer);
-      
-      await new Promise(resolve => setTimeout(resolve, 500));
-      successMessage = 'Customer updated successfully!';
-    } catch (err) {
-      error = 'Failed to update customer';
-    } finally {
-      isSaving = false;
+  function progressLabel(p: number) {
+    if (p < 25) return 'Just started';
+    if (p < 50) return 'In progress';
+    if (p < 75) return 'Advanced';
+    if (p < 100) return 'Nearly done';
+    return 'Complete';
+  }
+
+  // Edit customer
+  let editingCustomer = $state(false);
+  let editCustomerForm = $state({ firstName: '', lastName: '', birthDate: '', street: '', houseNumber: '', zip: '', city: '' });
+
+  function openEditCustomer() {
+    if (!customer) return;
+    editCustomerForm = {
+      firstName: customer.firstName,
+      lastName: customer.lastName,
+      birthDate: customer.birthDate,
+      street: customer.address.street,
+      houseNumber: customer.address.houseNumber,
+      zip: customer.address.zip,
+      city: customer.address.city,
+    };
+    editingCustomer = true;
+  }
+
+  function saveEditCustomer() {
+    if (!customer) return;
+    customer.firstName = editCustomerForm.firstName;
+    customer.lastName = editCustomerForm.lastName;
+    customer.birthDate = editCustomerForm.birthDate;
+    customer.address = {
+      street: editCustomerForm.street,
+      houseNumber: editCustomerForm.houseNumber,
+      zip: editCustomerForm.zip,
+      city: editCustomerForm.city,
+    };
+    editingCustomer = false;
+  }
+
+  // Edit project
+  let editingProject = $state(false);
+  let editProjectForm = $state({ name: '', location: '' });
+
+  function openEditProject() {
+    if (!selectedProject) return;
+    editProjectForm = { name: selectedProject.name, location: selectedProject.location };
+    editingProject = true;
+  }
+
+  function saveEditProject() {
+    if (!selectedProject) return;
+    selectedProject.name = editProjectForm.name;
+    selectedProject.location = editProjectForm.location;
+    // Update in projects list
+    const idx = projects.findIndex(p => p.id === selectedProject?.id);
+    if (idx !== -1) projects[idx] = { ...selectedProject };
+    editingProject = false;
+  }
+
+  function onModalKeydown(e: KeyboardEvent) {
+    if (e.key === 'Escape') {
+      editingCustomer = false;
+      editingProject = false;
     }
   }
 </script>
 
-<div class="detail-page">
+<div class="layout">
   {#if isLoading}
-    <div class="loading">
+    <div class="loading-full">
       <div class="spinner"></div>
       <p>Loading customer data...</p>
     </div>
@@ -63,120 +152,642 @@
       <button class="btn-primary" onclick={() => window.history.back()}>Go Back</button>
     </div>
   {:else if customer}
-    <div class="split-layout">
-      <!-- Linke Seite: Angebot Platzhalter -->
-      <div class="offer-placeholder card">
-        <div class="placeholder-content">
-          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="placeholder-icon"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-          <h3>Your offer could be here</h3>
-          <p>This area is reserved for future offer generation and management features.</p>
-        </div>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">Customer Projects</div>
+      <div class="customer-info-sidebar">
+        <div class="customer-avatar-large">{customer.firstName[0]}{customer.lastName[0]}</div>
+        <div class="customer-name-sidebar">{customer.firstName} {customer.lastName}</div>
       </div>
 
-      <!-- Rechte Seite: Kundendaten editierbar -->
-      <div class="customer-data card">
-        <div class="card-header">
-          <h2>Customer Details</h2>
-          <p class="subtitle">View and edit customer information.</p>
+      <div class="project-list">
+        {#each projects as project}
+          <button
+            class="project-btn"
+            class:active={selectedProject?.id === project.id}
+            onclick={() => selectProject(project)}
+          >
+            <span class="project-btn-name">{project.name}</span>
+            <div class="project-btn-progress">
+              <div class="project-btn-track">
+                <div class="project-btn-fill" style="width: {project.progress}%"></div>
+              </div>
+              <span class="project-btn-pct">{project.progress}%</span>
+            </div>
+          </button>
+        {/each}
+      </div>
+    </aside>
+
+    <!-- Main content -->
+    <main class="main">
+      {#if selectedProject}
+        <div class="main-header">
+          <div class="main-header-left">
+            <span class="project-tag">Project</span>
+            <div class="main-header-title-row">
+              <h2>{selectedProject.name}</h2>
+              <button class="btn-present">Present project</button>
+            </div>
+            <div class="progress-bar-wrapper">
+              <div class="progress-track">
+                <div class="progress-fill" style="width: {selectedProject.progress}%"></div>
+              </div>
+              <span class="progress-label">{selectedProject.progress}% — {progressLabel(selectedProject.progress)}</span>
+            </div>
+          </div>
         </div>
 
-        <form onsubmit={(e) => { e.preventDefault(); handleSave(); }}>
-          <div class="form-section">
-            <h3 class="section-title">Personal Information</h3>
-            <div class="form-grid">
-              <div class="form-group">
-                <label for="firstName">First name</label>
-                <input type="text" id="firstName" bind:value={customer.firstName} />
-              </div>
-              <div class="form-group">
-                <label for="lastName">Last name</label>
-                <input type="text" id="lastName" bind:value={customer.lastName} />
-              </div>
-              <div class="form-group full-width">
-                <label for="birthDate">Date of birth</label>
-                <input type="date" id="birthDate" bind:value={customer.birthDate} />
-              </div>
+        <div class="main-body">
+          <!-- Offer preview -->
+          <div class="offer-preview card">
+            <div class="panel-title">Offer preview</div>
+            <div class="offer-text">
+              {#each selectedProject.offerPreview.split('\n') as line}
+                {#if line.startsWith('**') && line.endsWith('**')}
+                  <strong>{line.slice(2, -2)}</strong><br/>
+                {:else if line.startsWith('- ')}
+                  <li>{line.slice(2)}</li>
+                {:else if line.trim() === ''}
+                  <br/>
+                {:else}
+                  <span>{line}</span><br/>
+                {/if}
+              {/each}
             </div>
           </div>
 
-          <div class="form-section">
-            <h3 class="section-title">Address</h3>
-            <div class="form-group">
-              <label for="street">Street</label>
-              <input type="text" id="street" bind:value={customer.address.street} />
+          <!-- Right panels -->
+          <div class="right-panels">
+            <div class="info-card card">
+              <div class="card-title-row">
+                <div class="panel-title">Customer info</div>
+                <button class="btn-edit" aria-label="Edit customer info" onclick={openEditCustomer}>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                </button>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Name</span>
+                <span>{customer.firstName} {customer.lastName}</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Date of birth</span>
+                <span>{new Date(customer.birthDate).toLocaleDateString()}</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Address</span>
+                <span>{customer.address.street} {customer.address.houseNumber}, {customer.address.zip} {customer.address.city}</span>
+              </div>
             </div>
-            <div class="row">
-              <div class="form-group">
-                <label for="houseNumber">No.</label>
-                <input type="text" id="houseNumber" bind:value={customer.address.houseNumber} />
+
+            <div class="info-card card">
+              <div class="card-title-row">
+                <div class="panel-title">Project info</div>
+                <button class="btn-edit" aria-label="Edit project info" onclick={openEditProject}>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                </button>
               </div>
-              <div class="form-group">
-                <label for="zip">ZIP</label>
-                <input type="text" id="zip" bind:value={customer.address.zip} />
+              <div class="info-row">
+                <span class="info-label">Project name</span>
+                <span>{selectedProject.name}</span>
               </div>
-              <div class="form-group">
-                <label for="city">City</label>
-                <input type="text" id="city" bind:value={customer.address.city} />
+              <div class="info-row">
+                <span class="info-label">Location</span>
+                <span>{selectedProject.location}</span>
               </div>
+            </div>
+
+            <div class="info-card card">
+              <div class="panel-title ai-title">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+                AI hints
+              </div>
+              <ul class="ai-list">
+                {#each selectedProject.aiHints as hint}
+                  <li>{hint}</li>
+                {/each}
+              </ul>
             </div>
           </div>
-
-          {#if customer.details}
-            <div class="form-section">
-              <h3 class="section-title">Additional Details</h3>
-              <div class="form-group">
-                <label for="customerProfile">Customer Profile</label>
-                <input type="text" id="customerProfile" bind:value={customer.details.customerProfile} />
-              </div>
-              <div class="form-group">
-                <label for="energyConsumption">Energy Consumption</label>
-                <input type="text" id="energyConsumption" bind:value={customer.details.energyConsumption} />
-              </div>
-              <div class="form-group">
-                <label for="existingSystems">Existing Systems</label>
-                <input type="text" id="existingSystems" bind:value={customer.details.existingSystems} />
-              </div>
-              <div class="form-group">
-                <label for="financialProfile">Financial Profile</label>
-                <input type="text" id="financialProfile" bind:value={customer.details.financialProfile} />
-              </div>
-              <div class="form-group">
-                <label for="conversationHistory">Conversation History</label>
-                <textarea id="conversationHistory" bind:value={customer.details.conversationHistory} rows="3"></textarea>
-              </div>
-            </div>
-          {/if}
-
-          <div class="form-actions">
-            <button type="submit" class="btn-save" disabled={isSaving}>
-              {isSaving ? 'Saving...' : 'Save Changes'}
-            </button>
-          </div>
-
-          {#if error}
-            <div class="alert alert-error">{error}</div>
-          {/if}
-          {#if successMessage}
-            <div class="alert alert-success">{successMessage}</div>
-          {/if}
-        </form>
-      </div>
-    </div>
+        </div>
+      {:else}
+        <div class="empty-state">
+          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-4 0v2"/></svg>
+          <p>No projects yet for {customer.firstName} {customer.lastName}</p>
+        </div>
+      {/if}
+    </main>
   {/if}
 </div>
 
+<!-- Modals -->
+{#if editingCustomer && customer}
+  <div class="modal-backdrop" role="presentation" onkeydown={onModalKeydown}>
+    <div class="modal-card card" tabindex="-1" role="dialog" aria-modal="true" aria-labelledby="edit-customer-title">
+      <div class="modal-header">
+        <h2 id="edit-customer-title">Edit customer info</h2>
+        <p class="modal-subtitle">Update the details for {customer.firstName} {customer.lastName}.</p>
+      </div>
+      <form onsubmit={(e) => { e.preventDefault(); saveEditCustomer(); }}>
+        <div class="modal-grid">
+          <div class="modal-form-group">
+            <label for="ec-firstName">First name *</label>
+            <input id="ec-firstName" type="text" bind:value={editCustomerForm.firstName} placeholder="First name" />
+          </div>
+          <div class="modal-form-group">
+            <label for="ec-lastName">Last name *</label>
+            <input id="ec-lastName" type="text" bind:value={editCustomerForm.lastName} placeholder="Last name" />
+          </div>
+          <div class="modal-form-group modal-full">
+            <label for="ec-birthDate">Date of birth *</label>
+            <input id="ec-birthDate" type="date" bind:value={editCustomerForm.birthDate} />
+          </div>
+          <div class="modal-form-group">
+            <label for="ec-street">Street *</label>
+            <input id="ec-street" type="text" bind:value={editCustomerForm.street} placeholder="Street" />
+          </div>
+          <div class="modal-form-group">
+            <label for="ec-houseNumber">House No. *</label>
+            <input id="ec-houseNumber" type="text" bind:value={editCustomerForm.houseNumber} placeholder="No." />
+          </div>
+          <div class="modal-form-group">
+            <label for="ec-zip">ZIP *</label>
+            <input id="ec-zip" type="text" bind:value={editCustomerForm.zip} placeholder="ZIP code" />
+          </div>
+          <div class="modal-form-group">
+            <label for="ec-city">City *</label>
+            <input id="ec-city" type="text" bind:value={editCustomerForm.city} placeholder="City" />
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn-modal-cancel" onclick={() => editingCustomer = false}>Cancel</button>
+          <button type="submit" class="btn-modal-save">Save changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+{/if}
+
+{#if editingProject && selectedProject}
+  <div class="modal-backdrop" role="presentation" onkeydown={onModalKeydown}>
+    <div class="modal-card card" tabindex="-1" role="dialog" aria-modal="true" aria-labelledby="edit-project-title">
+      <div class="modal-header">
+        <h2 id="edit-project-title">Edit project info</h2>
+        <p class="modal-subtitle">Update project details.</p>
+      </div>
+      <form onsubmit={(e) => { e.preventDefault(); saveEditProject(); }}>
+        <div class="modal-form-group">
+          <label for="ep-name">Project name *</label>
+          <input id="ep-name" type="text" bind:value={editProjectForm.name} placeholder="Project name" />
+        </div>
+        <div class="modal-form-group">
+          <label for="ep-location">Location *</label>
+          <input id="ep-location" type="text" bind:value={editProjectForm.location} placeholder="Location" />
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn-modal-cancel" onclick={() => editingProject = false}>Cancel</button>
+          <button type="submit" class="btn-modal-save">Save changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+{/if}
+
 <style>
-  .detail-page {
-    width: 100%;
+  .layout {
+    display: flex;
+    height: calc(100vh - 80px); /* 80px for nav */
+    margin: -2rem; /* counteract main container padding if any */
   }
 
-  .loading, .error-state {
+  /* Sidebar */
+  .sidebar {
+    width: 280px;
+    background: white;
+    border-right: 1px solid var(--clr-border);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+  }
+
+  .sidebar-header {
+    padding: 1.5rem 1.25rem 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--clr-text-light);
+  }
+
+  .customer-info-sidebar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--clr-border);
+    margin-bottom: 1rem;
+  }
+
+  .customer-avatar-large {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--clr-primary);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+  }
+
+  .customer-name-sidebar {
+    font-weight: 700;
+    color: var(--clr-text);
+  }
+
+  .project-list {
+    padding: 0 0 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    overflow-y: auto;
+  }
+
+  .project-btn {
+    display: flex;
+    flex-direction: column;
+    width: calc(100% - 2rem);
+    margin: 0 1rem;
+    padding: 0.75rem 0.875rem;
+    background: white;
+    border: 1px solid var(--clr-border);
+    border-radius: 8px;
+    text-align: left;
+    color: var(--clr-text);
+    transition: all 0.15s;
+  }
+
+  .project-btn:hover {
+    border-color: var(--clr-accent);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .project-btn.active {
+    border-color: var(--clr-accent);
+    background: #ecfdf5;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .project-btn-name {
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+
+  .project-btn-progress {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+  }
+
+  .project-btn-track {
+    flex: 1;
+    height: 4px;
+    background: #e2e8f0;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .project-btn-fill {
+    height: 100%;
+    background: var(--clr-accent);
+  }
+
+  .project-btn-pct {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--clr-text-light);
+  }
+
+  /* Main content */
+  .main {
+    flex: 1;
+    background: #f8fafc;
+    overflow-y: auto;
+    padding: 2.5rem;
+  }
+
+  .main-header {
+    margin-bottom: 2.5rem;
+  }
+
+  .project-tag {
+    display: inline-block;
+    padding: 0.25rem 0.625rem;
+    background: #e0f2fe;
+    color: #0369a1;
+    border-radius: 9999px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+    margin-bottom: 0.75rem;
+  }
+
+  .main-header-title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.25rem;
+  }
+
+  .main-header h2 {
+    font-size: 1.875rem;
+    font-weight: 800;
+    color: var(--clr-text);
+  }
+
+  .btn-present {
+    background: white;
+    border: 1px solid var(--clr-border);
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--clr-text);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .progress-bar-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    max-width: 500px;
+  }
+
+  .progress-track {
+    flex: 1;
+    height: 8px;
+    background: #e2e8f0;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--clr-accent);
+  }
+
+  .progress-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--clr-text-light);
+    white-space: nowrap;
+  }
+
+  .main-body {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 2rem;
+    align-items: start;
+  }
+
+  .offer-preview {
+    min-height: 500px;
+    padding: 2rem;
+  }
+
+  .panel-title {
+    font-size: 0.875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--clr-text-light);
+    margin-bottom: 1.25rem;
+  }
+
+  .offer-text {
+    font-family: inherit;
+    line-height: 1.6;
+    color: var(--clr-text);
+  }
+
+  .offer-text strong {
+    font-weight: 700;
+    color: var(--clr-text);
+  }
+
+  .offer-text li {
+    margin-left: 1.25rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .right-panels {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .info-card {
+    padding: 1.5rem;
+  }
+
+  .card-title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+  }
+
+  .card-title-row .panel-title {
+    margin-bottom: 0;
+  }
+
+  .btn-edit {
+    background: none;
+    border: none;
+    color: var(--clr-text-light);
+    cursor: pointer;
+    padding: 0.25rem;
+    border-radius: 4px;
+    transition: background 0.15s, color 0.15s;
+  }
+
+  .btn-edit:hover {
+    background: var(--clr-bg-alt);
+    color: var(--clr-primary);
+  }
+
+  .info-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    margin-bottom: 1rem;
+  }
+
+  .info-row:last-child {
+    margin-bottom: 0;
+  }
+
+  .info-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--clr-text-light);
+  }
+
+  .info-row span:not(.info-label) {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--clr-text);
+  }
+
+  .ai-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--clr-accent) !important;
+  }
+
+  .ai-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .ai-list li {
+    font-size: 0.875rem;
+    color: var(--clr-text);
+    padding-left: 1.25rem;
+    position: relative;
+    line-height: 1.4;
+  }
+
+  .ai-list li::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: var(--clr-accent);
+    font-weight: bold;
+  }
+
+  .empty-state {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 4rem;
+    padding: 4rem 2rem;
     text-align: center;
+    color: var(--clr-text-light);
+  }
+
+  .empty-state svg {
+    margin-bottom: 1.5rem;
+    opacity: 0.5;
+  }
+
+  /* Modals */
+  .modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+
+  .modal-card {
+    width: 100%;
+    max-width: 500px;
+    padding: 2rem;
+    animation: modal-enter 0.3s ease-out;
+  }
+
+  @keyframes modal-enter {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .modal-header {
+    margin-bottom: 1.5rem;
+  }
+
+  .modal-header h2 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--clr-text);
+    margin-bottom: 0.5rem;
+  }
+
+  .modal-subtitle {
+    font-size: 0.875rem;
+    color: var(--clr-text-light);
+  }
+
+  .modal-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .modal-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+  }
+
+  .modal-full {
+    grid-column: span 2;
+  }
+
+  .modal-form-group label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--clr-text-light);
+  }
+
+  .modal-form-group input {
+    padding: 0.75rem;
+    border: 1px solid var(--clr-border);
+    border-radius: 6px;
+    font-size: 0.9rem;
+  }
+
+  .modal-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+
+  .btn-modal-cancel {
+    flex: 1;
+    background: white;
+    border: 1px solid var(--clr-border);
+    padding: 0.75rem;
+    border-radius: 6px;
+    font-weight: 600;
+    color: var(--clr-text);
+  }
+
+  .btn-modal-save {
+    flex: 2;
+    background: var(--clr-primary);
+    color: white;
+    border: none;
+    padding: 0.75rem;
+    border-radius: 6px;
+    font-weight: 600;
   }
 
   .spinner {
@@ -194,150 +805,36 @@
     100% { transform: rotate(360deg); }
   }
 
-  .split-layout {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
-    align-items: start;
-  }
-
-  .offer-placeholder {
-    height: 100%;
-    min-height: 400px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: var(--clr-bg-alt);
-    border: 2px dashed var(--clr-border);
-    text-align: center;
-  }
-
-  .placeholder-content {
-    max-width: 300px;
-    color: var(--clr-text-light);
-  }
-
-  .placeholder-icon {
-    margin-bottom: 1.5rem;
-    opacity: 0.5;
-  }
-
-  .customer-data {
-    padding: 2.5rem;
-  }
-
-  .card-header {
-    margin-bottom: 2rem;
-  }
-
-  .subtitle {
-    color: var(--clr-text-light);
-  }
-
-  .section-title {
-    font-size: 1.125rem;
-    margin: 1.5rem 0 1rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 1px solid var(--clr-border);
-    color: var(--clr-primary);
-  }
-
-  .form-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.25rem;
-  }
-
-  .full-width {
-    grid-column: span 2;
-  }
-
-  .form-group {
+  .loading-full {
+    width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 0.4rem;
-    margin-bottom: 1rem;
+    align-items: center;
+    justify-content: center;
   }
 
-  .row {
-    display: grid;
-    grid-template-columns: 1fr 2fr 3fr;
-    gap: 1rem;
-  }
-
-  label {
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: var(--clr-text);
-  }
-
-  input, textarea {
-    padding: 0.75rem;
-    border: 1px solid var(--clr-border);
-    border-radius: var(--radius-md);
-    font-size: 1rem;
-    width: 100%;
-    box-sizing: border-box;
-    transition: border-color 0.2s, box-shadow 0.2s;
-  }
-
-  input:focus, textarea:focus {
-    outline: none;
-    border-color: var(--clr-accent);
-    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
-  }
-
-  .form-actions {
-    margin-top: 2rem;
-  }
-
-  .btn-save {
-    width: 100%;
-    background: var(--clr-primary);
-    color: white;
-    border: none;
-    padding: 1rem;
-    border-radius: var(--radius-md);
-    font-weight: 600;
-    font-size: 1rem;
-  }
-
-  .btn-save:hover:not(:disabled) {
-    background: #1e293b;
-    transform: translateY(-1px);
-  }
-
-  .btn-save:disabled {
-    opacity: 0.7;
-    cursor: not-allowed;
-  }
-
-  .alert {
-    margin-top: 1.5rem;
-    padding: 1rem;
-    border-radius: var(--radius-md);
-    font-size: 0.875rem;
-  }
-
-  .alert-error {
-    background: #fef2f2;
-    color: var(--clr-error);
-    border: 1px solid #fee2e2;
-  }
-
-  .alert-success {
-    background: #f0fdf4;
-    color: var(--clr-success);
-    border: 1px solid #dcfce7;
-  }
-
-  @media (max-width: 1024px) {
-    .split-layout {
+  @media (max-width: 1200px) {
+    .main-body {
       grid-template-columns: 1fr;
     }
-    .offer-placeholder {
-      min-height: 200px;
-      order: 2;
+    .right-panels {
+      order: -1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .sidebar {
+      display: none;
+    }
+    .right-panels {
+      grid-template-columns: 1fr;
+    }
+    .layout {
+      margin: 0;
+      height: auto;
     }
   }
 </style>
