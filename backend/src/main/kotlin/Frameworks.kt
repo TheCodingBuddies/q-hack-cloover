@@ -5,6 +5,8 @@ import com.qhack.application.controller.offer.OfferController
 import com.qhack.application.controller.property.PropertyController
 import com.qhack.application.infrastructure.customer.CustomerRepository
 import com.qhack.application.infrastructure.customer.CustomerRepositoryImpl
+import com.qhack.application.infrastructure.offer.OfferLLMCacheRepository
+import com.qhack.application.infrastructure.offer.OfferLLMCacheRepositoryImpl
 import com.qhack.application.infrastructure.offer.OfferRepository
 import com.qhack.application.infrastructure.offer.OfferRepositoryImpl
 import com.qhack.application.infrastructure.product.ProductRepository
@@ -50,6 +52,7 @@ fun Application.configureFrameworks() {
             single<PropertyRepository> { PropertyRepositoryImpl() }
             single<ProductRepository> { ProductRepositoryImpl() }
             single<OfferRepository> { OfferRepositoryImpl() }
+            single<OfferLLMCacheRepository> { OfferLLMCacheRepositoryImpl() }
             single<IOpenAIService> {
                 val dotenv = dotenv()
                 val useRealOpenAI = dotenv["USE_REAL_OPENAI"]?.toBoolean() ?: false
@@ -61,10 +64,10 @@ fun Application.configureFrameworks() {
             }
             single<CustomerService> { CustomerService(get()) }
             single<PropertyService> { PropertyService(get(), get()) }
-            single<OfferService> { OfferService(get(), get(), get(), get()) }
+            single<OfferService> { OfferService(get(), get(), get(), get(), get(), get()) }
             single<CustomerController> { CustomerController(get()) }
             single<PropertyController> { PropertyController(get(), get()) }
-            single { OfferController(get(), get()) }
+            single { OfferController(get()) }
         })
     }
     install(CORS) {

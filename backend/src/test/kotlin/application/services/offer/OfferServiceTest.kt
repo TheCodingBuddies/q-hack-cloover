@@ -28,7 +28,7 @@ class OfferServiceTest {
         customerRepo = FakeCustomerRepository()
         propertyRepo = FakePropertyRepository()
         productRepo = FakeProductRepository()
-        service = OfferService(offerRepo, customerRepo, propertyRepo, productRepo)
+        service = OfferService(offerRepo, customerRepo, propertyRepo, productRepo, FakeOpenAIService(), FakeOfferLLMCacheRepository())
     }
 
     @Test

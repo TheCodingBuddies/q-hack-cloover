@@ -52,6 +52,15 @@ CREATE TABLE offers
     status      VARCHAR(20) NOT NULL DEFAULT 'PENDING'
 );
 
+CREATE TABLE IF NOT EXISTS offer_llm_cache
+(
+    id            SERIAL PRIMARY KEY,
+    request_hash  VARCHAR(128) UNIQUE NOT NULL,
+    request_json  TEXT                NOT NULL,
+    response_json TEXT                NOT NULL,
+    created_at    TIMESTAMP NULL
+);
+
 
 -- ============ TEST DATA ============
 

@@ -2,14 +2,13 @@ package com.qhack.application.controller.offer
 
 import com.qhack.application.services.offer.OfferResponseDto
 import com.qhack.application.services.offer.OfferService
-import com.qhack.application.services.openai.IOpenAIService
 import com.qhack.application.services.openai.OfferLLMRequest
 import io.ktor.http.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
-class OfferController(private val offerService: OfferService, private val openAiService: IOpenAIService) {
+class OfferController(private val offerService: OfferService) {
     fun registerRoutes(route: Route) {
         route.route("/offers") {
             get {
@@ -21,7 +20,7 @@ class OfferController(private val offerService: OfferService, private val openAi
 
             post {
                 val request = call.receive<OfferLLMRequest>()
-                val response = openAiService.generateOffer(request)
+                val response = offerService.generateOffer(request)
                 if (response != null) {
                     call.respond(HttpStatusCode.OK, response)
                 } else {
