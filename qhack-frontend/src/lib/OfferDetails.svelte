@@ -159,41 +159,43 @@
     <main class="container">
       <div class="offer-grid">
         <!-- Interactive Solution Configurator -->
-        <section class="span-all configurator-section">
-          <div class="card configurator-card">
-            <div class="card-header-simple">
-              <div class="panel-title">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="title-icon"><path d="M12 20v-6M6 20V10M18 20V4"/></svg>
-                Interactive Solution Configurator
-              </div>
-            </div>
-            <div class="card-body">
-              <div class="configurator-controls">
-                <div class="control-group">
-                  <div class="control-label-row">
-                    <label for="solar-panels">Solar Panels</label>
-                    <span class="control-value">{solarPanelCount} Panels</span>
-                  </div>
-                  <input 
-                    id="solar-panels" 
-                    type="range" 
-                    min="1" 
-                    max="24" 
-                    bind:value={solarPanelCount} 
-                    class="config-slider"
-                  />
-                  <div class="range-labels">
-                    <span>1 Panel</span>
-                    <span>24 Panels</span>
-                  </div>
-                </div>
-                <div class="configurator-info">
-                  <p>Passen Sie die Anzahl der Solarpanels an, um die Auswirkungen auf Investitionskosten und Ersparnisse in Echtzeit zu sehen.</p>
+        {#if customer.details?.wantsSolarPanels}
+          <section class="span-all configurator-section">
+            <div class="card configurator-card">
+              <div class="card-header-simple">
+                <div class="panel-title">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="title-icon"><path d="M12 20v-6M6 20V10M18 20V4"/></svg>
+                  Interactive Solution Configurator
                 </div>
               </div>
+              <div class="card-body">
+                <div class="configurator-controls">
+                  <div class="control-group">
+                    <div class="control-label-row">
+                      <label for="solar-panels">Solar Panels</label>
+                      <span class="control-value">{solarPanelCount} Panels</span>
+                    </div>
+                    <input 
+                      id="solar-panels" 
+                      type="range" 
+                      min="1" 
+                      max="24" 
+                      bind:value={solarPanelCount} 
+                      class="config-slider"
+                    />
+                    <div class="range-labels">
+                      <span>1 Panel</span>
+                      <span>24 Panels</span>
+                    </div>
+                  </div>
+                  <div class="configurator-info">
+                    <p>Passen Sie die Anzahl der Solarpanels an, um die Auswirkungen auf Investitionskosten und Ersparnisse in Echtzeit zu sehen.</p>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
+        {/if}
 
         <!-- Recommended Package - Hero Section -->
         <section class="span-all">
