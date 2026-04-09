@@ -193,12 +193,18 @@
                 <h2>{project.name}</h2>
               </div>
               <div class="header-actions">
-                <button class="btn-primary" onclick={() => {
+                <button class="btn-solution-proposal" onclick={() => {
                   window.history.pushState({}, '', `/customer/${customerId}/offer`);
                   window.dispatchEvent(new PopStateEvent('popstate'));
                 }}>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
-                  <span>Open Solution Proposal</span>
+                  <div class="btn-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+                  </div>
+                  <div class="btn-text">
+                    <span class="btn-label">Solution Proposal</span>
+                    <span class="btn-sublabel">Open Detailed View</span>
+                  </div>
+                  <svg class="chevron-right" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
                 </button>
               </div>
             </div>
@@ -578,6 +584,91 @@
     font-weight: 800;
     margin: 0;
     letter-spacing: -0.04em;
+  }
+
+  .btn-solution-proposal {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    background: linear-gradient(135deg, var(--clr-primary) 0%, #1e293b 100%);
+    color: white;
+    padding: 0.875rem 1.5rem;
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 15px -3px rgba(15, 23, 42, 0.2), 0 4px 6px -4px rgba(15, 23, 42, 0.2);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    text-align: left;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-solution-proposal::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.6s;
+  }
+
+  .btn-solution-proposal:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 20px 25px -5px rgba(15, 23, 42, 0.25), 0 8px 10px -6px rgba(15, 23, 42, 0.25);
+    border-color: var(--clr-accent);
+  }
+
+  .btn-solution-proposal:hover::after {
+    transform: translateX(100%);
+  }
+
+  .btn-icon {
+    width: 40px;
+    height: 40px;
+    background: rgba(16, 185, 129, 0.15);
+    color: var(--clr-accent);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.3s;
+  }
+
+  .btn-solution-proposal:hover .btn-icon {
+    background: var(--clr-accent);
+    color: white;
+    transform: scale(1.1);
+  }
+
+  .btn-text {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .btn-label {
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  .btn-sublabel {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  .chevron-right {
+    color: rgba(255, 255, 255, 0.4);
+    transition: all 0.3s;
+    margin-left: 0.5rem;
+  }
+
+  .btn-solution-proposal:hover .chevron-right {
+    color: white;
+    transform: translateX(4px);
   }
 
   .main-body {
