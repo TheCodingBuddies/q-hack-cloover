@@ -11,6 +11,9 @@ export interface CustomerDetails {
   existingSystems?: string;
   financialProfile?: string;
   conversationHistory?: string;
+  wantsHeatPump?: boolean;
+  wantsSolarPanels?: boolean;
+  wantsWallbox?: boolean;
 }
 
 export interface Customer {

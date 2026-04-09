@@ -17,6 +17,10 @@
   let financialProfile = '';
   let conversationHistory = '';
 
+  let wantsHeatPump = false;
+  let wantsSolarPanels = false;
+  let wantsWallbox = false;
+
   let errors: Record<string, string> = {};
   let isSaving = false;
   let successMessage = '';
@@ -55,7 +59,10 @@
           energyConsumption: energyConsumption.trim() || undefined,
           existingSystems: existingSystems.trim() || undefined,
           financialProfile: financialProfile.trim() || undefined,
-          conversationHistory: conversationHistory.trim() || undefined
+          conversationHistory: conversationHistory.trim() || undefined,
+          wantsHeatPump,
+          wantsSolarPanels,
+          wantsWallbox
         }
       };
 
@@ -193,6 +200,31 @@
               />
               {#if errors.city}<span class="error-text">{errors.city}</span>{/if}
             </div>
+          </div>
+        </div>
+
+        <!-- Additional Info Section -->
+        <div class="form-section optional-section">
+          <div class="section-header">
+            <h2 class="section-title">Product Interests</h2>
+            <span class="badge badge-accent">Optional</span>
+          </div>
+          <div class="checkbox-grid">
+            <label class="checkbox-container">
+              <input type="checkbox" bind:checked={wantsHeatPump} />
+              <span class="checkbox-custom"></span>
+              <span class="checkbox-label">Heat Pump</span>
+            </label>
+            <label class="checkbox-container">
+              <input type="checkbox" bind:checked={wantsSolarPanels} />
+              <span class="checkbox-custom"></span>
+              <span class="checkbox-label">Solar Panels</span>
+            </label>
+            <label class="checkbox-container">
+              <input type="checkbox" bind:checked={wantsWallbox} />
+              <span class="checkbox-custom"></span>
+              <span class="checkbox-label">Wallbox</span>
+            </label>
           </div>
         </div>
 
@@ -399,6 +431,84 @@
     font-size: 0.8125rem;
     font-weight: 600;
     margin-top: -0.25rem;
+  }
+
+  /* Checkbox Styles */
+  .checkbox-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1.25rem;
+    margin-top: 1.5rem;
+  }
+
+  .checkbox-container {
+    display: flex;
+    align-items: center;
+    position: relative;
+    padding-left: 2.5rem;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--clr-primary);
+    user-select: none;
+    transition: all 0.2s;
+    height: 3rem;
+    background: white;
+    border: 1.5px solid var(--clr-border);
+    border-radius: var(--radius-md);
+    padding-right: 1rem;
+  }
+
+  .checkbox-container:hover {
+    border-color: var(--clr-accent);
+    background: var(--clr-accent-light);
+  }
+
+  .checkbox-container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+  }
+
+  .checkbox-custom {
+    position: absolute;
+    top: 50%;
+    left: 1rem;
+    transform: translateY(-50%);
+    height: 1.25rem;
+    width: 1.25rem;
+    background-color: white;
+    border: 2px solid var(--clr-border);
+    border-radius: 4px;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .checkbox-container input:checked ~ .checkbox-custom {
+    background-color: var(--clr-accent);
+    border-color: var(--clr-accent);
+  }
+
+  .checkbox-custom:after {
+    content: "";
+    position: absolute;
+    display: none;
+    left: 7px;
+    top: 3px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2.5px 2.5px 0;
+    transform: rotate(45deg);
+  }
+
+  .checkbox-container input:checked ~ .checkbox-custom:after {
+    display: block;
+  }
+
+  .checkbox-container input:checked ~ .checkbox-label {
+    color: var(--clr-primary);
   }
 
   .form-actions {

@@ -24,7 +24,10 @@ export const customerService = {
           energyConsumption: prop.metadata.energyConsumption,
           existingSystems: prop.metadata.existingSystems,
           financialProfile: prop.metadata.financialProfile,
-          conversationHistory: prop.metadata.conversationHistory
+          conversationHistory: prop.metadata.conversationHistory,
+          wantsHeatPump: prop.metadata.wantsHeatPump === 'true',
+          wantsSolarPanels: prop.metadata.wantsSolarPanels === 'true',
+          wantsWallbox: prop.metadata.wantsWallbox === 'true'
         };
       }
     }
@@ -132,8 +135,11 @@ export const customerService = {
       if (dto.optional) {
         // Mappe alle vorhandenen optionalen Felder in die Metadata Map
         Object.entries(dto.optional).forEach(([key, value]) => {
-          if (value && typeof value === 'string' && value.trim() !== '') {
-            metadata[key] = value;
+          if (value !== undefined && value !== null) {
+            // Sende leere Strings nicht, aber Booleans (false) müssen gesendet werden
+            if (typeof value === 'boolean' || value !== '') {
+              metadata[key] = value.toString();
+            }
           }
         });
       }

@@ -93,7 +93,23 @@
 
   // Edit customer
   let editingCustomer = $state(false);
-  let editCustomerForm = $state({ firstName: '', lastName: '', birthDate: '', street: '', houseNumber: '', zip: '', city: '', customerProfile: '', energyConsumption: '', existingSystems: '', financialProfile: '', conversationHistory: '' });
+  let editCustomerForm = $state({ 
+    firstName: '', 
+    lastName: '', 
+    birthDate: '', 
+    street: '', 
+    houseNumber: '', 
+    zip: '', 
+    city: '', 
+    customerProfile: '', 
+    energyConsumption: '', 
+    existingSystems: '', 
+    financialProfile: '', 
+    conversationHistory: '',
+    wantsHeatPump: false,
+    wantsSolarPanels: false,
+    wantsWallbox: false
+  });
 
   function openEditCustomer() {
     if (!customer) return;
@@ -110,6 +126,9 @@
       existingSystems: customer.details?.existingSystems || '',
       financialProfile: customer.details?.financialProfile || '',
       conversationHistory: customer.details?.conversationHistory || '',
+      wantsHeatPump: !!customer.details?.wantsHeatPump,
+      wantsSolarPanels: !!customer.details?.wantsSolarPanels,
+      wantsWallbox: !!customer.details?.wantsWallbox,
     };
     editingCustomer = true;
   }
@@ -131,6 +150,9 @@
       existingSystems: editCustomerForm.existingSystems,
       financialProfile: editCustomerForm.financialProfile,
       conversationHistory: editCustomerForm.conversationHistory,
+      wantsHeatPump: editCustomerForm.wantsHeatPump,
+      wantsSolarPanels: editCustomerForm.wantsSolarPanels,
+      wantsWallbox: editCustomerForm.wantsWallbox,
     };
     editingCustomer = false;
   }
@@ -321,6 +343,26 @@
 
                 {#if customer.details}
                   <div class="data-divider"></div>
+
+                  <div class="data-item">
+                    <div class="data-label">Interests</div>
+                    <div class="interests-badges">
+                      {#if customer.details.wantsHeatPump}
+                        <span class="interest-badge">Heat Pump</span>
+                      {/if}
+                      {#if customer.details.wantsSolarPanels}
+                        <span class="interest-badge">Solar Panels</span>
+                      {/if}
+                      {#if customer.details.wantsWallbox}
+                        <span class="interest-badge">Wallbox</span>
+                      {/if}
+                      {#if !customer.details.wantsHeatPump && !customer.details.wantsSolarPanels && !customer.details.wantsWallbox}
+                        <span class="text-muted" style="font-size: 0.8125rem;">None selected</span>
+                      {/if}
+                    </div>
+                  </div>
+
+                  <div class="data-divider"></div>
                   
                   {#if customer.details.customerProfile}
                     <div class="data-item">
@@ -418,6 +460,26 @@
           <div class="modal-form-group">
             <label for="ec-city">City *</label>
             <input id="ec-city" type="text" bind:value={editCustomerForm.city} placeholder="City" />
+          </div>
+
+          <hr class="modal-divider modal-full" />
+
+          <div class="modal-form-group modal-full">
+            <label>Product Interests</label>
+            <div class="modal-checkbox-grid">
+              <label class="modal-checkbox">
+                <input type="checkbox" bind:checked={editCustomerForm.wantsHeatPump} />
+                <span>Heat Pump</span>
+              </label>
+              <label class="modal-checkbox">
+                <input type="checkbox" bind:checked={editCustomerForm.wantsSolarPanels} />
+                <span>Solar Panels</span>
+              </label>
+              <label class="modal-checkbox">
+                <input type="checkbox" bind:checked={editCustomerForm.wantsWallbox} />
+                <span>Wallbox</span>
+              </label>
+            </div>
           </div>
 
           <hr class="modal-divider modal-full" />
@@ -899,6 +961,46 @@
     height: 1px;
     background: var(--clr-border);
     margin: 0.5rem 0;
+  }
+
+  .interests-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.25rem;
+  }
+
+  .interest-badge {
+    background: var(--clr-bg-alt);
+    color: var(--clr-primary);
+    padding: 0.25rem 0.625rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    border: 1px solid var(--clr-border);
+  }
+
+  .modal-checkbox-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 0.5rem;
+  }
+
+  .modal-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .modal-checkbox input {
+    width: 1.25rem;
+    height: 1.25rem;
+    cursor: pointer;
+    accent-color: var(--clr-accent);
   }
 
   .sidebar-card.ai-accent {
