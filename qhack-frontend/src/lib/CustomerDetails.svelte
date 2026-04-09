@@ -160,192 +160,221 @@
       {#if project}
         <div class="main-header">
           <div class="main-header-left">
-            <span class="project-tag">Project</span>
+            <div class="breadcrumb">
+              <span onclick={() => window.history.back()} role="link" tabindex="0" onkeydown={(e) => e.key === 'Enter' && window.history.back()}>Customers</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              <span>{customer.firstName} {customer.lastName}</span>
+            </div>
             <div class="main-header-title-row">
-              <h2>{project.name}</h2>
+              <div class="title-with-tag">
+                <span class="project-tag">Solar Project</span>
+                <h2>{project.name}</h2>
+              </div>
               <div class="header-actions">
-                <button class="btn-present" onclick={() => {
+                <button class="btn-primary" onclick={() => {
                   window.history.pushState({}, '', `/customer/${customerId}/offer`);
                   window.dispatchEvent(new PopStateEvent('popstate'));
-                }}>Show offer</button>
+                }}>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+                  <span>Open Solution Proposal</span>
+                </button>
               </div>
             </div>
           </div>
         </div>
 
         <div class="main-body">
-          <!-- OFFER OVERVIEW -->
-          <div class="offer-preview card">
-            <div class="panel-title">OFFER OVERVIEW</div>
-            {#if offer}
-              <div class="offer-content">
-                <section class="offer-section">
-                  <h3 class="section-header">Lead Summary</h3>
-                  <div class="summary-grid">
-                    <div class="summary-item">
-                      <span class="label">Location</span>
-                      <span class="value">{offer.lead_summary.location.city}, {offer.lead_summary.location.postal_code} ({offer.lead_summary.location.country})</span>
+          <div class="content-left">
+            <!-- OFFER OVERVIEW -->
+            <div class="offer-preview-card card">
+              <div class="card-header-accent">
+                <div class="panel-title">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                  <span>Analysis Overview</span>
+                </div>
+                {#if offer}
+                  <span class="status-badge pulse">AI Generated</span>
+                {/if}
+              </div>
+              
+              {#if offer}
+                <div class="offer-content">
+                  <div class="summary-highlight">
+                    <div class="highlight-item">
+                      <span class="label">Location Analysis</span>
+                      <span class="value">{offer.lead_summary.location.city} • {offer.lead_summary.location.postal_code}</span>
                     </div>
-                    <div class="summary-item">
-                      <span class="label">Primary Products</span>
-                      <div class="tag-container">
+                    <div class="highlight-item">
+                      <span class="label">Product Focus</span>
+                      <div class="tag-group">
                         {#each offer.lead_summary.primary_products as product}
-                          <span class="product-tag-small">{product}</span>
+                          <span class="badge badge-accent">{product}</span>
                         {/each}
                       </div>
                     </div>
                   </div>
-                </section>
 
-                <hr class="offer-divider" />
+                  <div class="recommendation-box">
+                    <div class="recommendation-header">
+                      <div class="rec-title">
+                        <span class="label">Selected Solution</span>
+                        <h3>{offer.recommended_offer.package_name}</h3>
+                      </div>
+                      <div class="efficiency-score">
+                        <span class="score-label">Efficiency</span>
+                        <span class="score-value">High</span>
+                      </div>
+                    </div>
+                    
+                    <div class="details-grid">
+                      <div class="detail-column">
+                        <span class="small-label">Technical Configuration</span>
+                        <ul class="check-list">
+                          {#each offer.recommended_offer.products as product}
+                            <li>
+                              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                              <span>{product}</span>
+                            </li>
+                          {/each}
+                        </ul>
+                      </div>
 
-                <section class="offer-section">
-                  <div class="recommendation-header">
-                    <h3 class="section-header">Recommended Offer</h3>
-                    <span class="package-badge">{offer.recommended_offer.package_name}</span>
+                      <div class="detail-column">
+                        <span class="small-label">Strategic Reasoning</span>
+                        <ul class="dot-list">
+                          {#each offer.recommended_offer.reasoning as reason}
+                            <li>{reason}</li>
+                          {/each}
+                        </ul>
+                      </div>
+                    </div>
+
+                    <div class="financial-dashboard">
+                      <div class="fin-stat">
+                        <span class="label">Investment</span>
+                        <div class="value-row">
+                          <span class="unit">€</span>
+                          <span class="number">{offer.recommended_offer.estimated_cost_range_eur.min.toLocaleString()}</span>
+                          <span class="range">- {offer.recommended_offer.estimated_cost_range_eur.max.toLocaleString()}</span>
+                        </div>
+                      </div>
+                      <div class="fin-stat positive">
+                        <span class="label">Est. Annual Savings</span>
+                        <div class="value-row">
+                          <span class="unit">€</span>
+                          <span class="number">{offer.recommended_offer.estimated_annual_savings_eur.min.toLocaleString()}</span>
+                        </div>
+                      </div>
+                      <div class="fin-stat">
+                        <span class="label">ROI Period</span>
+                        <div class="value-row">
+                          <span class="number">{offer.recommended_offer.estimated_payback_years.min}</span>
+                          <span class="unit">Years</span>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  
-                  <div class="recommendation-content">
-                    <div class="products-list">
-                      <span class="label">Included Products</span>
-                      <ul>
-                        {#each offer.recommended_offer.products as product}
-                          <li>{product}</li>
-                        {/each}
-                      </ul>
-                    </div>
-
-                    <div class="reasoning-list">
-                      <span class="label">Reasoning</span>
-                      <ul>
-                        {#each offer.recommended_offer.reasoning as reason}
-                          <li>{reason}</li>
-                        {/each}
-                      </ul>
-                    </div>
-
-                    <div class="financials-grid">
-                      <div class="financial-card">
-                        <span class="label">Estimated Cost</span>
-                        <span class="financial-value">€{offer.recommended_offer.estimated_cost_range_eur.min.toLocaleString()} - €{offer.recommended_offer.estimated_cost_range_eur.max.toLocaleString()}</span>
-                      </div>
-                      <div class="financial-card highlight">
-                        <span class="label">Annual Savings</span>
-                        <span class="financial-value">€{offer.recommended_offer.estimated_annual_savings_eur.min.toLocaleString()} - €{offer.recommended_offer.estimated_annual_savings_eur.max.toLocaleString()}</span>
-                      </div>
-                      <div class="financial-card">
-                        <span class="label">Payback Period</span>
-                        <span class="financial-value">{offer.recommended_offer.estimated_payback_years.min} - {offer.recommended_offer.estimated_payback_years.max} Years</span>
-                      </div>
-                    </div>
+                </div>
+              {:else}
+                <div class="loading-container">
+                  <div class="ai-loader">
+                    <div class="orbit"></div>
+                    <div class="core"></div>
                   </div>
-                </section>
-              </div>
-            {:else}
-              <div class="offer-text">
-                {#each project.offerPreview.split('\n') as line}
-                  {#if line.startsWith('**') && line.endsWith('**')}
-                    <strong>{line.slice(2, -2)}</strong><br/>
-                  {:else if line.startsWith('- ')}
-                    <li>{line.slice(2)}</li>
-                  {:else if line.trim() === ''}
-                    <br/>
-                  {:else}
-                    <span>{line}</span><br/>
-                  {/if}
-                {/each}
-              </div>
-              <div class="loading-inline">
-                <div class="spinner-small"></div>
-                <span>Generating AI offer...</span>
-              </div>
-            {/if}
+                  <h3>Thinking...</h3>
+                  <p>AI is analyzing property data and local market context to generate the optimal proposal.</p>
+                </div>
+              {/if}
+            </div>
           </div>
 
           <!-- Right panels -->
           <div class="right-panels">
-            <div class="info-card card">
-              <div class="card-title-row">
-                <div class="panel-title">Customer info</div>
-                <button class="btn-edit" aria-label="Edit customer info" onclick={openEditCustomer}>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            <div class="sidebar-card card">
+              <div class="sidebar-header">
+                <div class="panel-title">Customer Profile</div>
+                <button class="btn-icon-only" onclick={openEditCustomer} aria-label="Edit Profile">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
                 </button>
               </div>
-              <div class="info-row">
-                <span class="info-label">Name</span>
-                <span>{customer.firstName} {customer.lastName}</span>
-              </div>
-              <div class="info-row">
-                <span class="info-label">Date of birth</span>
-                <span>{new Date(customer.birthDate).toLocaleDateString()}</span>
-              </div>
-              <div class="info-row">
-                <span class="info-label">Address</span>
-                {#if customer.address}
-                  <span>{customer.address.street} {customer.address.houseNumber}, {customer.address.zip} {customer.address.city}</span>
-                {:else}
-                  <span class="no-address-text">No address provided</span>
-                {/if}
+              
+              <div class="profile-summary">
+                <div class="profile-avatar">{customer.firstName[0]}{customer.lastName[0]}</div>
+                <div class="profile-info">
+                  <span class="profile-name">{customer.firstName} {customer.lastName}</span>
+                  <span class="profile-id">ID: {customerId.substring(0, 8)}</span>
+                </div>
               </div>
 
-              {#if customer.details}
-                <hr class="divider" />
-                {#if customer.details.customerProfile}
-                  <div class="info-row">
-                    <span class="info-label">Profile</span>
-                    <span class="info-value-block">{customer.details.customerProfile}</span>
+              <div class="data-list">
+                <div class="data-item">
+                  <div class="data-label">Address</div>
+                  <div class="data-value">
+                    {#if customer.address}
+                      {customer.address.street} {customer.address.houseNumber}<br/>
+                      {customer.address.zip} {customer.address.city}
+                    {:else}
+                      <span class="text-muted">Not provided</span>
+                    {/if}
                   </div>
+                </div>
+
+                {#if customer.details}
+                  <div class="data-divider"></div>
+                  
+                  {#if customer.details.customerProfile}
+                    <div class="data-item">
+                      <div class="data-label">Household</div>
+                      <div class="data-value-small">{customer.details.customerProfile}</div>
+                    </div>
+                  {/if}
+                  
+                  {#if customer.details.energyConsumption}
+                    <div class="data-item">
+                      <div class="data-label">Energy Needs</div>
+                      <div class="data-value-small">{customer.details.energyConsumption}</div>
+                    </div>
+                  {/if}
+                  
+                  {#if customer.details.financialProfile}
+                    <div class="data-item">
+                      <div class="data-label">Financials</div>
+                      <div class="data-value-small">{customer.details.financialProfile}</div>
+                    </div>
+                  {/if}
                 {/if}
-                {#if customer.details.energyConsumption}
-                  <div class="info-row">
-                    <span class="info-label">Energy</span>
-                    <span class="info-value-block">{customer.details.energyConsumption}</span>
-                  </div>
-                {/if}
-                {#if customer.details.existingSystems}
-                  <div class="info-row">
-                    <span class="info-label">Systems</span>
-                    <span class="info-value-block">{customer.details.existingSystems}</span>
-                  </div>
-                {/if}
-                {#if customer.details.financialProfile}
-                  <div class="info-row">
-                    <span class="info-label">Finance</span>
-                    <span class="info-value-block">{customer.details.financialProfile}</span>
-                  </div>
-                {/if}
-                {#if customer.details.conversationHistory}
-                  <div class="info-row">
-                    <span class="info-label">History</span>
-                    <span class="info-value-block">{customer.details.conversationHistory}</span>
-                  </div>
-                {/if}
-              {/if}
+              </div>
             </div>
 
-            <div class="info-card card">
-              <div class="panel-title ai-title">
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
-                AI hints
+            <div class="sidebar-card card ai-accent">
+              <div class="sidebar-header">
+                <div class="panel-title ai-sparkle">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+                  <span>Sales Coach Advice</span>
+                </div>
               </div>
-              <ul class="ai-list">
-                {#if offer}
-                  {#each offer.sales_talking_points as hint}
-                    <li>{hint}</li>
-                  {/each}
-                {:else}
-                  {#each project.aiHints as hint}
-                    <li>{hint}</li>
-                  {/each}
-                {/if}
-              </ul>
+              <div class="ai-hints-body">
+                <ul class="ai-hint-list">
+                  {#if offer}
+                    {#each offer.sales_talking_points as hint}
+                      <li>{hint}</li>
+                    {/each}
+                  {:else}
+                    {#each project.aiHints as hint}
+                      <li>{hint}</li>
+                    {/each}
+                  {/if}
+                </ul>
+              </div>
             </div>
           </div>
         </div>
       {:else}
         <div class="empty-state">
-          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-4 0v2"/></svg>
-          <p>No project yet for {customer.firstName} {customer.lastName}</p>
+          <div class="empty-illustration">📄</div>
+          <h2>Initialize Analysis</h2>
+          <p>Complete the customer profile to start generating AI sales hints and proposals.</p>
+          <button class="btn-primary" onclick={openEditCustomer}>Edit Profile</button>
         </div>
       {/if}
     </main>
@@ -426,350 +455,221 @@
 <style>
   .layout {
     display: block;
-    max-width: 1200px;
-    margin: 2rem auto;
-    padding: 0 1rem;
+    width: 100%;
   }
 
   .main {
     width: 100%;
-    background: #f8fafc;
-    overflow-y: auto;
-    padding: 2.5rem;
+    padding: 0;
   }
 
   .main-header {
-    margin-bottom: 2.5rem;
+    margin-bottom: 3rem;
+  }
+
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--clr-text-muted);
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-bottom: 1.5rem;
+  }
+
+  .breadcrumb span:first-child {
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+
+  .breadcrumb span:first-child:hover {
+    color: var(--clr-primary);
+  }
+
+  .title-with-tag {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
   }
 
   .project-tag {
-    display: inline-block;
-    padding: 0.25rem 0.625rem;
-    background: #e0f2fe;
-    color: #0369a1;
-    border-radius: 9999px;
-    font-size: 0.7rem;
+    align-self: flex-start;
+    padding: 0.25rem 0.75rem;
+    background: var(--clr-accent-light);
+    color: var(--clr-accent-dark);
+    border-radius: var(--radius-full);
+    font-size: 0.75rem;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.025em;
-    margin-bottom: 0.75rem;
+    letter-spacing: 0.05em;
   }
 
   .main-header-title-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 1.25rem;
-    gap: 1rem;
-  }
-
-  .header-actions {
-    display: flex;
-    gap: 1rem;
-    align-items: center;
+    gap: 2rem;
   }
 
   .main-header h2 {
-    font-size: 1.875rem;
+    font-size: 2.5rem;
     font-weight: 800;
-    color: var(--clr-text);
-  }
-
-  .btn-present {
-    background: white;
-    border: 1px solid var(--clr-border);
-    padding: 0.5rem 1rem;
-    border-radius: 6px;
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: var(--clr-text);
-    box-shadow: var(--shadow-sm);
+    margin: 0;
+    letter-spacing: -0.04em;
   }
 
   .main-body {
     display: grid;
-    grid-template-columns: 1fr 340px;
-    gap: 2rem;
+    grid-template-columns: 1fr 360px;
+    gap: 2.5rem;
     align-items: start;
   }
 
-  .offer-preview {
-    min-height: 500px;
-    padding: 2rem;
+  .offer-preview-card {
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .card-header-accent {
+    padding: 1.5rem 2rem;
+    background: var(--clr-bg-alt);
+    border-bottom: 1px solid var(--clr-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .panel-title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--clr-primary);
+  }
+
+  .status-badge {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--clr-accent-dark);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .status-badge::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    background: var(--clr-accent);
+    border-radius: 50%;
+  }
+
+  .pulse::before {
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.5); opacity: 0.5; }
+    100% { transform: scale(1); opacity: 1; }
   }
 
   .offer-content {
+    padding: 2.5rem;
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 2.5rem;
   }
 
-  .offer-section {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
-
-  .section-header {
-    font-size: 1.125rem;
-    font-weight: 700;
-    color: var(--clr-text);
-    margin: 0;
-  }
-
-  .summary-grid {
+  .summary-highlight {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 1.5rem;
-    background: var(--clr-bg-alt);
-    padding: 1.25rem;
-    border-radius: 8px;
+    gap: 2rem;
   }
 
-  .summary-item {
+  .highlight-item {
     display: flex;
     flex-direction: column;
-    gap: 0.25rem;
+    gap: 0.5rem;
   }
 
-  .summary-item .label {
+  .label {
     font-size: 0.75rem;
     font-weight: 700;
     text-transform: uppercase;
-    color: var(--clr-text-light);
+    color: var(--clr-text-muted);
+    letter-spacing: 0.05em;
   }
 
-  .summary-item .value {
-    font-weight: 600;
-    color: var(--clr-text);
+  .value {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--clr-primary);
   }
 
-  .tag-container {
+  .tag-group {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
   }
 
-  .product-tag-small {
-    background: white;
+  .recommendation-box {
+    background: var(--clr-bg-alt);
     border: 1px solid var(--clr-border);
-    padding: 0.2rem 0.6rem;
-    border-radius: 4px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: var(--clr-text);
-  }
-
-  .offer-divider {
-    border: 0;
-    border-top: 1px solid var(--clr-border);
-    margin: 0.5rem 0;
+    border-radius: var(--radius-lg);
+    padding: 2rem;
   }
 
   .recommendation-header {
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    gap: 1rem;
+    align-items: flex-start;
+    margin-bottom: 2rem;
   }
 
-  .package-badge {
-    background: var(--clr-accent);
-    color: white;
-    padding: 0.25rem 0.75rem;
-    border-radius: 9999px;
-    font-size: 0.8rem;
-    font-weight: 700;
+  .rec-title h3 {
+    font-size: 1.5rem;
+    margin: 0.25rem 0 0;
   }
 
-  .recommendation-content {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
+  .efficiency-score {
+    text-align: right;
   }
 
-  .products-list ul, .reasoning-list ul {
-    margin: 0.5rem 0 0 1.25rem;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.35rem;
-  }
-
-  .products-list li, .reasoning-list li {
-    font-size: 0.9rem;
-    color: var(--clr-text);
-  }
-
-  .products-list .label, .reasoning-list .label {
-    font-size: 0.8rem;
-    font-weight: 700;
-    color: var(--clr-text-light);
-  }
-
-  .financials-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1rem;
-    margin-top: 0.5rem;
-  }
-
-  .financial-card {
-    background: white;
-    border: 1px solid var(--clr-border);
-    padding: 1rem;
-    border-radius: 8px;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
-  .financial-card.highlight {
-    border-color: var(--clr-accent);
-    background: #f0fdf4; /* Light green background for savings */
-  }
-
-  .financial-card .label {
-    font-size: 0.7rem;
+  .score-label {
+    font-size: 0.625rem;
     font-weight: 700;
     text-transform: uppercase;
-    color: var(--clr-text-light);
-  }
-
-  .financial-value {
-    font-size: 1.1rem;
-    font-weight: 800;
-    color: var(--clr-text);
-  }
-
-  .loading-inline {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    margin-top: 1.5rem;
-    padding-top: 1.5rem;
-    border-top: 1px dashed var(--clr-border);
-    color: var(--clr-text-light);
-    font-size: 0.875rem;
-  }
-
-  .spinner-small {
-    width: 16px;
-    height: 16px;
-    border: 2px solid var(--clr-border);
-    border-top: 2px solid var(--clr-accent);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-  }
-
-  .panel-title {
-    font-size: 0.875rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--clr-text-light);
-    margin-bottom: 1.25rem;
-  }
-
-  .offer-text {
-    font-family: inherit;
-    line-height: 1.6;
-    color: var(--clr-text);
-  }
-
-  .offer-text strong {
-    font-weight: 700;
-    color: var(--clr-text);
-  }
-
-  .offer-text li {
-    margin-left: 1.25rem;
-    margin-bottom: 0.25rem;
-  }
-
-  .right-panels {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-  }
-
-  .info-card {
-    padding: 1.5rem;
-  }
-
-  .card-title-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 1rem;
-  }
-
-  .card-title-row .panel-title {
-    margin-bottom: 0;
-  }
-
-  .btn-edit {
-    background: none;
-    border: none;
-    color: var(--clr-text-light);
-    cursor: pointer;
-    padding: 0.25rem;
-    border-radius: 4px;
-    transition: background 0.15s, color 0.15s;
-  }
-
-  .btn-edit:hover {
-    background: var(--clr-bg-alt);
-    color: var(--clr-primary);
-  }
-
-  .info-row {
-    display: flex;
-    flex-direction: column;
-    gap: 0.125rem;
-    margin-bottom: 1rem;
-  }
-
-  .info-row:last-child {
-    margin-bottom: 0;
-  }
-
-  .info-label {
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: var(--clr-text-light);
-  }
-
-  .info-row span:not(.info-label) {
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: var(--clr-text);
-  }
-
-  .info-value-block {
     display: block;
-    font-size: 0.85rem !important;
-    font-weight: 400 !important;
-    color: var(--clr-text-light) !important;
-    line-height: 1.4;
-    white-space: pre-wrap;
+    color: var(--clr-text-muted);
   }
 
-  .divider {
-    border: 0;
-    border-top: 1px solid var(--clr-border);
-    margin: 1.25rem 0;
-    opacity: 0.5;
+  .score-value {
+    color: var(--clr-accent-dark);
+    font-weight: 800;
+    font-size: 1.25rem;
   }
 
-  .ai-title {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: var(--clr-accent) !important;
+  .details-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2.5rem;
+    margin-bottom: 2.5rem;
   }
 
-  .ai-list {
+  .small-label {
+    font-size: 0.6875rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: var(--clr-text-muted);
+    margin-bottom: 1rem;
+    display: block;
+  }
+
+  .check-list, .dot-list {
     list-style: none;
     padding: 0;
     margin: 0;
@@ -778,140 +678,332 @@
     gap: 0.75rem;
   }
 
-  .ai-list li {
-    font-size: 0.875rem;
-    color: var(--clr-text);
-    padding-left: 1.25rem;
-    position: relative;
-    line-height: 1.4;
+  .check-list li {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.9375rem;
+    font-weight: 600;
   }
 
-  .ai-list li::before {
-    content: "•";
+  .check-list svg {
+    color: var(--clr-accent);
+    flex-shrink: 0;
+  }
+
+  .dot-list li {
+    position: relative;
+    padding-left: 1.25rem;
+    font-size: 0.875rem;
+    color: var(--clr-text-muted);
+    line-height: 1.5;
+  }
+
+  .dot-list li::before {
+    content: "";
     position: absolute;
     left: 0;
-    color: var(--clr-accent);
-    font-weight: bold;
+    top: 0.6em;
+    width: 6px;
+    height: 6px;
+    background: var(--clr-border-strong);
+    border-radius: 50%;
   }
 
-  .empty-state {
+  .financial-dashboard {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    background: white;
+    padding: 1.5rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--clr-border);
+  }
+
+  .fin-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .fin-stat.positive .number {
+    color: var(--clr-accent-dark);
+  }
+
+  .value-row {
+    display: flex;
+    align-items: baseline;
+    gap: 0.25rem;
+  }
+
+  .unit {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--clr-text-muted);
+  }
+
+  .number {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--clr-primary);
+  }
+
+  .range {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--clr-text-muted);
+  }
+
+  .loading-container {
+    padding: 5rem 2rem;
+    text-align: center;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    padding: 4rem 2rem;
-    text-align: center;
-    color: var(--clr-text-light);
+    gap: 1.5rem;
   }
 
-  .empty-state svg {
+  .ai-loader {
+    position: relative;
+    width: 60px;
+    height: 60px;
+  }
+
+  .core {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 20px;
+    height: 20px;
+    background: var(--clr-accent);
+    border-radius: 50%;
+    box-shadow: 0 0 20px var(--clr-accent);
+  }
+
+  .orbit {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border: 2px solid var(--clr-accent-light);
+    border-radius: 50%;
+    border-top-color: var(--clr-accent);
+    animation: spin 1.5s linear infinite;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  .right-panels {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .sidebar-card {
+    padding: 1.75rem;
+  }
+
+  .sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 1.5rem;
-    opacity: 0.5;
   }
 
-  /* Modals */
+  .btn-icon-only {
+    background: var(--clr-bg-alt);
+    border: 1px solid var(--clr-border);
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--clr-text-muted);
+  }
+
+  .btn-icon-only:hover {
+    color: var(--clr-primary);
+    border-color: var(--clr-border-strong);
+  }
+
+  .profile-summary {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .profile-avatar {
+    width: 48px;
+    height: 48px;
+    background: var(--clr-primary);
+    color: white;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+  }
+
+  .profile-info {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .profile-name {
+    font-weight: 700;
+    color: var(--clr-primary);
+  }
+
+  .profile-id {
+    font-size: 0.75rem;
+    color: var(--clr-text-muted);
+  }
+
+  .data-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .data-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+  }
+
+  .data-label {
+    font-size: 0.625rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: var(--clr-text-muted);
+    letter-spacing: 0.05em;
+  }
+
+  .data-value {
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.5;
+  }
+
+  .data-value-small {
+    font-size: 0.8125rem;
+    color: var(--clr-text-muted);
+    line-height: 1.4;
+  }
+
+  .data-divider {
+    height: 1px;
+    background: var(--clr-border);
+    margin: 0.5rem 0;
+  }
+
+  .sidebar-card.ai-accent {
+    background: linear-gradient(180deg, #f0fdf4 0%, #ffffff 100%);
+    border-color: var(--clr-accent-light);
+  }
+
+  .ai-sparkle {
+    color: var(--clr-accent-dark) !important;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .ai-hint-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .ai-hint-list li {
+    font-size: 0.875rem;
+    color: var(--clr-text);
+    padding-left: 1.5rem;
+    position: relative;
+    line-height: 1.4;
+    font-weight: 500;
+  }
+
+  .ai-hint-list li::before {
+    content: "→";
+    position: absolute;
+    left: 0;
+    color: var(--clr-accent);
+    font-weight: 800;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 8rem 2rem;
+    background: white;
+    border-radius: var(--radius-lg);
+    border: 2px dashed var(--clr-border);
+  }
+
+  .empty-illustration {
+    font-size: 4rem;
+    margin-bottom: 2rem;
+  }
+
+  /* Modals - Keeping existing modal logic but improving visuals */
   .modal-backdrop {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(15, 23, 42, 0.6);
-    backdrop-filter: blur(4px);
+    background: rgba(15, 23, 42, 0.4);
+    backdrop-filter: blur(8px);
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1000;
+    z-index: 2000;
   }
 
   .modal-card {
     width: 100%;
-    max-width: 600px;
-    max-height: 90vh;
+    max-width: 650px;
+    max-height: 85vh;
     overflow-y: auto;
-    padding: 2rem;
-    animation: modal-enter 0.3s ease-out;
-  }
-
-  @keyframes modal-enter {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
+    padding: 3rem;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-xl);
   }
 
   .modal-header {
-    margin-bottom: 1.5rem;
-  }
-
-  .modal-header h2 {
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: var(--clr-text);
-    margin-bottom: 0.5rem;
-  }
-
-  .modal-subtitle {
-    font-size: 0.875rem;
-    color: var(--clr-text-light);
-  }
-
-  .modal-form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    margin-bottom: 1.25rem;
+    margin-bottom: 2.5rem;
   }
 
   .modal-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 1.25rem;
+    gap: 1.5rem;
   }
 
   .modal-full {
     grid-column: span 2;
   }
 
-  .modal-form-group label {
-    font-size: 0.75rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    color: var(--clr-text-light);
-  }
-
-  .modal-form-group input,
-  .modal-form-group textarea {
-    padding: 0.75rem;
-    border: 1px solid var(--clr-border);
-    border-radius: 6px;
-    font-size: 0.9rem;
-    font-family: inherit;
-  }
-
-  .modal-form-group textarea {
-    min-height: 80px;
-    resize: vertical;
-  }
-
-  .modal-divider {
-    border: 0;
-    border-top: 1px solid var(--clr-border);
-    margin: 0.5rem 0;
-  }
-
   .modal-actions {
+    margin-top: 3rem;
     display: flex;
     gap: 1rem;
-    margin-top: 2rem;
   }
 
   .btn-modal-cancel {
     flex: 1;
-    background: white;
+    background: var(--clr-bg-alt);
     border: 1px solid var(--clr-border);
-    padding: 0.75rem;
-    border-radius: 6px;
+    padding: 1rem;
+    border-radius: var(--radius-md);
     font-weight: 600;
-    color: var(--clr-text);
   }
 
   .btn-modal-save {
@@ -919,43 +1011,18 @@
     background: var(--clr-primary);
     color: white;
     border: none;
-    padding: 0.75rem;
-    border-radius: 6px;
-    font-weight: 600;
+    padding: 1rem;
+    border-radius: var(--radius-md);
+    font-weight: 700;
   }
 
-  .spinner {
-    width: 40px;
-    height: 40px;
-    border: 4px solid var(--clr-border);
-    border-top: 4px solid var(--clr-accent);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin-bottom: 1rem;
-  }
-
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-
-  .loading-full {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
-
-  @media (max-width: 1200px) {
+  @media (max-width: 1000px) {
     .main-body {
       grid-template-columns: 1fr;
     }
     .right-panels {
-      order: -1;
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 1.5rem;
     }
   }
 
@@ -963,9 +1030,12 @@
     .right-panels {
       grid-template-columns: 1fr;
     }
-    .layout {
-      margin: 0;
-      height: auto;
+    .summary-highlight, .details-grid, .financial-dashboard {
+      grid-template-columns: 1fr;
+    }
+    .main-header-title-row {
+      flex-direction: column;
+      align-items: flex-start;
     }
   }
 </style>

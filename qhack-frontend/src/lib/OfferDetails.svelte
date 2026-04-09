@@ -65,157 +65,205 @@
 <div class="offer-page">
   {#if isLoading}
     <div class="loading-full">
-      <div class="spinner"></div>
-      <p>Generating your personal offer...</p>
+      <div class="ai-loader-large">
+        <div class="orbit"></div>
+        <div class="core"></div>
+      </div>
+      <p>Generating your personal solution proposal...</p>
     </div>
   {:else if error}
     <div class="error-state card">
-      <h2>Error</h2>
+      <div class="error-icon">⚠️</div>
+      <h2>Something went wrong</h2>
       <p>{error}</p>
       <button class="btn-primary" onclick={goBack}>Go Back</button>
     </div>
   {:else if offer && customer}
     <header class="offer-header">
-      <div class="container">
-        <button class="btn-back" onclick={goBack}>
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
-          Back to Details
-        </button>
-        <h1>Personal Solution Proposal</h1>
-        <p class="subtitle">Prepared for {customer.firstName} {customer.lastName}</p>
+      <div class="container header-container">
+        <div class="header-content-left">
+          <button class="btn-back-pill" onclick={goBack}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+            <span>Back to Analysis</span>
+          </button>
+          <div class="header-title-group">
+            <span class="badge badge-accent">Personalized Proposal</span>
+            <h1>Sustainable Solution Proposal</h1>
+            <p class="subtitle">Tailored for <strong>{customer.firstName} {customer.lastName}</strong> • {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
+          </div>
+        </div>
+        <div class="header-actions-top">
+          <button class="btn-outline-dark" onclick={() => window.print()}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+            <span>Print PDF</span>
+          </button>
+          <button class="btn-primary">Accept Proposal</button>
+        </div>
       </div>
     </header>
 
     <main class="container">
-      <div class="grid">
-        <!-- Recommended Package - The Main Attraction -->
-        <section class="recommended-section span-all">
-          <div class="recommended-card card highlight">
-            <div class="card-badge">Most Recommended Solution</div>
-            <div class="card-content">
-              <div class="offer-main-info">
+      <div class="offer-grid">
+        <!-- Recommended Package - Hero Section -->
+        <section class="span-all">
+          <div class="hero-offer-card">
+            <div class="hero-offer-content">
+              <div class="hero-text-side">
+                <div class="package-meta">
+                  <span class="package-label">Recommended System</span>
+                  <div class="efficiency-badge">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                    <span>High Efficiency</span>
+                  </div>
+                </div>
                 <h2>{offer.recommended_offer.package_name}</h2>
-                <div class="cost-summary">
-                  <div class="cost-item">
-                    <span class="label">Investment</span>
-                    <span class="value">{formatCurrency(offer.recommended_offer.estimated_cost_range_eur.min)} - {formatCurrency(offer.recommended_offer.estimated_cost_range_eur.max)}</span>
-                  </div>
-                  <div class="cost-item">
-                    <span class="label">Annual Savings</span>
-                    <span class="value success">{formatCurrency(offer.recommended_offer.estimated_annual_savings_eur.min)} - {formatCurrency(offer.recommended_offer.estimated_annual_savings_eur.max)}</span>
-                  </div>
-                </div>
-              </div>
-              
-              <div class="simple-details">
-                <div class="reason-highlight">
-                  <p>{offer.recommended_offer.reasoning[0]}</p>
-                </div>
-                <div class="key-products">
-                  {#each offer.recommended_offer.products.slice(0, 3) as product}
-                    <span class="product-tag">{product}</span>
-                  {/each}
-                  {#if offer.recommended_offer.products.length > 3}
-                    <span class="product-tag">+{offer.recommended_offer.products.length - 3} more</span>
-                  {/if}
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <!-- Market Context -->
-        <section class="market-section span-all">
-          <div class="card">
-            <div class="panel-title">Market Context</div>
-            <p class="market-summary">{offer.market_context.summary}</p>
-            <div class="market-details-grid">
-              <div class="market-list">
-                <h4>Market Drivers</h4>
-                <ul>
-                  {#each offer.market_context.drivers as driver}
-                    <li>{driver}</li>
-                  {/each}
-                </ul>
-              </div>
-              <div class="market-list">
-                <h4>Why Hand Now?</h4>
-                <ul>
-                  {#each offer.market_context.why_now as point}
-                    <li>{point}</li>
-                  {/each}
-                </ul>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <!-- Financing -->
-        <section class="span-all">
-          <div class="card bg-accent-light">
-            <div class="panel-title">Financing Options</div>
-            <div class="financing-grid">
-              {#each offer.financing_options as option}
-                <div class="financing-card">
-                  <div class="financing-header">
-                    <h3>{option.scenario}</h3>
-                    {#if option.monthly_payment_eur > 0}
-                      <span class="monthly-price">{formatCurrency(option.monthly_payment_eur)}/mo</span>
-                    {/if}
-                  </div>
-                  <div class="financing-details">
-                    <div class="fin-row">
-                      <span>Down Payment</span>
-                      <span>{formatCurrency(option.down_payment_eur)}</span>
+                <p class="package-reason">{offer.recommended_offer.reasoning[0]}</p>
+                
+                <div class="included-grid">
+                  {#each offer.recommended_offer.products as product}
+                    <div class="included-item">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                      <span>{product}</span>
                     </div>
-                    {#if option.loan_amount_eur > 0}
-                      <div class="fin-row">
-                        <span>Loan Amount</span>
-                        <span>{formatCurrency(option.loan_amount_eur)}</span>
-                      </div>
-                      <div class="fin-row">
-                        <span>Term</span>
-                        <span>{option.term_months} Months</span>
-                      </div>
-                      <div class="fin-row">
-                        <span>APR</span>
-                        <span>{option.apr_percent}%</span>
-                      </div>
-                    {/if}
-                  </div>
-                  <p class="fin-notes">{option.notes}</p>
+                  {/each}
                 </div>
-              {/each}
+              </div>
+
+              <div class="hero-stats-side">
+                <div class="stat-box-large highlight">
+                  <span class="stat-label">Total Investment</span>
+                  <div class="stat-value-group">
+                    <span class="stat-unit">€</span>
+                    <span class="stat-number">{offer.recommended_offer.estimated_cost_range_eur.min.toLocaleString()}</span>
+                  </div>
+                  <span class="stat-sub">Inclusive of all local subsidies</span>
+                </div>
+                <div class="stat-box-large">
+                  <span class="stat-label">Annual Savings</span>
+                  <div class="stat-value-group success">
+                    <span class="stat-unit">€</span>
+                    <span class="stat-number">{offer.recommended_offer.estimated_annual_savings_eur.min.toLocaleString()}</span>
+                  </div>
+                  <span class="stat-sub">Est. {offer.recommended_offer.estimated_payback_years.min}y payback period</span>
+                </div>
+              </div>
             </div>
           </div>
         </section>
 
-        <!-- Subsidies -->
+        <!-- Market Context & Drivers -->
+        <section class="span-2">
+          <div class="card h-full">
+            <div class="card-header-simple">
+              <div class="panel-title">Market Context & Outlook</div>
+            </div>
+            <div class="card-body-padded">
+              <p class="context-intro">{offer.market_context.summary}</p>
+              <div class="drivers-grid">
+                <div class="driver-column">
+                  <h4>Market Drivers</h4>
+                  <ul class="fancy-list">
+                    {#each offer.market_context.drivers as driver}
+                      <li>{driver}</li>
+                    {/each}
+                  </ul>
+                </div>
+                <div class="driver-column">
+                  <h4>Why Invest Now?</h4>
+                  <ul class="fancy-list accent">
+                    {#each offer.market_context.why_now as point}
+                      <li>{point}</li>
+                    {/each}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Subsidies Section -->
+        <section class="span-1">
+          <div class="card h-full subsidy-gradient">
+            <div class="card-header-simple">
+              <div class="panel-title">Available Subsidies</div>
+            </div>
+            <div class="card-body-padded">
+              <div class="subsidies-stack">
+                {#each offer.subsidies as subsidy}
+                  <div class="subsidy-pill">
+                    <div class="subsidy-info">
+                      <span class="subsidy-name">{subsidy.name}</span>
+                      <span class="subsidy-status">{subsidy.status}</span>
+                    </div>
+                    <div class="subsidy-value">-{formatCurrency(subsidy.estimated_effect_eur)}</div>
+                  </div>
+                {/each}
+                <div class="subsidy-total">
+                  <span>Total Estimated Benefits</span>
+                  <strong>{formatCurrency(offer.subsidies.reduce((acc, s) => acc + s.estimated_effect_eur, 0))}</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Financing Scenarios -->
         <section class="span-all">
-          <div class="card highlight-light">
-            <div class="panel-title">Available Subsidies</div>
-            <div class="subsidies-list">
-              {#each offer.subsidies as subsidy}
-                <div class="subsidy-item">
-                  <div class="subsidy-header">
-                    <h3>{subsidy.name}</h3>
-                    <span class="subsidy-amount">-{formatCurrency(subsidy.estimated_effect_eur)}</span>
+          <div class="card">
+            <div class="card-header-simple">
+              <div class="panel-title">Flexible Financing Scenarios</div>
+            </div>
+            <div class="card-body-padded">
+              <div class="financing-grid">
+                {#each offer.financing_options as option}
+                  <div class="financing-card-modern">
+                    <div class="fin-header">
+                      <h3>{option.scenario}</h3>
+                      {#if option.monthly_payment_eur > 0}
+                        <div class="fin-price">
+                          <span class="price-val">{formatCurrency(option.monthly_payment_eur)}</span>
+                          <span class="price-label">/ month</span>
+                        </div>
+                      {/if}
+                    </div>
+                    <div class="fin-body">
+                      <div class="fin-stat-line">
+                        <span>Down Payment</span>
+                        <strong>{formatCurrency(option.down_payment_eur)}</strong>
+                      </div>
+                      {#if option.loan_amount_eur > 0}
+                        <div class="fin-stat-line">
+                          <span>Loan Amount</span>
+                          <strong>{formatCurrency(option.loan_amount_eur)}</strong>
+                        </div>
+                        <div class="fin-stat-line">
+                          <span>Duration / APR</span>
+                          <strong>{option.term_months}mo / {option.apr_percent}%</strong>
+                        </div>
+                      {/if}
+                    </div>
+                    <div class="fin-footer">
+                      <p>{option.notes}</p>
+                    </div>
                   </div>
-                  <p class="subsidy-relevance"><strong>Relevance:</strong> {subsidy.relevance}</p>
-                  <p class="subsidy-notes">{subsidy.notes}</p>
-                </div>
-              {/each}
+                {/each}
+              </div>
             </div>
           </div>
         </section>
-
       </div>
 
-      <footer class="offer-footer">
-        <p class="disclaimer">{offer.disclaimer}</p>
-        <div class="footer-actions">
-          <button class="btn-secondary" onclick={goBack}>Save as Draft</button>
-          <button class="btn-primary" onclick={() => window.print()}>Print Proposal</button>
+      <footer class="offer-final-footer">
+        <div class="disclaimer-box">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+          <p>{offer.disclaimer}</p>
+        </div>
+        <div class="action-footer">
+          <p>Ready to power your home with {offer.recommended_offer.package_name}?</p>
+          <div class="btn-group-center">
+            <button class="btn-outline-dark btn-lg" onclick={goBack}>Save for Later</button>
+            <button class="btn-primary btn-lg">Contact Advisor</button>
+          </div>
         </div>
       </footer>
     </main>
@@ -224,229 +272,350 @@
 
 <style>
   .offer-page {
-    background-color: #f8fafc;
+    background-color: var(--clr-bg-alt);
     min-height: 100vh;
-    padding-bottom: 4rem;
   }
 
   .container {
-    max-width: 1100px;
+    max-width: 1200px;
     margin: 0 auto;
-    padding: 0 1.5rem;
+    padding: 0 2rem;
+  }
+
+  .header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
   }
 
   .offer-header {
-    background-color: #ffffff;
-    padding: 2.5rem 0;
-    border-bottom: 1px solid #e2e8f0;
-    margin-bottom: 2rem;
+    background-color: white;
+    padding: 4rem 0 3rem;
+    border-bottom: 1px solid var(--clr-border);
+    margin-bottom: 3rem;
   }
 
-  .btn-back {
+  .btn-back-pill {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    background: none;
-    border: none;
-    color: #64748b;
-    font-size: 0.875rem;
-    cursor: pointer;
-    margin-bottom: 1rem;
-    padding: 0;
-    transition: color 0.2s;
+    background: var(--clr-bg-alt);
+    border: 1px solid var(--clr-border);
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-full);
+    color: var(--clr-text-muted);
+    font-size: 0.8125rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    transition: all 0.2s;
   }
 
-  .btn-back:hover {
-    color: #0f172a;
+  .btn-back-pill:hover {
+    background: white;
+    color: var(--clr-primary);
+    border-color: var(--clr-border-strong);
+    transform: translateX(-4px);
   }
 
-  h1 {
-    font-size: 2.25rem;
-    color: #0f172a;
-    margin: 0;
-    font-weight: 800;
+  .header-title-group h1 {
+    font-size: 3rem;
+    letter-spacing: -0.04em;
+    margin: 0.5rem 0;
   }
 
   .subtitle {
-    color: #64748b;
     font-size: 1.125rem;
-    margin: 0.5rem 0 0;
+    color: var(--clr-text-muted);
   }
 
-  .grid {
+  .header-actions-top {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .offer-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1.5rem;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
   }
 
-  .span-all {
-    grid-column: 1 / -1;
-  }
+  .span-all { grid-column: 1 / -1; }
+  .span-2 { grid-column: span 2; }
+  .span-1 { grid-column: span 1; }
 
-  .card {
-    background: white;
-    padding: 2rem;
-    border-radius: 1rem;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-    height: 100%;
-  }
-
-  .highlight {
-    border: 2px solid #10b981;
-    background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);
-  }
-
-  .highlight-light {
-    border: 1px solid #10b981;
-    background-color: #f0fdf4;
-  }
-
-  .bg-dark {
-    background-color: #0f172a;
-    color: #f8fafc;
-  }
-
-  .bg-accent-light {
-    background-color: #f0f9ff;
-  }
-
-  .bg-warn-light {
-    background-color: #fffbeb;
-  }
-
-  .text-warn {
-    color: #d97706;
-  }
-
-  .card-badge {
-    display: inline-block;
-    background: #10b981;
+  .hero-offer-card {
+    background: var(--clr-primary);
     color: white;
-    padding: 0.25rem 0.75rem;
-    border-radius: 9999px;
+    border-radius: var(--radius-lg);
+    padding: 3.5rem;
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow-xl);
+  }
+
+  .hero-offer-card::after {
+    content: "";
+    position: absolute;
+    top: -20%;
+    right: -10%;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(16, 185, 129, 0.15) 0%, rgba(255,255,255,0) 70%);
+    pointer-events: none;
+  }
+
+  .hero-offer-content {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 4rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .package-meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .package-label {
     font-size: 0.75rem;
     font-weight: 700;
     text-transform: uppercase;
-    margin-bottom: 1rem;
+    letter-spacing: 0.1em;
+    color: var(--clr-accent);
   }
 
-  .offer-main-info {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    flex-wrap: wrap;
-    gap: 2rem;
-    margin-bottom: 2rem;
-    padding-bottom: 2rem;
-    border-bottom: 1px solid #e2e8f0;
-  }
-
-  .offer-main-info h2 {
-    font-size: 1.875rem;
-    color: #0f172a;
-    margin: 0;
-    flex: 1;
-    min-width: 300px;
-  }
-
-  .cost-summary {
-    display: flex;
-    gap: 2.5rem;
-  }
-
-  .cost-item {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .cost-item .label {
+  .efficiency-badge {
+    background: rgba(16, 185, 129, 0.15);
+    color: var(--clr-accent);
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--radius-full);
     font-size: 0.75rem;
-    color: #64748b;
-    text-transform: uppercase;
-    font-weight: 600;
-    letter-spacing: 0.025em;
-  }
-
-  .cost-item .value {
-    font-size: 1.25rem;
     font-weight: 800;
-    color: #0f172a;
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    border: 1px solid rgba(16, 185, 129, 0.3);
   }
 
-  .success {
-    color: #059669 !important;
+  .hero-text-side h2 {
+    color: white;
+    font-size: 2.75rem;
+    margin-bottom: 1.5rem;
   }
 
-  .simple-details {
+  .package-reason {
+    font-size: 1.25rem;
+    line-height: 1.6;
+    color: #cbd5e1;
+    margin-bottom: 2.5rem;
+    max-width: 600px;
+  }
+
+  .included-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+
+  .included-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-weight: 600;
+    font-size: 0.9375rem;
+    color: white;
+  }
+
+  .included-item svg {
+    color: var(--clr-accent);
+  }
+
+  .hero-stats-side {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
   }
 
-  .reason-highlight {
-    font-size: 1.125rem;
-    line-height: 1.6;
-    color: #334155;
-    border-left: 4px solid #10b981;
-    padding-left: 1.5rem;
-  }
-
-  .key-products {
+  .stat-box-large {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 2rem;
+    border-radius: var(--radius-lg);
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
     gap: 0.5rem;
   }
 
-  .product-tag {
-    background: white;
-    color: #475569;
-    padding: 0.375rem 0.75rem;
-    border-radius: 9999px;
-    font-size: 0.8125rem;
-    font-weight: 600;
-    border: 1px solid #e2e8f0;
+  .stat-box-large.highlight {
+    background: rgba(255,255,255,0.1);
+    border-color: rgba(255,255,255,0.2);
   }
 
-  .market-summary {
-    font-size: 1.125rem;
-    line-height: 1.6;
-    color: #334155;
-    margin-bottom: 2rem;
-  }
-
-  .market-details-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2.5rem;
-  }
-
-  .market-list h4 {
+  .stat-label {
     font-size: 0.75rem;
+    font-weight: 700;
     text-transform: uppercase;
     color: #94a3b8;
-    margin-bottom: 1rem;
+  }
+
+  .stat-value-group {
+    display: flex;
+    align-items: baseline;
+    gap: 0.375rem;
+  }
+
+  .stat-value-group.success {
+    color: var(--clr-accent);
+  }
+
+  .stat-unit {
+    font-size: 1.25rem;
     font-weight: 700;
   }
 
-  .market-list ul {
+  .stat-number {
+    font-size: 2.5rem;
+    font-weight: 800;
+  }
+
+  .stat-sub {
+    font-size: 0.8125rem;
+    color: #94a3b8;
+    font-weight: 500;
+  }
+
+  .card-header-simple {
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid var(--clr-border);
+  }
+
+  .card-body-padded {
+    padding: 2.5rem;
+  }
+
+  .context-intro {
+    font-size: 1.125rem;
+    line-height: 1.6;
+    margin-bottom: 2.5rem;
+    color: var(--clr-text-muted);
+  }
+
+  .drivers-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+  }
+
+  .driver-column h4 {
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: var(--clr-text-muted);
+    margin-bottom: 1.5rem;
+  }
+
+  .fancy-list {
+    list-style: none;
+    padding: 0;
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: 1.25rem;
   }
 
-  .market-list li {
-    font-size: 0.9375rem;
-    color: #475569;
-    padding-left: 1.5rem;
+  .fancy-list li {
     position: relative;
+    padding-left: 2rem;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    line-height: 1.5;
   }
 
-  .market-list li::before {
-    content: "•";
+  .fancy-list li::before {
+    content: "";
     position: absolute;
     left: 0;
-    color: #cbd5e1;
-    font-weight: bold;
+    top: 0.25rem;
+    width: 8px;
+    height: 8px;
+    background: var(--clr-border-strong);
+    border-radius: 50%;
+  }
+
+  .fancy-list.accent li::before {
+    background: var(--clr-accent);
+    box-shadow: 0 0 10px var(--clr-accent);
+  }
+
+  .subsidy-gradient {
+    background: linear-gradient(180deg, #f0fdf4 0%, #ffffff 100%);
+    border-color: var(--clr-accent-light);
+  }
+
+  .subsidies-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .subsidy-pill {
+    background: white;
+    border: 1.5px solid var(--clr-border);
+    padding: 1.25rem;
+    border-radius: var(--radius-md);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .subsidy-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .subsidy-name {
+    font-weight: 700;
+    font-size: 0.9375rem;
+  }
+
+  .subsidy-status {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--clr-accent-dark);
+    text-transform: uppercase;
+  }
+
+  .subsidy-value {
+    font-size: 1.125rem;
+    font-weight: 800;
+    color: var(--clr-accent-dark);
+  }
+
+  .subsidy-total {
+    margin-top: 1rem;
+    padding: 1.5rem;
+    background: var(--clr-primary);
+    color: white;
+    border-radius: var(--radius-md);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .subsidy-total span {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #94a3b8;
+  }
+
+  .subsidy-total strong {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--clr-accent);
   }
 
   .financing-grid {
@@ -455,361 +624,208 @@
     gap: 1.5rem;
   }
 
-  .financing-card {
-    background: white;
-    padding: 1.5rem;
-    border-radius: 0.75rem;
-    border: 1px solid #e2e8f0;
+  .financing-card-modern {
+    background: var(--clr-bg-alt);
+    border: 1px solid var(--clr-border);
+    border-radius: var(--radius-lg);
     display: flex;
     flex-direction: column;
-  }
-
-  .financing-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    margin-bottom: 1.25rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px dashed #e2e8f0;
-  }
-
-  .financing-header h3 {
-    font-size: 1rem;
-    font-weight: 700;
-    color: #0f172a;
-    margin: 0;
-  }
-
-  .monthly-price {
-    font-size: 1.125rem;
-    font-weight: 800;
-    color: #10b981;
-  }
-
-  .financing-details {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    margin-bottom: 1rem;
-  }
-
-  .fin-row {
-    display: flex;
-    justify-content: space-between;
-    font-size: 0.8125rem;
-  }
-
-  .fin-row span:first-child {
-    color: #64748b;
-  }
-
-  .fin-row span:last-child {
-    font-weight: 600;
-    color: #0f172a;
-  }
-
-  .fin-notes {
-    font-size: 0.75rem;
-    color: #64748b;
-    margin-top: auto;
-    font-style: italic;
-  }
-
-  .subsidies-list {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-  }
-
-  .subsidy-item {
-    background: white;
-    padding: 1.5rem;
-    border-radius: 0.75rem;
-    border: 1px solid #d1fae5;
-  }
-
-  .subsidy-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 0.75rem;
-  }
-
-  .subsidy-header h3 {
-    font-size: 1.125rem;
-    font-weight: 700;
-    color: #0f172a;
-    margin: 0;
-  }
-
-  .subsidy-amount {
-    font-size: 1.25rem;
-    font-weight: 800;
-    color: #059669;
-  }
-
-  .subsidy-relevance {
-    font-size: 0.875rem;
-    color: #065f46;
-    background: #ecfdf5;
-    padding: 0.5rem 0.75rem;
-    border-radius: 4px;
-    margin-bottom: 0.75rem;
-  }
-
-  .subsidy-notes {
-    font-size: 0.875rem;
-    color: #475569;
-    line-height: 1.5;
-  }
-
-  .missing-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1rem;
-  }
-
-  .missing-item {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    background: white;
-    padding: 0.75rem 1rem;
-    border-radius: 6px;
-    border: 1px solid #fde68a;
-    font-size: 0.8125rem;
-    color: #92400e;
-  }
-
-  .benefits-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1.25rem;
-    margin-top: 0.5rem;
-  }
-
-  .benefit-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 0.75rem;
-    color: #cbd5e1;
-    font-size: 0.9375rem;
-    line-height: 1.5;
-  }
-
-  .alternatives-compact {
-    display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
-  }
-
-  .alt-pill {
-    background: white;
-    border: 1px solid #e2e8f0;
-    padding: 0.75rem 1.25rem;
-    border-radius: 9999px;
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-    transition: all 0.2s;
-  }
-
-  .alt-pill:hover {
-    border-color: #cbd5e1;
-    transform: translateY(-1px);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-  }
-
-  .alt-name {
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: #334155;
-  }
-
-  .alt-price {
-    font-size: 0.8125rem;
-    font-weight: 700;
-    color: #10b981;
-  }
-
-  .market-details {
-    background: #f1f5f9;
-    border-radius: 0.75rem;
     overflow: hidden;
   }
 
-  .market-details summary {
-    padding: 1rem 1.5rem;
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: #64748b;
-    cursor: pointer;
-    transition: background 0.2s;
+  .fin-header {
+    padding: 1.5rem;
+    background: white;
+    border-bottom: 1px solid var(--clr-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
   }
 
-  .market-details summary:hover {
-    background: #e2e8f0;
-  }
-
-  .market-content-inner {
-    padding: 0 1.5rem 1.5rem;
-    border-top: 1px solid #e2e8f0;
-  }
-
-  .market-content-inner p {
-    font-size: 0.875rem;
-    color: #475569;
-    line-height: 1.6;
-    margin: 1.5rem 0;
-  }
-
-  .context-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
-  }
-
-  .context-grid h4 {
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    color: #94a3b8;
-    margin-bottom: 0.75rem;
-  }
-
-  .context-grid ul {
-    list-style: none;
-    padding: 0;
-  }
-
-  .context-grid li {
-    font-size: 0.8125rem;
-    color: #64748b;
-    margin-bottom: 0.5rem;
-    padding-left: 1rem;
-    position: relative;
-  }
-
-  .context-grid li::before {
-    content: "•";
-    position: absolute;
-    left: 0;
-    color: #cbd5e1;
-  }
-
-  ul {
-    list-style: none;
-    padding: 0;
+  .fin-header h3 {
+    font-size: 1rem;
     margin: 0;
   }
 
-  li {
-    position: relative;
-    padding-left: 1.5rem;
-    margin-bottom: 0.5rem;
-    font-size: 0.9375rem;
-    line-height: 1.5;
+  .fin-price {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
   }
 
-  .panel-title {
-    font-size: 0.875rem;
+  .price-val {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--clr-accent-dark);
+  }
+
+  .price-label {
+    font-size: 0.625rem;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: #64748b;
+    color: var(--clr-text-muted);
+  }
+
+  .fin-body {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    flex-grow: 1;
+  }
+
+  .fin-stat-line {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.875rem;
+  }
+
+  .fin-stat-line span {
+    color: var(--clr-text-muted);
+    font-weight: 500;
+  }
+
+  .fin-stat-line strong {
+    color: var(--clr-primary);
+    font-weight: 700;
+  }
+
+  .fin-footer {
+    padding: 1rem 1.5rem;
+    background: rgba(0,0,0,0.02);
+    font-size: 0.75rem;
+    color: var(--clr-text-muted);
+    font-style: italic;
+    line-height: 1.4;
+  }
+
+  .offer-final-footer {
+    margin-top: 6rem;
+    padding-bottom: 6rem;
+    text-align: center;
+  }
+
+  .disclaimer-box {
+    background: white;
+    border: 1px solid var(--clr-border);
+    padding: 1.5rem 2rem;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    max-width: 900px;
+    margin: 0 auto 4rem;
+    text-align: left;
+  }
+
+  .disclaimer-box p {
+    font-size: 0.8125rem;
+    color: var(--clr-text-muted);
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .disclaimer-box svg {
+    flex-shrink: 0;
+    color: var(--clr-border-strong);
+  }
+
+  .action-footer p {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-bottom: 2rem;
+    color: var(--clr-primary);
+  }
+
+  .btn-group-center {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+  }
+
+  .btn-outline-dark {
+    background: white;
+    border: 1.5px solid var(--clr-primary);
+    color: var(--clr-primary);
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--radius-md);
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .btn-outline-dark:hover {
+    background: var(--clr-bg-alt);
+  }
+
+  .btn-lg {
+    padding: 1.25rem 2.5rem;
+    font-size: 1.125rem;
+    border-radius: var(--radius-lg);
+  }
+
+  .ai-loader-large {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    margin-bottom: 2rem;
+  }
+
+  .error-state {
+    text-align: center;
+    padding: 5rem 2rem;
+    max-width: 500px;
+    margin: 5rem auto;
+  }
+
+  .error-icon {
+    font-size: 3rem;
     margin-bottom: 1.5rem;
   }
 
-  .text-accent { color: #10b981; }
-
-  .offer-footer {
-    margin-top: 4rem;
-    text-align: center;
-    border-top: 1px solid #e2e8f0;
-    padding-top: 2rem;
+  @media (max-width: 1024px) {
+    .hero-offer-content {
+      grid-template-columns: 1fr;
+      gap: 3rem;
+    }
+    .financing-grid {
+      grid-template-columns: 1fr 1fr;
+    }
   }
 
-  .disclaimer {
-    font-size: 0.75rem;
-    color: #94a3b8;
-    max-width: 800px;
-    margin: 0 auto 2rem;
-    line-height: 1.5;
-  }
-
-  .footer-actions {
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-  }
-
-  .btn-primary {
-    background-color: #10b981;
-    color: white;
-    border: none;
-    padding: 0.75rem 2rem;
-    border-radius: 0.5rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: background 0.2s;
-  }
-
-  .btn-primary:hover {
-    background-color: #059669;
-  }
-
-  .btn-secondary {
-    background-color: white;
-    color: #0f172a;
-    border: 1px solid #e2e8f0;
-    padding: 0.75rem 2rem;
-    border-radius: 0.5rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-
-  .btn-secondary:hover {
-    border-color: #cbd5e1;
-    background-color: #f8fafc;
-  }
-
-  .loading-full {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 60vh;
-  }
-
-  .spinner {
-    width: 40px;
-    height: 40px;
-    border: 3px solid #f3f3f3;
-    border-top: 3px solid #10b981;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin-bottom: 1rem;
-  }
-
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-
-  @media (max-width: 900px) {
-    .grid { grid-template-columns: 1fr; }
-    .context-grid, .benefits-grid { grid-template-columns: 1fr; gap: 1rem; }
-    h1 { font-size: 1.75rem; }
+  @media (max-width: 768px) {
+    .header-container {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 2rem;
+    }
+    .drivers-grid, .financing-grid {
+      grid-template-columns: 1fr;
+    }
+    .offer-grid {
+      grid-template-columns: 1fr;
+    }
+    .hero-offer-card {
+      padding: 2rem;
+    }
+    .hero-text-side h2 {
+      font-size: 2rem;
+    }
+    .btn-group-center {
+      flex-direction: column;
+    }
   }
 
   @media print {
-    .offer-header, .offer-footer, .btn-back, .market-section { display: none; }
+    .offer-header, .btn-group-center, .action-footer, .btn-back-pill, .header-actions-top { display: none !important; }
     .offer-page { background: white; padding: 0; }
-    .card { box-shadow: none; border: 1px solid #e2e8f0; }
-    .highlight { border: 2px solid #10b981; }
-    .bg-dark { background-color: white !important; color: black !important; }
-    .text-accent { color: #10b981 !important; }
     .container { max-width: 100%; padding: 0; }
-    .grid { gap: 0.5cm; }
+    .hero-offer-card { background: white; color: black; border: 2px solid black; box-shadow: none; }
+    .hero-text-side h2, .package-reason, .included-item { color: black; }
+    .stat-box-large { border: 1px solid #eee; color: black; }
+    .stat-number { color: black !important; }
+    .financing-card-modern { break-inside: avoid; }
+    .card { box-shadow: none !important; border: 1px solid #ddd !important; }
   }
 </style>

@@ -83,67 +83,78 @@
 <main class="container">
   <div class="form-card card">
     <div class="form-header">
-      <h1>Add new customer</h1>
-      <p class="subtitle">Enter the basic details of your new customer.</p>
+      <div class="header-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="17" y1="11" x2="23" y2="11"></line></svg>
+      </div>
+      <div>
+        <h1>Add new customer</h1>
+        <p class="subtitle">Enter the basic details to start the AI coaching process.</p>
+      </div>
     </div>
 
     <form onsubmit={(e) => { e.preventDefault(); handleSave(); }}>
-      <div class="form-grid">
-        <div class="form-group">
-          <label for="firstName">First name *</label>
-          <input 
-            type="text" 
-            id="firstName" 
-            bind:value={firstName} 
-            placeholder="e.g. Max"
-            aria-invalid={!!errors.firstName}
-            class:error={!!errors.firstName}
-          />
-          {#if errors.firstName}<span class="error-text">{errors.firstName}</span>{/if}
-        </div>
+      <div class="form-sections-wrapper">
+        <!-- Required Info Section -->
+        <div class="form-section">
+          <h2 class="section-title">Personal Information</h2>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="firstName">First name *</label>
+              <input 
+                type="text" 
+                id="firstName" 
+                bind:value={firstName} 
+                placeholder="e.g. Max"
+                aria-invalid={!!errors.firstName}
+                class:error={!!errors.firstName}
+              />
+              {#if errors.firstName}<span class="error-text">{errors.firstName}</span>{/if}
+            </div>
 
-        <div class="form-group">
-          <label for="lastName">Last name *</label>
-          <input 
-            type="text" 
-            id="lastName" 
-            bind:value={lastName} 
-            placeholder="e.g. Smith"
-            aria-invalid={!!errors.lastName}
-            class:error={!!errors.lastName}
-          />
-          {#if errors.lastName}<span class="error-text">{errors.lastName}</span>{/if}
-        </div>
+            <div class="form-group">
+              <label for="lastName">Last name *</label>
+              <input 
+                type="text" 
+                id="lastName" 
+                bind:value={lastName} 
+                placeholder="e.g. Smith"
+                aria-invalid={!!errors.lastName}
+                class:error={!!errors.lastName}
+              />
+              {#if errors.lastName}<span class="error-text">{errors.lastName}</span>{/if}
+            </div>
 
-        <div class="form-group full-width">
-          <label for="birthDate">Date of birth *</label>
-          <input 
-            type="date" 
-            id="birthDate" 
-            bind:value={birthDate} 
-            aria-invalid={!!errors.birthDate}
-            class:error={!!errors.birthDate}
-          />
-          {#if errors.birthDate}<span class="error-text">{errors.birthDate}</span>{/if}
-        </div>
-
-        <div class="address-section full-width">
-          <h2 class="section-title">Address</h2>
-          
-          <div class="form-group">
-            <label for="street">Street *</label>
-            <input 
-              type="text" 
-              id="street" 
-              bind:value={street} 
-              placeholder="Main Street"
-              aria-invalid={!!errors.street}
-              class:error={!!errors.street}
-            />
-            {#if errors.street}<span class="error-text">{errors.street}</span>{/if}
+            <div class="form-group full-width">
+              <label for="birthDate">Date of birth *</label>
+              <input 
+                type="date" 
+                id="birthDate" 
+                bind:value={birthDate} 
+                aria-invalid={!!errors.birthDate}
+                class:error={!!errors.birthDate}
+              />
+              {#if errors.birthDate}<span class="error-text">{errors.birthDate}</span>{/if}
+            </div>
           </div>
+        </div>
 
-          <div class="row">
+        <!-- Address Section -->
+        <div class="form-section">
+          <h2 class="section-title">Property Address</h2>
+          <div class="form-grid">
+            <div class="form-group full-width">
+              <label for="street">Street *</label>
+              <input 
+                type="text" 
+                id="street" 
+                bind:value={street} 
+                placeholder="Main Street"
+                aria-invalid={!!errors.street}
+                class:error={!!errors.street}
+              />
+              {#if errors.street}<span class="error-text">{errors.street}</span>{/if}
+            </div>
+
             <div class="form-group">
               <label for="houseNumber">House number *</label>
               <input 
@@ -170,7 +181,7 @@
               {#if errors.zip}<span class="error-text">{errors.zip}</span>{/if}
             </div>
 
-            <div class="form-group">
+            <div class="form-group full-width">
               <label for="city">City *</label>
               <input 
                 type="text" 
@@ -185,57 +196,63 @@
           </div>
         </div>
 
-        <div class="details-section full-width">
-          <h2 class="section-title">Additional Details <span class="optional">(Optional)</span></h2>
+        <!-- Additional Info Section -->
+        <div class="form-section optional-section">
+          <div class="section-header">
+            <h2 class="section-title">Additional Details</h2>
+            <span class="badge badge-accent">Optional</span>
+          </div>
           
-          <div class="form-group">
-            <label for="customerProfile">Customer Profile</label>
-            <input 
-              type="text" 
-              id="customerProfile" 
-              bind:value={customerProfile} 
-              placeholder="e.g. 4-person household, single-family house built in 1985"
-            />
-          </div>
+          <div class="form-grid">
+            <div class="form-group full-width">
+              <label for="customerProfile">Customer Profile</label>
+              <input 
+                type="text" 
+                id="customerProfile" 
+                bind:value={customerProfile} 
+                placeholder="e.g. 4-person household, single-family house built in 1985"
+              />
+            </div>
 
-          <div class="form-group">
-            <label for="energyConsumption">Energy Consumption</label>
-            <input 
-              type="text" 
-              id="energyConsumption" 
-              bind:value={energyConsumption} 
-              placeholder="e.g. 4,500 kWh/year electricity, gas heating"
-            />
-          </div>
+            <div class="form-group full-width">
+              <label for="energyConsumption">Energy Consumption</label>
+              <input 
+                type="text" 
+                id="energyConsumption" 
+                bind:value={energyConsumption} 
+                placeholder="e.g. 4,500 kWh/year electricity, gas heating"
+              />
+            </div>
 
-          <div class="form-group">
-            <label for="existingSystems">Existing Systems</label>
-            <input 
-              type="text" 
-              id="existingSystems" 
-              bind:value={existingSystems} 
-              placeholder="e.g. Already 5 kWp solar system, no battery storage"
-            />
-          </div>
+            <div class="form-group full-width">
+              <label for="existingSystems">Existing Systems</label>
+              <input 
+                type="text" 
+                id="existingSystems" 
+                bind:value={existingSystems} 
+                placeholder="e.g. Already 5 kWp solar system, no battery storage"
+              />
+            </div>
 
-          <div class="form-group">
-            <label for="financialProfile">Financial Profile</label>
-            <input 
-              type="text" 
-              id="financialProfile" 
-              bind:value={financialProfile} 
-              placeholder="e.g. Medium income, open to financing"
-            />
-          </div>
+            <div class="form-group full-width">
+              <label for="financialProfile">Financial Profile</label>
+              <input 
+                type="text" 
+                id="financialProfile" 
+                bind:value={financialProfile} 
+                placeholder="e.g. Medium income, open to financing"
+              />
+            </div>
 
-          <div class="form-group">
-            <label for="conversationHistory">Conversation History</label>
-            <textarea 
-              id="conversationHistory" 
-              bind:value={conversationHistory} 
-              placeholder="e.g. Customer mentioned concerns about rising gas prices..."
-              rows="3"
-            ></textarea>
+            <div class="form-group full-width">
+              <label for="conversationHistory">Conversation History</label>
+              <textarea 
+                id="conversationHistory" 
+                bind:value={conversationHistory} 
+                placeholder="e.g. Customer mentioned concerns about rising gas prices..."
+                rows="4"
+              ></textarea>
+            </div>
           </div>
         </div>
       </div>
@@ -243,15 +260,17 @@
       <div class="form-actions">
         <button type="submit" class="btn-save" disabled={isSaving}>
           {#if isSaving}
-            Saving...
+            <div class="loader"></div>
+            <span>Creating Customer...</span>
           {:else}
-            Save customer
+            <span>Save & Continue to Analysis</span>
           {/if}
         </button>
       </div>
 
       {#if errors.general}
         <div class="alert alert-error" role="alert">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
           {errors.general}
         </div>
       {/if}
@@ -268,137 +287,148 @@
 
 <style>
   .container {
-    max-width: 700px;
+    max-width: 800px;
     margin: 0 auto;
-    padding: 1rem 0;
   }
 
   .form-card {
-    padding: 2.5rem;
+    padding: 3.5rem;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--clr-border);
   }
 
   .form-header {
-    margin-bottom: 2rem;
+    margin-bottom: 3.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .header-icon {
+    width: 60px;
+    height: 60px;
+    background: var(--clr-accent-light);
+    color: var(--clr-accent-dark);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   h1 {
-    font-size: 1.75rem;
-    margin-bottom: 0.5rem;
+    font-size: 2.25rem;
+    margin-bottom: 0.25rem;
+    letter-spacing: -0.03em;
   }
 
   .subtitle {
-    color: var(--clr-text-light);
-    font-size: 1rem;
+    color: var(--clr-text-muted);
+    font-size: 1.125rem;
+  }
+
+  .form-sections-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 3.5rem;
+  }
+
+  .form-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--clr-primary);
+    margin: 0;
   }
 
   .form-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 1.5rem;
+    gap: 1.25rem;
   }
 
   .full-width {
     grid-column: span 2;
   }
 
-  .section-title {
-    font-size: 1.125rem;
-    margin: 1rem 0 1rem;
-    padding-top: 1rem;
-    border-top: 1px solid var(--clr-border);
-  }
-
   .form-group {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 0.625rem;
   }
 
   label {
     font-size: 0.875rem;
     font-weight: 600;
-    color: var(--clr-primary);
+    color: var(--clr-primary-light);
   }
 
-  input {
-    padding: 0.75rem 1rem;
-    border: 1px solid var(--clr-border);
-    border-radius: 8px;
+  input, textarea {
+    padding: 0.875rem 1.125rem;
+    border: 1.5px solid var(--clr-border);
+    border-radius: var(--radius-md);
     font-size: 1rem;
-    transition: all 0.2s;
-    background-color: var(--clr-bg-alt);
-  }
-
-  input:focus {
-    outline: none;
-    border-color: var(--clr-accent);
-    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     background-color: white;
   }
 
-  textarea {
-    padding: 0.75rem 1rem;
-    border: 1px solid var(--clr-border);
-    border-radius: 8px;
-    font-size: 1rem;
-    transition: all 0.2s;
-    background-color: var(--clr-bg-alt);
-    font-family: inherit;
-    resize: vertical;
-  }
-
-  textarea:focus {
+  input:focus, textarea:focus {
     outline: none;
     border-color: var(--clr-accent);
-    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
-    background-color: white;
+    box-shadow: 0 0 0 4px var(--clr-accent-light);
   }
 
   input.error {
     border-color: var(--clr-error);
-    background-color: #fffafb;
-  }
-
-  .optional {
-    font-weight: 400;
-    font-size: 0.875rem;
-    color: var(--clr-text-light);
-    margin-left: 0.5rem;
+    background-color: #fef2f2;
   }
 
   .error-text {
     color: var(--clr-error);
-    font-size: 0.75rem;
-    font-weight: 500;
-  }
-
-  .row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.5rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    margin-top: -0.25rem;
   }
 
   .form-actions {
-    margin-top: 2.5rem;
+    margin-top: 4rem;
+    padding-top: 2.5rem;
+    border-top: 1px solid var(--clr-border);
   }
 
   .btn-save {
     background-color: var(--clr-primary);
     color: white;
     border: none;
-    padding: 1rem;
-    border-radius: 10px;
-    font-size: 1rem;
-    font-weight: 600;
+    padding: 1.25rem;
+    border-radius: var(--radius-lg);
+    font-size: 1.125rem;
+    font-weight: 700;
     width: 100%;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.2);
   }
 
   .btn-save:hover:not(:disabled) {
     background-color: #1e293b;
-    transform: translateY(-1px);
-    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.25);
   }
 
   .btn-save:disabled {
@@ -406,20 +436,33 @@
     cursor: not-allowed;
   }
 
+  .loader {
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255,255,255,0.3);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
   .alert {
-    margin-top: 1.5rem;
-    padding: 1rem;
-    border-radius: 8px;
+    margin-top: 2rem;
+    padding: 1.25rem;
+    border-radius: var(--radius-md);
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    font-weight: 500;
+    gap: 1rem;
+    font-weight: 600;
   }
 
   .alert-success {
-    background-color: #ecfdf5;
-    color: var(--clr-success);
-    border: 1px solid #d1fae5;
+    background-color: var(--clr-accent-light);
+    color: var(--clr-accent-dark);
+    border: 1px solid rgba(16, 185, 129, 0.2);
   }
 
   .alert-error {
@@ -428,15 +471,18 @@
     border: 1px solid #fee2e2;
   }
 
-  @media (max-width: 600px) {
-    .form-grid, .row {
+  @media (max-width: 768px) {
+    .form-card {
+      padding: 2rem;
+    }
+    .form-grid {
       grid-template-columns: 1fr;
     }
     .full-width {
       grid-column: span 1;
     }
-    .form-card {
-      padding: 1.5rem;
+    h1 {
+      font-size: 1.75rem;
     }
   }
 </style>

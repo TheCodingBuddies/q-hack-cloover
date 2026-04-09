@@ -36,48 +36,66 @@
 <div class="overview-container">
   <header class="overview-header">
     <div class="header-content">
+      <div class="header-badge">
+        <span class="badge badge-accent">Portfolio Management</span>
+      </div>
       <h1>Customer Overview</h1>
       <p class="subtitle">Manage your customer relationships and project progress at a glance.</p>
     </div>
     
     <div class="search-wrapper">
-      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      <input 
-        type="text" 
-        placeholder="Search by name or city..." 
-        bind:value={searchTerm}
-      />
+      <div class="search-inner">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="search-icon"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input 
+          type="text" 
+          placeholder="Filter by name, city or ZIP..." 
+          bind:value={searchTerm}
+        />
+        {#if searchTerm}
+          <button class="clear-btn" onclick={() => searchTerm = ''}>×</button>
+        {/if}
+      </div>
     </div>
   </header>
 
   {#if isLoading}
     <div class="loading-state">
       <div class="spinner"></div>
-      <p>Loading customers...</p>
+      <p>Synchronizing with database...</p>
     </div>
   {:else if error}
     <div class="empty-state-container card">
+      <div class="empty-icon error">⚠️</div>
       <p class="error-message">{error}</p>
-      <button class="primary-button" onclick={() => window.location.reload()}>Try Again</button>
+      <button class="btn-primary" onclick={() => window.location.reload()}>Try Again</button>
     </div>
   {:else if filteredCustomers.length === 0}
     <div class="empty-state-container card">
-      <p>No customers found matching your search.</p>
+      <div class="empty-icon">📂</div>
+      <h3>No customers found</h3>
+      <p>Try adjusting your search criteria or add a new customer.</p>
+      <button class="btn-outline" onclick={() => searchTerm = ''} style="margin-top: 1rem;">Clear Search</button>
     </div>
   {:else}
     <div class="customer-grid">
       {#each filteredCustomers as customer}
         <button class="customer-card card" onclick={() => navigateToCustomer(customer.id)}>
-          <div class="card-header">
-            <div class="avatar">
-              {customer.firstName[0]}{customer.lastName[0]}
+          <div class="card-body">
+            <div class="avatar-group">
+              <div class="avatar">
+                {customer.firstName[0]}{customer.lastName[0]}
+              </div>
+              <div class="status-indicator active"></div>
             </div>
             <div class="customer-meta">
               <h3>{customer.firstName} {customer.lastName}</h3>
               <div class="address-info">
                 {#if customer.address}
                   <span class="street">{customer.address.street} {customer.address.houseNumber}</span>
-                  <span class="city">{customer.address.zip} {customer.address.city}</span>
+                  <div class="city-line">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                    <span class="city">{customer.address.zip} {customer.address.city}</span>
+                  </div>
                 {:else}
                   <span class="city">No address provided</span>
                 {/if}
@@ -85,9 +103,15 @@
             </div>
           </div>
           
-          <div class="card-footer-action">
-            <span class="view-details-text">View Details</span>
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          <div class="card-footer">
+            <div class="tags">
+              <span class="tag">Lead</span>
+              <span class="tag secondary">Solar PV</span>
+            </div>
+            <div class="action-link">
+              <span>Analysis</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </div>
           </div>
         </button>
       {/each}
@@ -99,148 +123,229 @@
   .overview-container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 2rem;
   }
 
   .overview-header {
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
-    margin-bottom: 3rem;
-    gap: 2rem;
+    margin-bottom: 4rem;
+    gap: 3rem;
+  }
+
+  .header-badge {
+    margin-bottom: 1rem;
   }
 
   .header-content h1 {
-    font-size: 2.25rem;
+    font-size: 2.75rem;
     font-weight: 800;
-    color: var(--clr-text);
+    color: var(--clr-primary);
     margin: 0 0 0.5rem 0;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.04em;
   }
 
   .subtitle {
-    color: var(--clr-text-light);
-    font-size: 1.1rem;
+    color: var(--clr-text-muted);
+    font-size: 1.125rem;
     margin: 0;
+    max-width: 500px;
+    line-height: 1.5;
   }
 
   .search-wrapper {
-    position: relative;
     width: 100%;
-    max-width: 400px;
+    max-width: 450px;
   }
 
-  .search-wrapper svg {
+  .search-inner {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .search-icon {
     position: absolute;
-    left: 1rem;
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--clr-text-light);
+    left: 1.25rem;
+    color: var(--clr-text-muted);
     pointer-events: none;
   }
 
-  .search-wrapper input {
+  .search-inner input {
     width: 100%;
-    padding: 0.875rem 1rem 0.875rem 3rem;
-    border: 1px solid var(--clr-border);
-    border-radius: 12px;
+    padding: 1rem 1rem 1rem 3.5rem;
+    border: 2px solid var(--clr-border);
+    border-radius: var(--radius-lg);
     font-size: 1rem;
     background: white;
-    transition: all 0.2s;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    font-weight: 500;
   }
 
-  .search-wrapper input:focus {
+  .search-inner input:focus {
     outline: none;
-    border-color: var(--clr-primary);
-    box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+    border-color: var(--clr-accent);
+    box-shadow: 0 8px 30px rgba(16, 185, 129, 0.1);
+    transform: translateY(-2px);
+  }
+
+  .clear-btn {
+    position: absolute;
+    right: 1rem;
+    background: var(--clr-bg-alt);
+    border: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1.25rem;
+    color: var(--clr-text-muted);
   }
 
   .customer-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 2rem;
   }
 
   .customer-card {
     display: flex;
     flex-direction: column;
     text-align: left;
-    padding: 1.5rem;
+    padding: 0;
     cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
     background: white;
-    border: none;
+    border: 1px solid var(--clr-border);
     width: 100%;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .customer-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 24px -10px rgba(15, 23, 42, 0.15);
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-xl);
+    border-color: var(--clr-accent);
   }
 
-  .card-header {
+  .card-body {
+    padding: 2rem;
     display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
+    align-items: flex-start;
+    gap: 1.25rem;
+  }
+
+  .avatar-group {
+    position: relative;
+    flex-shrink: 0;
   }
 
   .avatar {
-    width: 48px;
-    height: 48px;
-    border-radius: 12px;
-    background: var(--clr-bg-alt);
-    color: var(--clr-primary);
+    width: 60px;
+    height: 60px;
+    border-radius: 18px;
+    background: var(--clr-primary);
+    color: white;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-weight: 700;
-    font-size: 1.1rem;
+    font-weight: 800;
+    font-size: 1.25rem;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.1);
+  }
+
+  .status-indicator {
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
+    width: 16px;
+    height: 16px;
+    background: var(--clr-success);
+    border: 3px solid white;
+    border-radius: 50%;
   }
 
   .customer-meta h3 {
-    margin: 0;
-    font-size: 1.125rem;
-    font-weight: 700;
-    color: var(--clr-text);
-  }
-
-  .city {
-    font-size: 0.85rem;
-    color: var(--clr-text-light);
-    display: block;
-  }
-
-  .street {
-    font-size: 0.85rem;
-    color: var(--clr-text-light);
-    display: block;
-    margin-bottom: 0.125rem;
+    margin: 0 0 0.5rem 0;
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--clr-primary);
+    letter-spacing: -0.02em;
   }
 
   .address-info {
-    margin-top: 0.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
   }
 
-  .card-footer-action {
-    margin-top: auto;
+  .street {
+    font-size: 0.875rem;
+    color: var(--clr-text-muted);
+    font-weight: 500;
+  }
+
+  .city-line {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    color: var(--clr-text-muted);
+  }
+
+  .city {
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+
+  .card-footer {
+    padding: 1.25rem 2rem;
+    background: var(--clr-bg-alt);
+    border-top: 1px solid var(--clr-border);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding-top: 1rem;
-    border-top: 1px solid var(--clr-bg-alt);
+    margin-top: auto;
+  }
+
+  .tags {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .tag {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    padding: 0.25rem 0.625rem;
+    border-radius: 6px;
+    background: var(--clr-accent-light);
+    color: var(--clr-accent-dark);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .tag.secondary {
+    background: #e2e8f0;
+    color: #475569;
+  }
+
+  .action-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
     color: var(--clr-primary);
-    font-weight: 600;
+    font-weight: 700;
     font-size: 0.875rem;
   }
 
-  .view-details-text {
-    opacity: 0.8;
-    transition: opacity 0.2s;
+  .action-link svg {
+    transition: transform 0.2s;
   }
 
-  .customer-card:hover .view-details-text {
-    opacity: 1;
+  .customer-card:hover .action-link svg {
+    transform: translateX(4px);
   }
 
   .loading-state {
@@ -248,18 +353,18 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 5rem;
-    color: var(--clr-text-light);
+    padding: 8rem 0;
+    color: var(--clr-text-muted);
   }
 
   .spinner {
-    width: 40px;
-    height: 40px;
-    border: 3px solid var(--clr-bg-alt);
-    border-top-color: var(--clr-primary);
+    width: 48px;
+    height: 48px;
+    border: 4px solid var(--clr-border);
+    border-top-color: var(--clr-accent);
     border-radius: 50%;
     animation: spin 1s linear infinite;
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
   }
 
   @keyframes spin {
@@ -267,20 +372,35 @@
   }
 
   .empty-state-container {
-    padding: 3rem;
+    padding: 5rem 2rem;
     text-align: center;
-    color: var(--clr-text-light);
+    max-width: 600px;
+    margin: 2rem auto;
   }
 
-  @media (max-width: 768px) {
+  .empty-icon {
+    font-size: 4rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .empty-icon.error {
+    color: var(--clr-error);
+  }
+
+  @media (max-width: 900px) {
     .overview-header {
       flex-direction: column;
       align-items: flex-start;
-      margin-bottom: 2rem;
+      margin-bottom: 3rem;
+      gap: 1.5rem;
     }
     
     .search-wrapper {
       max-width: none;
+    }
+
+    .customer-grid {
+      grid-template-columns: 1fr;
     }
   }
 </style>
