@@ -17,6 +17,44 @@
   let error: string | null = $state(null);
   let showAlternatives = $state(false);
   let showFullMarketSummary = $state(false);
+  let solarPanelCount = $state(6);
+
+  const scaledOffer = $derived.by(() => {
+    if (!offer) return null;
+    const factor = solarPanelCount / 6;
+
+    return {
+      ...offer,
+      subsidies: offer.subsidies.map(s => ({
+        ...s,
+        estimated_effect_eur: Math.round(s.estimated_effect_eur * factor)
+      })),
+      recommended_offer: {
+        ...offer.recommended_offer,
+        estimated_cost_range_eur: {
+          min: Math.round(offer.recommended_offer.estimated_cost_range_eur.min * factor),
+          max: Math.round(offer.recommended_offer.estimated_cost_range_eur.max * factor)
+        },
+        estimated_annual_savings_eur: {
+          min: Math.round(offer.recommended_offer.estimated_annual_savings_eur.min * factor),
+          max: Math.round(offer.recommended_offer.estimated_annual_savings_eur.max * factor)
+        }
+      },
+      alternative_offers: offer.alternative_offers.map(alt => ({
+        ...alt,
+        estimated_cost_range_eur: {
+          min: Math.round(alt.estimated_cost_range_eur.min * factor),
+          max: Math.round(alt.estimated_cost_range_eur.max * factor)
+        }
+      })),
+      financing_options: offer.financing_options.map(f => ({
+        ...f,
+        down_payment_eur: Math.round(f.down_payment_eur * factor),
+        loan_amount_eur: Math.round(f.loan_amount_eur * factor),
+        monthly_payment_eur: Math.round(f.monthly_payment_eur * factor)
+      }))
+    };
+  });
 
   function truncate(text: string, max = 140) {
     if (!text) return '';
@@ -86,7 +124,7 @@
       <p>{error}</p>
       <button class="btn-primary" onclick={goBack}>Go Back</button>
     </div>
-  {:else if offer && customer}
+  {:else if scaledOffer && customer}
     <header class="offer-header">
       <div class="container header-container">
         <div class="header-content-left">
@@ -120,6 +158,43 @@
 
     <main class="container">
       <div class="offer-grid">
+        <!-- Interactive Solution Configurator -->
+        <section class="span-all configurator-section">
+          <div class="card configurator-card">
+            <div class="card-header-simple">
+              <div class="panel-title">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="title-icon"><path d="M12 20v-6M6 20V10M18 20V4"/></svg>
+                Interactive Solution Configurator
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="configurator-controls">
+                <div class="control-group">
+                  <div class="control-label-row">
+                    <label for="solar-panels">Solar Panels</label>
+                    <span class="control-value">{solarPanelCount} Panels</span>
+                  </div>
+                  <input 
+                    id="solar-panels" 
+                    type="range" 
+                    min="1" 
+                    max="24" 
+                    bind:value={solarPanelCount} 
+                    class="config-slider"
+                  />
+                  <div class="range-labels">
+                    <span>1 Panel</span>
+                    <span>24 Panels</span>
+                  </div>
+                </div>
+                <div class="configurator-info">
+                  <p>Passen Sie die Anzahl der Solarpanels an, um die Auswirkungen auf Investitionskosten und Ersparnisse in Echtzeit zu sehen.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
         <!-- Recommended Package - Hero Section -->
         <section class="span-all">
           <div class="hero-offer-card">
@@ -132,11 +207,11 @@
                     <span>High Efficiency</span>
                   </div>
                 </div>
-                <h2>{offer.recommended_offer.package_name}</h2>
-                <p class="package-reason">{offer.recommended_offer.reasoning[0]}</p>
+                <h2>{scaledOffer.recommended_offer.package_name}</h2>
+                <p class="package-reason">{scaledOffer.recommended_offer.reasoning[0]}</p>
                 
                 <div class="included-grid">
-                  {#each offer.recommended_offer.products as product}
+                  {#each scaledOffer.recommended_offer.products as product}
                     <div class="included-item">
                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
                       <span>{product}</span>
@@ -150,7 +225,7 @@
                   <span class="stat-label">Total Investment</span>
                   <div class="stat-value-group">
                     <span class="stat-unit">€</span>
-                    <span class="stat-number">{offer.recommended_offer.estimated_cost_range_eur.min.toLocaleString()}</span>
+                    <span class="stat-number">{scaledOffer.recommended_offer.estimated_cost_range_eur.min.toLocaleString()}</span>
                   </div>
                   <span class="stat-sub">Inclusive of all local subsidies</span>
                 </div>
@@ -158,9 +233,9 @@
                   <span class="stat-label">Annual Savings</span>
                   <div class="stat-value-group success">
                     <span class="stat-unit">€</span>
-                    <span class="stat-number">{offer.recommended_offer.estimated_annual_savings_eur.min.toLocaleString()}</span>
+                    <span class="stat-number">{scaledOffer.recommended_offer.estimated_annual_savings_eur.min.toLocaleString()}</span>
                   </div>
-                  <span class="stat-sub">Est. {offer.recommended_offer.estimated_payback_years.min}y payback period</span>
+                  <span class="stat-sub">Est. {scaledOffer.recommended_offer.estimated_payback_years.min}y payback period</span>
                 </div>
               </div>
             </div>
@@ -178,11 +253,11 @@
                 <div class="market-summary-section">
                   <div class="context-intro-short">
                     {#if showFullMarketSummary}
-                      <span>{offer.market_context.summary}</span>
+                      <span>{scaledOffer.market_context.summary}</span>
                     {:else}
-                      <span>{truncate(offer.market_context.summary, 160)}</span>
+                      <span>{truncate(scaledOffer.market_context.summary, 160)}</span>
                     {/if}
-                    {#if offer.market_context.summary && offer.market_context.summary.length > 160}
+                    {#if scaledOffer.market_context.summary && scaledOffer.market_context.summary.length > 160}
                       <button class="summary-toggle" onclick={() => showFullMarketSummary = !showFullMarketSummary}>
                         {showFullMarketSummary ? 'Weniger anzeigen' : 'Mehr anzeigen'}
                       </button>
@@ -193,7 +268,7 @@
                   <div class="tag-row">
                     <span class="row-label">Drivers:</span>
                     <div class="pill-group">
-                      {#each offer.market_context.drivers as driver}
+                      {#each scaledOffer.market_context.drivers as driver}
                         <span class="pill-market">{driver}</span>
                       {/each}
                     </div>
@@ -201,7 +276,7 @@
                   <div class="tag-row">
                     <span class="row-label">Outlook:</span>
                     <div class="pill-group">
-                      {#each offer.market_context.why_now as point}
+                      {#each scaledOffer.market_context.why_now as point}
                         <span class="pill-market accent">{point}</span>
                       {/each}
                     </div>
@@ -220,7 +295,7 @@
             </div>
             <div class="card-body-padded">
               <div class="subsidies-stack">
-                {#each offer.subsidies as subsidy}
+                {#each scaledOffer.subsidies as subsidy}
                   <div class="subsidy-pill">
                     <div class="subsidy-info">
                       <span class="subsidy-name">{subsidy.name}</span>
@@ -231,14 +306,14 @@
                 {/each}
                 <div class="subsidy-total">
                   <span>Total Estimated Benefits</span>
-                  <strong>{formatCurrency(offer.subsidies.reduce((acc, s) => acc + s.estimated_effect_eur, 0))}</strong>
+                  <strong>{formatCurrency(scaledOffer.subsidies.reduce((acc, s) => acc + s.estimated_effect_eur, 0))}</strong>
                 </div>
               </div>
             </div>
           </div>
         </section>
 
-        {#if offer.alternative_offers && offer.alternative_offers.length > 0}
+        {#if scaledOffer.alternative_offers && scaledOffer.alternative_offers.length > 0}
           <section class="span-all alternatives-section">
             <div class="alternatives-header">
               <div class="header-text">
@@ -260,7 +335,7 @@
 
             {#if showAlternatives}
               <div class="alternatives-grid" transition:fade={{ duration: 300 }}>
-                {#each offer.alternative_offers as alt}
+                {#each scaledOffer.alternative_offers as alt}
                   <div class="alt-card">
                     <div class="alt-card-header">
                       <div class="alt-icon-box">
@@ -304,7 +379,7 @@
             </div>
             <div class="card-body-padded">
               <div class="financing-grid">
-                {#each offer.financing_options as option}
+                {#each scaledOffer.financing_options as option}
                   <div class="financing-card-modern">
                     <div class="fin-header">
                       <h3>{option.scenario}</h3>
@@ -345,10 +420,10 @@
       <footer class="offer-final-footer">
         <div class="disclaimer-box">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
-          <p>{offer.disclaimer}</p>
+          <p>{scaledOffer.disclaimer}</p>
         </div>
         <div class="action-footer">
-          <p>Ready to power your home with {offer.recommended_offer.package_name}?</p>
+          <p>Ready to power your home with {scaledOffer.recommended_offer.package_name}?</p>
           <div class="btn-group-center">
             <button class="btn-outline-dark btn-lg" onclick={goBack}>Save for Later</button>
             <button class="btn-primary btn-lg" onclick={() => window.location.href = 'mailto:support@codingbuddies.de'}>Contact Advisor</button>
@@ -825,6 +900,108 @@
     font-size: 1.125rem;
     font-weight: 800;
     color: var(--clr-accent-dark);
+  }
+
+  /* Configurator Styles */
+  .configurator-section {
+    margin-bottom: 2rem;
+  }
+
+  .configurator-card {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border: 1px solid var(--clr-accent);
+  }
+
+  .title-icon {
+    margin-right: 0.5rem;
+    color: var(--clr-accent-dark);
+    vertical-align: middle;
+  }
+
+  .configurator-controls {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    align-items: center;
+  }
+
+  @media (max-width: 768px) {
+    .configurator-controls {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .control-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .control-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .control-label-row label {
+    font-weight: 700;
+    color: var(--clr-primary);
+  }
+
+  .control-value {
+    font-weight: 800;
+    color: var(--clr-accent-dark);
+    background: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--clr-accent);
+    font-size: 0.875rem;
+  }
+
+  .config-slider {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 8px;
+    border-radius: 4px;
+    background: #e2e8f0;
+    outline: none;
+  }
+
+  .config-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--clr-accent-dark);
+    cursor: pointer;
+    border: 2px solid white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  .config-slider::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--clr-accent-dark);
+    cursor: pointer;
+    border: 2px solid white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  .range-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: var(--clr-text-muted);
+    font-weight: 600;
+  }
+
+  .configurator-info p {
+    color: var(--clr-text-muted);
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin: 0;
   }
 
   .subsidy-total {
