@@ -7,6 +7,8 @@ export const customerService = {
    */
   mapDtoToCustomer(dto: CustomerResponseDto | CustomerWithPropertiesResponseDto): Customer {
     let address = undefined;
+    let details = undefined;
+
     if (dto.properties && dto.properties.length > 0) {
       const prop = dto.properties[0];
       address = {
@@ -15,6 +17,16 @@ export const customerService = {
         city: prop.city,
         zip: prop.postCode
       };
+
+      if (prop.metadata) {
+        details = {
+          customerProfile: prop.metadata.customerProfile,
+          energyConsumption: prop.metadata.energyConsumption,
+          existingSystems: prop.metadata.existingSystems,
+          financialProfile: prop.metadata.financialProfile,
+          conversationHistory: prop.metadata.conversationHistory
+        };
+      }
     }
 
     return {
@@ -22,7 +34,8 @@ export const customerService = {
       firstName: dto.firstName,
       lastName: dto.lastName,
       birthDate: dto.birthDate,
-      address
+      address,
+      details
     };
   },
 
@@ -115,11 +128,21 @@ export const customerService = {
       }
 
       // 2. Füge die Adresse (Property) hinzu
+      const metadata: Record<string, string> = {};
+      if (dto.optional) {
+        if (dto.optional.customerProfile) metadata.customerProfile = dto.optional.customerProfile;
+        if (dto.optional.energyConsumption) metadata.energyConsumption = dto.optional.energyConsumption;
+        if (dto.optional.existingSystems) metadata.existingSystems = dto.optional.existingSystems;
+        if (dto.optional.financialProfile) metadata.financialProfile = dto.optional.financialProfile;
+        if (dto.optional.conversationHistory) metadata.conversationHistory = dto.optional.conversationHistory;
+      }
+
       const propertyRequestData: PropertyRequestDto = {
         postCode: dto.required.address.zip,
         street: dto.required.address.street,
         city: dto.required.address.city,
-        houseNumber: dto.required.address.houseNumber
+        houseNumber: dto.required.address.houseNumber,
+        metadata: Object.keys(metadata).length > 0 ? metadata : undefined
       };
 
       const propertyResponse = await fetch(`http://localhost:8080/customer/${customerId}/add-property`, {

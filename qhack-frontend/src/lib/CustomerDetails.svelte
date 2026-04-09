@@ -57,7 +57,7 @@
 
   // Edit customer
   let editingCustomer = $state(false);
-  let editCustomerForm = $state({ firstName: '', lastName: '', birthDate: '', street: '', houseNumber: '', zip: '', city: '' });
+  let editCustomerForm = $state({ firstName: '', lastName: '', birthDate: '', street: '', houseNumber: '', zip: '', city: '', customerProfile: '', energyConsumption: '', existingSystems: '', financialProfile: '', conversationHistory: '' });
 
   function openEditCustomer() {
     if (!customer) return;
@@ -69,6 +69,11 @@
       houseNumber: customer.address?.houseNumber || '',
       zip: customer.address?.zip || '',
       city: customer.address?.city || '',
+      customerProfile: customer.details?.customerProfile || '',
+      energyConsumption: customer.details?.energyConsumption || '',
+      existingSystems: customer.details?.existingSystems || '',
+      financialProfile: customer.details?.financialProfile || '',
+      conversationHistory: customer.details?.conversationHistory || '',
     };
     editingCustomer = true;
   }
@@ -83,6 +88,13 @@
       houseNumber: editCustomerForm.houseNumber,
       zip: editCustomerForm.zip,
       city: editCustomerForm.city,
+    };
+    customer.details = {
+      customerProfile: editCustomerForm.customerProfile,
+      energyConsumption: editCustomerForm.energyConsumption,
+      existingSystems: editCustomerForm.existingSystems,
+      financialProfile: editCustomerForm.financialProfile,
+      conversationHistory: editCustomerForm.conversationHistory,
     };
     editingCustomer = false;
   }
@@ -187,6 +199,40 @@
                   <span class="no-address-text">No address provided</span>
                 {/if}
               </div>
+
+              {#if customer.details}
+                <hr class="divider" />
+                {#if customer.details.customerProfile}
+                  <div class="info-row">
+                    <span class="info-label">Profile</span>
+                    <span class="info-value-block">{customer.details.customerProfile}</span>
+                  </div>
+                {/if}
+                {#if customer.details.energyConsumption}
+                  <div class="info-row">
+                    <span class="info-label">Energy</span>
+                    <span class="info-value-block">{customer.details.energyConsumption}</span>
+                  </div>
+                {/if}
+                {#if customer.details.existingSystems}
+                  <div class="info-row">
+                    <span class="info-label">Systems</span>
+                    <span class="info-value-block">{customer.details.existingSystems}</span>
+                  </div>
+                {/if}
+                {#if customer.details.financialProfile}
+                  <div class="info-row">
+                    <span class="info-label">Finance</span>
+                    <span class="info-value-block">{customer.details.financialProfile}</span>
+                  </div>
+                {/if}
+                {#if customer.details.conversationHistory}
+                  <div class="info-row">
+                    <span class="info-label">History</span>
+                    <span class="info-value-block">{customer.details.conversationHistory}</span>
+                  </div>
+                {/if}
+              {/if}
             </div>
 
             <div class="info-card card">
@@ -266,6 +312,29 @@
           <div class="modal-form-group">
             <label for="ec-city">City *</label>
             <input id="ec-city" type="text" bind:value={editCustomerForm.city} placeholder="City" />
+          </div>
+
+          <hr class="modal-divider modal-full" />
+          
+          <div class="modal-form-group modal-full">
+            <label for="ec-profile">Customer Profile</label>
+            <textarea id="ec-profile" bind:value={editCustomerForm.customerProfile} placeholder="Details about the customer..."></textarea>
+          </div>
+          <div class="modal-form-group modal-full">
+            <label for="ec-energy">Energy Consumption</label>
+            <textarea id="ec-energy" bind:value={editCustomerForm.energyConsumption} placeholder="Details about energy needs..."></textarea>
+          </div>
+          <div class="modal-form-group modal-full">
+            <label for="ec-systems">Existing Systems</label>
+            <textarea id="ec-systems" bind:value={editCustomerForm.existingSystems} placeholder="Details about current setup..."></textarea>
+          </div>
+          <div class="modal-form-group modal-full">
+            <label for="ec-finance">Financial Profile</label>
+            <textarea id="ec-finance" bind:value={editCustomerForm.financialProfile} placeholder="Financial details..."></textarea>
+          </div>
+          <div class="modal-form-group modal-full">
+            <label for="ec-history">Conversation History</label>
+            <textarea id="ec-history" bind:value={editCustomerForm.conversationHistory} placeholder="Notes from previous talks..."></textarea>
           </div>
         </div>
         <div class="modal-actions">
@@ -461,6 +530,22 @@
     color: var(--clr-text);
   }
 
+  .info-value-block {
+    display: block;
+    font-size: 0.85rem !important;
+    font-weight: 400 !important;
+    color: var(--clr-text-light) !important;
+    line-height: 1.4;
+    white-space: pre-wrap;
+  }
+
+  .divider {
+    border: 0;
+    border-top: 1px solid var(--clr-border);
+    margin: 1.25rem 0;
+    opacity: 0.5;
+  }
+
   .ai-title {
     display: flex;
     align-items: center;
@@ -525,7 +610,9 @@
 
   .modal-card {
     width: 100%;
-    max-width: 500px;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
     padding: 2rem;
     animation: modal-enter 0.3s ease-out;
   }
@@ -575,11 +662,24 @@
     color: var(--clr-text-light);
   }
 
-  .modal-form-group input {
+  .modal-form-group input,
+  .modal-form-group textarea {
     padding: 0.75rem;
     border: 1px solid var(--clr-border);
     border-radius: 6px;
     font-size: 0.9rem;
+    font-family: inherit;
+  }
+
+  .modal-form-group textarea {
+    min-height: 80px;
+    resize: vertical;
+  }
+
+  .modal-divider {
+    border: 0;
+    border-top: 1px solid var(--clr-border);
+    margin: 0.5rem 0;
   }
 
   .modal-actions {

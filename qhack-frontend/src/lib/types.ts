@@ -44,6 +44,7 @@ export interface PropertyRequestDto {
   street: string;
   city: string;
   houseNumber: string;
+  metadata?: Record<string, string>;
 }
 
 export interface SunnyScoreResponse {
@@ -59,6 +60,7 @@ export interface PropertyResponseDto {
   city: string;
   houseNumber: string;
   sunnyScore?: SunnyScoreResponse;
+  metadata?: Record<string, string>;
 }
 
 /**
