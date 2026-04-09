@@ -13,8 +13,11 @@ import com.qhack.application.infrastructure.property.PropertyRepository
 import com.qhack.application.infrastructure.property.PropertyRepositoryImpl
 import com.qhack.application.services.customer.CustomerService
 import com.qhack.application.services.offer.OfferService
+import com.qhack.application.services.openai.IOpenAIService
+import com.qhack.application.services.openai.OpenAIService
 import com.qhack.application.services.openai.OpenAIServiceMock
 import com.qhack.application.services.property.PropertyService
+import io.github.cdimascio.dotenv.dotenv
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.contentnegotiation.*
@@ -47,7 +50,15 @@ fun Application.configureFrameworks() {
             single<PropertyRepository> { PropertyRepositoryImpl() }
             single<ProductRepository> { ProductRepositoryImpl() }
             single<OfferRepository> { OfferRepositoryImpl() }
-            single<OpenAIServiceMock> { OpenAIServiceMock(httpClient = get()) }
+            single<IOpenAIService> {
+                val dotenv = dotenv()
+                val useRealOpenAI = dotenv["USE_REAL_OPENAI"]?.toBoolean() ?: false
+                if (useRealOpenAI) {
+                    OpenAIService(httpClient = get())
+                } else {
+                    OpenAIServiceMock(httpClient = get())
+                }
+            }
             single<CustomerService> { CustomerService(get()) }
             single<PropertyService> { PropertyService(get(), get()) }
             single<OfferService> { OfferService(get(), get(), get(), get()) }

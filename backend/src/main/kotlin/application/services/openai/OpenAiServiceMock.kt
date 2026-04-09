@@ -7,11 +7,11 @@ import org.slf4j.LoggerFactory
 
 class OpenAIServiceMock (
     private val httpClient: HttpClient
-) {
+) : IOpenAIService {
     private val logger = LoggerFactory.getLogger(OpenAIService::class.java)
     private val json = Json { ignoreUnknownKeys = true }
 
-    suspend fun getSunnyScore(address: String): SunnyScoreResponse? {
+    override suspend fun getSunnyScore(address: String): SunnyScoreResponse? {
         if (address.contains("Berlin"))
             return SunnyScoreResponse(
                 address,
@@ -25,7 +25,7 @@ class OpenAIServiceMock (
         )
     }
 
-    suspend fun generateOffer(request: OfferLLMRequest): OfferLLMResponse? {
+    override suspend fun generateOffer(request: OfferLLMRequest): OfferLLMResponse? {
         val fileName = if (java.util.Random().nextBoolean()) "mockoffer_1.json" else "mockOffer_2.json"
         val inputStream = this.javaClass.classLoader.getResourceAsStream(fileName)
         val content = inputStream?.bufferedReader()?.use { it.readText() } ?: return null
