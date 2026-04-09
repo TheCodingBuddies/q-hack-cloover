@@ -22,6 +22,10 @@ class FakePropertyRepository : PropertyRepository {
     override suspend fun exists(propertyId: Int): Boolean {
         return propertiesList.any { it.first == propertyId }
     }
+
+    override suspend fun getPropertiesByCustomerId(customerId: Int): List<Pair<Int, PropertyData>> {
+        return propertiesList.filter { it.second.customerId == customerId }
+    }
 }
 
 class PropertyServiceTest {
@@ -50,6 +54,33 @@ class PropertyServiceTest {
         assertEquals(1, result)
         assertEquals(1, propertyRepo.propertiesList.size)
         assertEquals(propertyData, propertyRepo.propertiesList[0].second)
+    }
+
+    @Test
+    fun `addProperty should store metadata if provided`(): Unit = runBlocking {
+        // Given
+        val customerRepo = FakeCustomerRepository()
+        customerRepo.addCustomer(com.qhack.application.domain.customer.CustomerData("John", "Doe"))
+
+        val propertyRepo = FakePropertyRepository()
+        val service = PropertyService(propertyRepo, customerRepo)
+
+        val metadata = mapOf("HouseholdSize" to "4 Personen", "HouseYear" to "1995")
+        val propertyData = PropertyData(
+            postCode = "12345",
+            street = "Main St",
+            city = "Berlin",
+            houseNumber = "1A",
+            customerId = 1,
+            metadata = metadata
+        )
+
+        // When
+        val result = service.addProperty(propertyData, 85, "Sunny balcony")
+
+        // Then
+        assertEquals(1, result)
+        assertEquals(metadata, propertyRepo.propertiesList[0].second.metadata)
     }
 
     @Test

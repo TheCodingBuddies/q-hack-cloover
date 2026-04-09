@@ -27,6 +27,7 @@ dependencies {
     implementation(libs.exposed.core)
     implementation(libs.exposed.jdbc)
     implementation(libs.exposed.java.time)
+    implementation(libs.exposed.json)
     implementation(libs.ktor.server.auth)
     implementation(libs.ktor.server.host.common)
     implementation(libs.ktor.server.status.pages)

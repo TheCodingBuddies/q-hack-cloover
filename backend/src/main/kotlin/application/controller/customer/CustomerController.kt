@@ -52,7 +52,8 @@ class CustomerController(private val customerService: CustomerService) {
                                         sunnyPlace = score,
                                         explanation = "" // Explanation ist im PropertyData nicht enthalten, könnte man noch hinzufügen falls nötig
                                     )
-                                }
+                                },
+                                metadata = propertyData.metadata
                             )
                         }
                     )
@@ -88,7 +89,8 @@ class CustomerController(private val customerService: CustomerService) {
                                     sunnyPlace = score,
                                     explanation = ""
                                 )
-                            }
+                            },
+                            metadata = propertyData.metadata
                         )
                     }
                 )

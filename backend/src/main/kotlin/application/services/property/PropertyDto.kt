@@ -7,7 +7,8 @@ data class PropertyRequestDto(
     val postCode: String,
     val street: String,
     val city: String,
-    val houseNumber: String
+    val houseNumber: String,
+    val metadata: Map<String, String>? = null
 )
 
 @Serializable
@@ -17,7 +18,8 @@ data class PropertyResponseDto(
     val street: String? = null,
     val city: String? = null,
     val houseNumber: String? = null,
-    val sunnyScore: SunnyScoreResponse? = null
+    val sunnyScore: SunnyScoreResponse? = null,
+    val metadata: Map<String, String>? = null
 )
 
 @Serializable

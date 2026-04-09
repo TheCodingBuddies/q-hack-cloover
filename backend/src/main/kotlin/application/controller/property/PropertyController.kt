@@ -24,7 +24,8 @@ class PropertyController(private val propertyService: PropertyService, private v
                     street = request.street,
                     city = request.city,
                     houseNumber = request.houseNumber,
-                    customerId = customerId
+                    customerId = customerId,
+                    metadata = request.metadata
                 )
 
                 try {
@@ -39,7 +40,8 @@ class PropertyController(private val propertyService: PropertyService, private v
                             street = data.street,
                             city = data.city,
                             houseNumber = data.houseNumber,
-                            sunnyScore = response
+                            sunnyScore = response,
+                            metadata = data.metadata
                         )
                     )
                 } catch (e: NotFoundException) {
