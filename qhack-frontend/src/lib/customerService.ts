@@ -130,11 +130,12 @@ export const customerService = {
       // 2. Füge die Adresse (Property) hinzu
       const metadata: Record<string, string> = {};
       if (dto.optional) {
-        if (dto.optional.customerProfile) metadata.customerProfile = dto.optional.customerProfile;
-        if (dto.optional.energyConsumption) metadata.energyConsumption = dto.optional.energyConsumption;
-        if (dto.optional.existingSystems) metadata.existingSystems = dto.optional.existingSystems;
-        if (dto.optional.financialProfile) metadata.financialProfile = dto.optional.financialProfile;
-        if (dto.optional.conversationHistory) metadata.conversationHistory = dto.optional.conversationHistory;
+        // Mappe alle vorhandenen optionalen Felder in die Metadata Map
+        Object.entries(dto.optional).forEach(([key, value]) => {
+          if (value && typeof value === 'string' && value.trim() !== '') {
+            metadata[key] = value;
+          }
+        });
       }
 
       const propertyRequestData: PropertyRequestDto = {

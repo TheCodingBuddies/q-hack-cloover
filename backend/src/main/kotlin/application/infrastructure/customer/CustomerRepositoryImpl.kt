@@ -51,7 +51,8 @@ class CustomerRepositoryImpl : CustomerRepository, BaseRepository() {
                     city = it[PropertyTable.city],
                     houseNumber = it[PropertyTable.houseNumber],
                     customerId = customerId,
-                    sunnyScore = it[PropertyTable.sunnyScore]
+                    sunnyScore = it[PropertyTable.sunnyScore],
+                    metadata = it[PropertyTable.metadata]
                 )
                 customerId to (id to data)
             }.groupBy({ it.first }, { it.second })
@@ -79,7 +80,8 @@ class CustomerRepositoryImpl : CustomerRepository, BaseRepository() {
                     city = it[PropertyTable.city],
                     houseNumber = it[PropertyTable.houseNumber],
                     customerId = customerId,
-                    sunnyScore = it[PropertyTable.sunnyScore]
+                    sunnyScore = it[PropertyTable.sunnyScore],
+                    metadata = it[PropertyTable.metadata]
                 )
                 id to data
             }

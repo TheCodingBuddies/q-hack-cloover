@@ -7,5 +7,6 @@ data class PropertyData(
     val houseNumber: String,
     val customerId: Int,
     val sunnyScore: Int? = null,
+    val explanation: String? = null,
     val metadata: Map<String, String>? = null
 )
