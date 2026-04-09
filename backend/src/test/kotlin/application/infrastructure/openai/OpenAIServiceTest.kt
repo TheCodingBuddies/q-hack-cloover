@@ -67,7 +67,7 @@ class OpenAIServiceTest {
                             "index": 0,
                             "message": {
                                 "role": "assistant",
-                                "content": "{\"lead_summary\": {\"location\": {\"postal_code\": \"74238\", \"city\": \"Krautheim\", \"country\": \"DE\"}, \"primary_product\": \"heat_pump\", \"building_assumptions\": []}, \"market_context\": {\"summary\": \"test\", \"drivers\": [], \"why_now\": []}, \"subsidies\": [], \"recommended_offer\": {\"package_name\": \"test\", \"products\": [], \"reasoning\": [], \"estimated_cost_range_eur\": {\"min\": 0, \"max\": 0}, \"estimated_annual_savings_eur\": {\"min\": 0, \"max\": 0}, \"estimated_payback_years\": {\"min\": 0, \"max\": 0}}, \"alternative_offers\": [], \"financing_options\": [], \"sales_talking_points\": [], \"missing_information\": [], \"disclaimer\": \"test\"}"
+                                "content": "{\"lead_summary\": {\"location\": {\"postal_code\": \"74238\", \"city\": \"Krautheim\", \"country\": \"DE\"}, \"primary_products\": [\"heat_pump\"]}, \"market_context\": {\"summary\": \"test\", \"drivers\": [], \"why_now\": []}, \"subsidies\": [], \"recommended_offer\": {\"package_name\": \"test\", \"products\": [], \"reasoning\": [], \"estimated_cost_range_eur\": {\"min\": 0, \"max\": 0}, \"estimated_annual_savings_eur\": {\"min\": 0, \"max\": 0}, \"estimated_payback_years\": {\"min\": 0.0, \"max\": 0.0}}, \"alternative_offers\": [], \"financing_options\": [], \"sales_talking_points\": [], \"missing_information\": [], \"disclaimer\": \"test\"}"
                             },
                             "finish_reason": "stop"
                         }]
