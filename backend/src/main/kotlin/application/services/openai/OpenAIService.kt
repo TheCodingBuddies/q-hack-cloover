@@ -36,11 +36,11 @@ data class OpenAIChoice(
 
 class OpenAIService(
     private val httpClient: HttpClient
-) {
+) : IOpenAIService {
     private val logger = LoggerFactory.getLogger(OpenAIService::class.java)
     private val json = Json { ignoreUnknownKeys = true }
 
-    suspend fun getSunnyScore(address: String): SunnyScoreResponse? {
+    override suspend fun getSunnyScore(address: String): SunnyScoreResponse? {
         val dotenv = dotenv()
         val apiKey = dotenv["OPENAI_API_KEY"] ?: ""
         if (apiKey.isBlank()) {
@@ -89,7 +89,7 @@ class OpenAIService(
         }
     }
 
-    suspend fun generateOffer(request: OfferLLMRequest): OfferLLMResponse? {
+    override suspend fun generateOffer(request: OfferLLMRequest): OfferLLMResponse? {
         val dotenv = dotenv()
         val apiKey = dotenv["OPENAI_API_KEY"] ?: ""
         if (apiKey.isBlank()) {

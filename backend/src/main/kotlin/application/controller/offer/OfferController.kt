@@ -2,14 +2,14 @@ package com.qhack.application.controller.offer
 
 import com.qhack.application.services.offer.OfferResponseDto
 import com.qhack.application.services.offer.OfferService
+import com.qhack.application.services.openai.IOpenAIService
 import com.qhack.application.services.openai.OfferLLMRequest
-import com.qhack.application.services.openai.OpenAIServiceMock
 import io.ktor.http.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
-class OfferController(private val offerService: OfferService, private val openAiService: OpenAIServiceMock) {
+class OfferController(private val offerService: OfferService, private val openAiService: IOpenAIService) {
     fun registerRoutes(route: Route) {
         route.route("/offers") {
             get {
