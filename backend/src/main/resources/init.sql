@@ -33,7 +33,8 @@ CREATE TABLE properties
     house_number VARCHAR(10)  NOT NULL,
     customer_id  INT          NOT NULL REFERENCES customers (id) ON DELETE CASCADE,
     sunny_score  INT,
-    explanation  TEXT
+    explanation  TEXT,
+    metadata     JSONB
 );
 
 CREATE TABLE products
@@ -66,5 +67,10 @@ INSERT INTO products (name)
 VALUES ('Wall Box'),
        ('Solar Panel'),
        ('Heat Pump');
+
+INSERT INTO properties (postcode, street, city, house_number, customer_id, sunny_score, explanation, metadata)
+VALUES ('10115', 'Friedrichstraße', 'Berlin', '1', 1, 85, 'Gute Dachausrichtung für PV.', '{"household_size": "4 Personen", "heating_type": "Gasheizung", "construction_year": "1995"}'),
+       ('20457', 'Am Sandtorkai', 'Hamburg', '10', 2, 45, 'Verschattung durch Nachbargebäude.', '{"household_size": "2 Personen", "heating_type": "Fernwärme"}'),
+       ('80331', 'Marienplatz', 'München', '1', 3, 90, 'Optimaler Ertrag möglich.', '{"existing_systems": "Solaranlage ohne Batterie", "annual_consumption_kwh": "3500"}');
 
 COMMIT;
