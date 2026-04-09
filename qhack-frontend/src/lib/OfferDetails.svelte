@@ -16,6 +16,12 @@
   let isLoading = $state(true);
   let error: string | null = $state(null);
   let showAlternatives = $state(false);
+  let showFullMarketSummary = $state(false);
+
+  function truncate(text: string, max = 140) {
+    if (!text) return '';
+    return text.length > max ? text.slice(0, max).trimEnd() + '…' : text;
+  }
 
   onMount(async () => {
     try {
@@ -167,24 +173,39 @@
             <div class="card-header-simple">
               <div class="panel-title">Market Context & Outlook</div>
             </div>
-            <div class="card-body-padded">
-              <p class="context-intro">{offer.market_context.summary}</p>
-              <div class="drivers-grid">
-                <div class="driver-column">
-                  <h4>Market Drivers</h4>
-                  <ul class="fancy-list">
-                    {#each offer.market_context.drivers as driver}
-                      <li>{driver}</li>
-                    {/each}
-                  </ul>
+            <div class="card-body-compact">
+              <div class="compact-market-grid">
+                <div class="market-summary-section">
+                  <div class="context-intro-short">
+                    {#if showFullMarketSummary}
+                      <span>{offer.market_context.summary}</span>
+                    {:else}
+                      <span>{truncate(offer.market_context.summary, 160)}</span>
+                    {/if}
+                    {#if offer.market_context.summary && offer.market_context.summary.length > 160}
+                      <button class="summary-toggle" onclick={() => showFullMarketSummary = !showFullMarketSummary}>
+                        {showFullMarketSummary ? 'Weniger anzeigen' : 'Mehr anzeigen'}
+                      </button>
+                    {/if}
+                  </div>
                 </div>
-                <div class="driver-column">
-                  <h4>Why Invest Now?</h4>
-                  <ul class="fancy-list accent">
-                    {#each offer.market_context.why_now as point}
-                      <li>{point}</li>
-                    {/each}
-                  </ul>
+                <div class="market-tags-section">
+                  <div class="tag-row">
+                    <span class="row-label">Drivers:</span>
+                    <div class="pill-group">
+                      {#each offer.market_context.drivers as driver}
+                        <span class="pill-market">{driver}</span>
+                      {/each}
+                    </div>
+                  </div>
+                  <div class="tag-row">
+                    <span class="row-label">Outlook:</span>
+                    <div class="pill-group">
+                      {#each offer.market_context.why_now as point}
+                        <span class="pill-market accent">{point}</span>
+                      {/each}
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -638,6 +659,74 @@
 
   .card-body-padded {
     padding: 2.5rem;
+  }
+
+  .card-body-compact {
+    padding: 1.5rem 2rem;
+  }
+
+  .compact-market-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .context-intro-short {
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    color: var(--clr-text-muted);
+    margin: 0;
+    max-width: 800px;
+  }
+
+  .market-tags-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .tag-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .row-label {
+    font-size: 0.65rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: var(--clr-text-muted);
+    min-width: 65px;
+    letter-spacing: 0.05em;
+  }
+
+  .pill-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .pill-market {
+    background: white;
+    color: var(--clr-text-main);
+    padding: 0.25rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border: 1px solid var(--clr-border-strong);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+    transition: all 0.2s ease;
+  }
+
+  .pill-market:hover {
+    border-color: var(--clr-accent);
+    transform: translateY(-1px);
+  }
+
+  .pill-market.accent {
+    background: var(--clr-accent-light);
+    color: var(--clr-accent-dark);
+    border-color: var(--clr-accent);
   }
 
   .context-intro {
@@ -1183,4 +1272,14 @@
     .financing-card-modern { break-inside: avoid; }
     .card { box-shadow: none !important; border: 1px solid #ddd !important; }
   }
+.summary-toggle{
+  margin-left:8px;
+  font-size:12px;
+  color:var(--color-accent, #10b981);
+  background:transparent;
+  border:none;
+  cursor:pointer;
+  padding:0;
+}
+.summary-toggle:hover{ text-decoration: underline; }
 </style>
