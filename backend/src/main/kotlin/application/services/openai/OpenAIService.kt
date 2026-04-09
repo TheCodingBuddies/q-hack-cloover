@@ -53,6 +53,7 @@ class OpenAIService(
             Berücksichtige die geografische Lage und die durchschnittliche Sonneneinstrahlung in dieser Region.
             Adresse: $address
             Deine Antwort muss zwingend ein valides JSON-Objekt sein. Antworte niemals mit Freitext vor oder nach dem JSON. Das JSON muss folgendem Schema entsprechen: • address: Die analysierte Adresse als String. • sunnyplace: Ein Integer von 0 (nie Sonne/vollständiger Schatten) bis 100 (immer Sonne/maximale Exposition). • explanation: Eine kurze Begründung (max. 1 Satz).
+            WICHTIG: Verwende im JSON exakt den Feldnamen "sunnyplace" für den Score.
         """.trimIndent()
 
         return try {
@@ -82,11 +83,20 @@ class OpenAIService(
             val content = response.choices.firstOrNull()?.message?.content?.trim()
                 ?: return null
 
-            json.decodeFromString<SunnyScoreResponse>(content)
+            val cleanJson = stripMarkdown(content)
+            json.decodeFromString<SunnyScoreResponse>(cleanJson)
         } catch (e: Exception) {
             logger.error("Error fetching Sunny Score: ${e.message}", e)
             null
         }
+    }
+
+    private fun stripMarkdown(content: String): String {
+        return content
+            .removePrefix("```json")
+            .removePrefix("```")
+            .removeSuffix("```")
+            .trim()
     }
 
     override suspend fun generateOffer(request: OfferLLMRequest): OfferLLMResponse? {
@@ -181,7 +191,8 @@ class OpenAIService(
             val content = response.choices.firstOrNull()?.message?.content?.trim()
                 ?: return null
 
-            json.decodeFromString<OfferLLMResponse>(content)
+            val cleanJson = stripMarkdown(content)
+            json.decodeFromString<OfferLLMResponse>(cleanJson)
         } catch (e: Exception) {
             logger.error("Error generating offer: ${e.message}", e)
             null

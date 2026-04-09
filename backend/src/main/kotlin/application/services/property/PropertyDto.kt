@@ -1,5 +1,6 @@
 package com.qhack.application.services.property
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -25,6 +26,6 @@ data class PropertyResponseDto(
 @Serializable
 data class SunnyScoreResponse(
     val address: String,
-    val sunnyPlace: Int,
+    @SerialName("sunnyplace") val sunnyPlace: Int,
     val explanation: String
 )

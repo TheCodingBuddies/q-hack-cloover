@@ -11,6 +11,7 @@ import com.qhack.application.services.openai.OfferLLMRequest
 import com.qhack.application.services.openai.OfferLLMResponse
 import io.ktor.server.plugins.*
 import kotlinx.serialization.json.Json
+import org.slf4j.LoggerFactory
 import java.security.MessageDigest
 
 class OfferService(
@@ -22,6 +23,7 @@ class OfferService(
     private val offerLLMCacheRepository: OfferLLMCacheRepository,
     private val json: Json = Json { ignoreUnknownKeys = true }
 ) {
+    private val logger = LoggerFactory.getLogger(OfferService::class.java)
 
     suspend fun createOffer(data: OfferData): Int {
         if (!customerRepository.exists(data.customerId)) {
@@ -51,10 +53,12 @@ class OfferService(
 
         // Cache-Hit?
         offerLLMCacheRepository.getResponseByHash(hash)?.let { cachedJson ->
+            logger.info("Offer for hash $hash loaded from cache.")
             return json.decodeFromString(OfferLLMResponse.serializer(), cachedJson)
         }
 
         // Cache-Miss -> LLM aufrufen
+        logger.info("Cache miss for hash $hash. Calling OpenAI for offer generation.")
         val response = openAIService.generateOffer(request) ?: return null
         val responseJson = json.encodeToString(OfferLLMResponse.serializer(), response)
         offerLLMCacheRepository.save(hash, requestJson, responseJson)
