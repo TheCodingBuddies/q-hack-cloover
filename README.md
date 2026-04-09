@@ -19,20 +19,31 @@ Stell dir vor, du bist Vertriebsmitarbeiter bei einem Unternehmen, das Solaranla
 
 
 ## Wie haben wir das Problem verstanden
-- Kunde möchte so schnell wie möglich eine Lösung
+- Kunde möchte so schnell wie möglich eine Lösung, hat aber keine Ahnung von:
+  -  Produkten
+  -  Marktsituation
+  -  Installationsdauer und Installationsumfang
+  -  Gesetze und Förderungen
+  -  Welche Daten ein Installateur benötgt
 - Vertriebler brauch so umfangreich wie möglich wichtige Daten für die Installation
-- häufig weiß der Kunde nicht, was der Vertriebler benötigt und ist überfordert und abgeschreckt
-- das Ergänzen von wichtigen Informationen für die Installation ist ein schwieriger Zeitraubender Prozess
+  -  fährt häufig zu Kunden und kann wegenen fehlender Daten kein Angebot abschließen
+  -  das Ergänzen von wichtigen Informationen für die Installation ist ein schwieriger Zeitraubender Prozess
 - Der Vertriebler ist auf dem Weg zum Kunden und sein KI-Verkaufs-Coach-Assistent gibt ihm letzte Hinweise.
-- Vor Ort sollen der Endkunde und der Vertriebler aus einer Varianz an Angebotsoptionen verschiedene Szenarien durchgehen, ohne wartezeiten in kauf zu nehmen
--  
+- Vor Ort sollen der Endkunde und der Vertriebler aus einer Varianz an Angebotsoptionen verschiedene Szenarien durchgehen, ohne wartezeiten in kauf zu nehmen durch ergänzen von optionalen Daten
+
+- Dem Vertriebler werden wird verschiedene Optionen und Fragen vorgeschlagen
 
 ## Kurze Demonstration der Demo
+![image](architecture_grob.png)
 
+![image](search_view.png)
+
+![image](add_new_customer.png)
 
 ## Wichtige Annahmen die wir getroffen haben
 - Der Kunde hat bereits sein Interesse für eine bestimmte Produktkategorie angezeigt
 - Geodaten wie Solarfaktor, Wärmepumpeneignung (Fläche oder Tiefe) sind für Deutschland vorhanden und können direkt für eine Objekt-Adresse abgefragt werden
+- für Förderungen nur die Deutschen Gesetze und Förderungen 
 - Preise, Verfügbarkeit und Informationen der Produkte sind vorhanden können Ad-oc 
 
 ## Mögliche Wirkung bei großflächigem Einsatz
