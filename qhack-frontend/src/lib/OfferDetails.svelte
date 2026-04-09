@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { fade } from 'svelte/transition';
+  import { fade, slide } from 'svelte/transition';
   import { customerService } from './customerService';
   import { offerService } from './offerService';
   import type { Customer, OfferLLMRequest, OfferLLMResponse } from './types';
@@ -18,6 +18,7 @@
   let showAlternatives = $state(false);
   let showFullMarketSummary = $state(false);
   let solarPanelCount = $state(6);
+  let isConfiguratorExpanded = $state(false);
 
   const scaledOffer = $derived.by(() => {
     if (!offer) return null;
@@ -162,37 +163,46 @@
         {#if customer.details?.wantsSolarPanels}
           <section class="span-all configurator-section">
             <div class="card configurator-card">
-              <div class="card-header-simple">
+              <button 
+                class="card-header-toggle" 
+                onclick={() => isConfiguratorExpanded = !isConfiguratorExpanded}
+                aria-expanded={isConfiguratorExpanded}
+              >
                 <div class="panel-title">
                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="title-icon"><path d="M12 20v-6M6 20V10M18 20V4"/></svg>
                   Interactive Solution Configurator
                 </div>
-              </div>
-              <div class="card-body">
-                <div class="configurator-controls">
-                  <div class="control-group">
-                    <div class="control-label-row">
-                      <label for="solar-panels">Solar Panels</label>
-                      <span class="control-value">{solarPanelCount} Panels</span>
+                <div class="toggle-icon {isConfiguratorExpanded ? 'expanded' : ''}">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                </div>
+              </button>
+              {#if isConfiguratorExpanded}
+                <div class="card-body" transition:slide={{ duration: 300 }}>
+                  <div class="configurator-controls">
+                    <div class="control-group">
+                      <div class="control-label-row">
+                        <label for="solar-panels">Solar Panels</label>
+                        <span class="control-value">{solarPanelCount} Panels</span>
+                      </div>
+                      <input 
+                        id="solar-panels" 
+                        type="range" 
+                        min="1" 
+                        max="24" 
+                        bind:value={solarPanelCount} 
+                        class="config-slider"
+                      />
+                      <div class="range-labels">
+                        <span>1 Panel</span>
+                        <span>24 Panels</span>
+                      </div>
                     </div>
-                    <input 
-                      id="solar-panels" 
-                      type="range" 
-                      min="1" 
-                      max="24" 
-                      bind:value={solarPanelCount} 
-                      class="config-slider"
-                    />
-                    <div class="range-labels">
-                      <span>1 Panel</span>
-                      <span>24 Panels</span>
+                    <div class="configurator-info">
+                      <p>Passen Sie die Anzahl der Solarpanels an, um die Auswirkungen auf Investitionskosten und Ersparnisse in Echtzeit zu sehen.</p>
                     </div>
-                  </div>
-                  <div class="configurator-info">
-                    <p>Passen Sie die Anzahl der Solarpanels an, um die Auswirkungen auf Investitionskosten und Ersparnisse in Echtzeit zu sehen.</p>
                   </div>
                 </div>
-              </div>
+              {/if}
             </div>
           </section>
         {/if}
@@ -912,6 +922,33 @@
   .configurator-card {
     background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
     border: 1px solid var(--clr-accent);
+    overflow: hidden;
+  }
+
+  .card-header-toggle {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem 1.5rem;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    transition: background-color 0.2s ease;
+  }
+
+  .card-header-toggle:hover {
+    background-color: rgba(0, 0, 0, 0.02);
+  }
+
+  .toggle-icon {
+    color: var(--clr-text-muted);
+    transition: transform 0.3s ease;
+  }
+
+  .toggle-icon.expanded {
+    transform: rotate(180deg);
   }
 
   .title-icon {
