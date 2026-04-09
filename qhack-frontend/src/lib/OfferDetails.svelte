@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import { fade } from 'svelte/transition';
   import { customerService } from './customerService';
   import { offerService } from './offerService';
   import type { Customer, OfferLLMRequest, OfferLLMResponse } from './types';
@@ -14,6 +15,7 @@
   let offer: OfferLLMResponse | null = $state(null);
   let isLoading = $state(true);
   let error: string | null = $state(null);
+  let showAlternatives = $state(false);
 
   onMount(async () => {
     try {
@@ -97,7 +99,7 @@
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
             <span>Print PDF</span>
           </button>
-          <button class="btn-accept-proposal">
+          <button class="btn-accept-proposal" onclick={() => window.location.href = 'https://codingbuddies.de'}>
             <div class="btn-icon-wrapper">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
             </div>
@@ -215,6 +217,64 @@
           </div>
         </section>
 
+        {#if offer.alternative_offers && offer.alternative_offers.length > 0}
+          <section class="span-all alternatives-section">
+            <div class="alternatives-header">
+              <div class="header-text">
+                <div class="panel-tag">Optional Extensions</div>
+                <h3>Explore Complementary Solutions</h3>
+                <p>Consider these alternative configurations to further enhance your energy independence.</p>
+              </div>
+              <button class="btn-toggle-alternatives {showAlternatives ? 'active' : ''}" onclick={() => showAlternatives = !showAlternatives}>
+                <div class="toggle-icon">
+                  {#if showAlternatives}
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
+                  {:else}
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                  {/if}
+                </div>
+                <span>{showAlternatives ? 'Hide Alternatives' : 'Show Alternatives'}</span>
+              </button>
+            </div>
+
+            {#if showAlternatives}
+              <div class="alternatives-grid" transition:fade={{ duration: 300 }}>
+                {#each offer.alternative_offers as alt}
+                  <div class="alt-card">
+                    <div class="alt-card-header">
+                      <div class="alt-icon-box">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                      </div>
+                      <div class="alt-title-group">
+                        <span class="alt-label">Alternative Option</span>
+                        <h4>{alt.package_name}</h4>
+                      </div>
+                    </div>
+                    <div class="alt-body">
+                      <p class="alt-positioning">{alt.positioning}</p>
+                      <div class="alt-products-chips">
+                        {#each alt.products as product}
+                          <span class="alt-chip">{product}</span>
+                        {/each}
+                      </div>
+                    </div>
+                    <div class="alt-footer">
+                      <div class="alt-price">
+                        <span class="price-label">Est. Investment</span>
+                        <span class="price-value">{formatCurrency(alt.estimated_cost_range_eur.min)}</span>
+                      </div>
+                      <button class="btn-select-alt">
+                        <span>Select this option</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                      </button>
+                    </div>
+                  </div>
+                {/each}
+              </div>
+            {/if}
+          </section>
+        {/if}
+
         <!-- Financing Scenarios -->
         <section class="span-all">
           <div class="card">
@@ -270,7 +330,7 @@
           <p>Ready to power your home with {offer.recommended_offer.package_name}?</p>
           <div class="btn-group-center">
             <button class="btn-outline-dark btn-lg" onclick={goBack}>Save for Later</button>
-            <button class="btn-primary btn-lg">Contact Advisor</button>
+            <button class="btn-primary btn-lg" onclick={() => window.location.href = 'mailto:support@codingbuddies.de'}>Contact Advisor</button>
           </div>
         </div>
       </footer>
@@ -699,6 +759,218 @@
     font-size: 1.25rem;
     font-weight: 800;
     color: var(--clr-accent);
+  }
+
+  /* Alternatives Section Styles */
+  .alternatives-section {
+    margin: 4rem 0;
+  }
+
+  .alternatives-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--clr-border);
+  }
+
+  .panel-tag {
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--clr-accent-dark);
+    margin-bottom: 0.5rem;
+  }
+
+  .header-text h3 {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    color: var(--clr-primary);
+  }
+
+  .header-text p {
+    color: var(--clr-text-muted);
+    font-size: 1.125rem;
+  }
+
+  .btn-toggle-alternatives {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1.5rem;
+    background: white;
+    border: 1px solid var(--clr-border);
+    border-radius: var(--radius-full);
+    font-weight: 700;
+    color: var(--clr-primary);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .btn-toggle-alternatives:hover {
+    background: var(--clr-bg-alt);
+    border-color: var(--clr-primary);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+  }
+
+  .btn-toggle-alternatives.active {
+    background: var(--clr-primary);
+    color: white;
+    border-color: var(--clr-primary);
+  }
+
+  .toggle-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    background: rgba(0,0,0,0.05);
+    border-radius: 50%;
+    transition: transform 0.3s;
+  }
+
+  .btn-toggle-alternatives.active .toggle-icon {
+    background: rgba(255,255,255,0.2);
+  }
+
+  .alternatives-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2rem;
+  }
+
+  .alt-card {
+    background: white;
+    border: 1px solid var(--clr-border);
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .alt-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--clr-accent-dark);
+  }
+
+  .alt-card-header {
+    display: flex;
+    gap: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .alt-icon-box {
+    width: 48px;
+    height: 48px;
+    background: var(--clr-bg-alt);
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--clr-primary);
+    flex-shrink: 0;
+  }
+
+  .alt-title-group {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .alt-label {
+    font-size: 0.625rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: var(--clr-accent-dark);
+    margin-bottom: 0.25rem;
+  }
+
+  .alt-title-group h4 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--clr-primary);
+    margin: 0;
+  }
+
+  .alt-body {
+    flex-grow: 1;
+    margin-bottom: 2rem;
+  }
+
+  .alt-positioning {
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: var(--clr-text-muted);
+    margin-bottom: 1.5rem;
+  }
+
+  .alt-products-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .alt-chip {
+    padding: 0.375rem 0.75rem;
+    background: var(--clr-bg-alt);
+    border: 1px solid var(--clr-border);
+    border-radius: var(--radius-full);
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--clr-primary);
+  }
+
+  .alt-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--clr-border);
+  }
+
+  .alt-price {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .alt-price .price-label {
+    font-size: 0.625rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--clr-text-muted);
+  }
+
+  .alt-price .price-value {
+    font-size: 1.125rem;
+    font-weight: 800;
+    color: var(--clr-primary);
+  }
+
+  .btn-select-alt {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1rem;
+    background: var(--clr-bg-alt);
+    border: 1px solid var(--clr-border);
+    border-radius: var(--radius-md);
+    font-size: 0.8125rem;
+    font-weight: 700;
+    color: var(--clr-primary);
+    transition: all 0.2s;
+  }
+
+  .btn-select-alt:hover {
+    background: var(--clr-primary);
+    color: white;
+    border-color: var(--clr-primary);
   }
 
   .financing-grid {
