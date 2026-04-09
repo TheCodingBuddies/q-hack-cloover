@@ -29,13 +29,14 @@ data class OfferLLMResponse(
 @Serializable
 data class LeadSummary(
     val location: Location,
-    @SerialName("primary_product") val primaryProduct: String,
-    @SerialName("building_assumptions") val buildingAssumptions: List<String>
+    @SerialName("primary_products") val primaryProducts: List<String>
 )
 
 @Serializable
 data class Location(
     @SerialName("postal_code") val postalCode: String,
+    val street: String? = null,
+    @SerialName("house_number") val houseNumber: String? = null,
     val city: String,
     val country: String
 )
@@ -52,7 +53,7 @@ data class Subsidy(
     val name: String,
     val status: String,
     val relevance: String,
-    @SerialName("estimated_effect_eur") val estimatedEffectEur: Int,
+    @SerialName("estimated_effect_eur") val estimatedEffectEur: Double,
     val notes: String
 )
 
@@ -63,7 +64,13 @@ data class RecommendedOffer(
     val reasoning: List<String>,
     @SerialName("estimated_cost_range_eur") val estimatedCostRangeEur: RangeEur,
     @SerialName("estimated_annual_savings_eur") val estimatedAnnualSavingsEur: RangeEur,
-    @SerialName("estimated_payback_years") val estimatedPaybackYears: RangeEur
+    @SerialName("estimated_payback_years") val estimatedPaybackYears: RangeDouble
+)
+
+@Serializable
+data class RangeDouble(
+    val min: Double,
+    val max: Double
 )
 
 @Serializable
