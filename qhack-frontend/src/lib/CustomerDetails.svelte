@@ -1,7 +1,8 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { customerService } from './customerService';
-  import type { Customer } from './types';
+  import { offerService } from './offerService';
+  import type { Customer, OfferLLMRequest, OfferLLMResponse } from './types';
 
   interface Project {
     id: string;
@@ -23,6 +24,7 @@
 
   // Single mock project for the customer
   let project: Project | null = $state(null);
+  let offer: OfferLLMResponse | null = $state(null);
 
   onMount(async () => {
     try {
@@ -47,6 +49,28 @@
             'Customer mentioned interest in EV charging in future',
           ],
         };
+
+        // Generate offer automatically after loading customer data
+        try {
+          const offerRequest: OfferLLMRequest = {
+            postal_code: customer.address?.zip || '',
+            city: customer.address?.city || '',
+            country: 'Germany', // Defaulting to Germany as it's not in the address model yet
+            primary_product: 'Photovoltaik',
+            construction_year: 1990, // Mock value
+            heating_type: 'Gas' // Mock value
+          };
+          
+          console.log('Generating offer with request:', offerRequest);
+          offerService.generateOffer(offerRequest)
+            .then(res => {
+              console.log('Offer generated successfully:', res);
+              offer = res;
+            })
+            .catch(err => console.error('Failed to generate offer:', err));
+        } catch (err) {
+          console.error('Error preparing offer request:', err);
+        }
       }
     } catch (err) {
       error = 'Failed to load customer data';
@@ -138,22 +162,92 @@
         </div>
 
         <div class="main-body">
-          <!-- Offer preview -->
+          <!-- OFFER OVERVIEW -->
           <div class="offer-preview card">
-            <div class="panel-title">Offer preview</div>
-            <div class="offer-text">
-              {#each project.offerPreview.split('\n') as line}
-                {#if line.startsWith('**') && line.endsWith('**')}
-                  <strong>{line.slice(2, -2)}</strong><br/>
-                {:else if line.startsWith('- ')}
-                  <li>{line.slice(2)}</li>
-                {:else if line.trim() === ''}
-                  <br/>
-                {:else}
-                  <span>{line}</span><br/>
-                {/if}
-              {/each}
-            </div>
+            <div class="panel-title">OFFER OVERVIEW</div>
+            {#if offer}
+              <div class="offer-content">
+                <section class="offer-section">
+                  <h3 class="section-header">Lead Summary</h3>
+                  <div class="summary-grid">
+                    <div class="summary-item">
+                      <span class="label">Location</span>
+                      <span class="value">{offer.lead_summary.location.city}, {offer.lead_summary.location.postal_code} ({offer.lead_summary.location.country})</span>
+                    </div>
+                    <div class="summary-item">
+                      <span class="label">Primary Products</span>
+                      <div class="tag-container">
+                        {#each offer.lead_summary.primary_products as product}
+                          <span class="product-tag-small">{product}</span>
+                        {/each}
+                      </div>
+                    </div>
+                  </div>
+                </section>
+
+                <hr class="offer-divider" />
+
+                <section class="offer-section">
+                  <div class="recommendation-header">
+                    <h3 class="section-header">Recommended Offer</h3>
+                    <span class="package-badge">{offer.recommended_offer.package_name}</span>
+                  </div>
+                  
+                  <div class="recommendation-content">
+                    <div class="products-list">
+                      <span class="label">Included Products</span>
+                      <ul>
+                        {#each offer.recommended_offer.products as product}
+                          <li>{product}</li>
+                        {/each}
+                      </ul>
+                    </div>
+
+                    <div class="reasoning-list">
+                      <span class="label">Reasoning</span>
+                      <ul>
+                        {#each offer.recommended_offer.reasoning as reason}
+                          <li>{reason}</li>
+                        {/each}
+                      </ul>
+                    </div>
+
+                    <div class="financials-grid">
+                      <div class="financial-card">
+                        <span class="label">Estimated Cost</span>
+                        <span class="financial-value">€{offer.recommended_offer.estimated_cost_range_eur.min.toLocaleString()} - €{offer.recommended_offer.estimated_cost_range_eur.max.toLocaleString()}</span>
+                      </div>
+                      <div class="financial-card highlight">
+                        <span class="label">Annual Savings</span>
+                        <span class="financial-value">€{offer.recommended_offer.estimated_annual_savings_eur.min.toLocaleString()} - €{offer.recommended_offer.estimated_annual_savings_eur.max.toLocaleString()}</span>
+                      </div>
+                      <div class="financial-card">
+                        <span class="label">Payback Period</span>
+                        <span class="financial-value">{offer.recommended_offer.estimated_payback_years.min} - {offer.recommended_offer.estimated_payback_years.max} Years</span>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+              </div>
+            {:else}
+              <div class="offer-text">
+                {#each project.offerPreview.split('\n') as line}
+                  {#if line.startsWith('**') && line.endsWith('**')}
+                    <strong>{line.slice(2, -2)}</strong><br/>
+                  {:else if line.startsWith('- ')}
+                    <li>{line.slice(2)}</li>
+                  {:else if line.trim() === ''}
+                    <br/>
+                  {:else}
+                    <span>{line}</span><br/>
+                  {/if}
+                {/each}
+              </div>
+              <div class="loading-inline">
+                <div class="spinner-small"></div>
+                <span>Generating AI offer...</span>
+              </div>
+            {/if}
           </div>
 
           <!-- Right panels -->
@@ -223,9 +317,15 @@
                 AI hints
               </div>
               <ul class="ai-list">
-                {#each project.aiHints as hint}
-                  <li>{hint}</li>
-                {/each}
+                {#if offer}
+                  {#each offer.sales_talking_points as hint}
+                    <li>{hint}</li>
+                  {/each}
+                {:else}
+                  {#each project.aiHints as hint}
+                    <li>{hint}</li>
+                  {/each}
+                {/if}
               </ul>
             </div>
           </div>
@@ -384,6 +484,170 @@
   .offer-preview {
     min-height: 500px;
     padding: 2rem;
+  }
+
+  .offer-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .offer-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .section-header {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--clr-text);
+    margin: 0;
+  }
+
+  .summary-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    background: var(--clr-bg-alt);
+    padding: 1.25rem;
+    border-radius: 8px;
+  }
+
+  .summary-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .summary-item .label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--clr-text-light);
+  }
+
+  .summary-item .value {
+    font-weight: 600;
+    color: var(--clr-text);
+  }
+
+  .tag-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .product-tag-small {
+    background: white;
+    border: 1px solid var(--clr-border);
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--clr-text);
+  }
+
+  .offer-divider {
+    border: 0;
+    border-top: 1px solid var(--clr-border);
+    margin: 0.5rem 0;
+  }
+
+  .recommendation-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .package-badge {
+    background: var(--clr-accent);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.8rem;
+    font-weight: 700;
+  }
+
+  .recommendation-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .products-list ul, .reasoning-list ul {
+    margin: 0.5rem 0 0 1.25rem;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .products-list li, .reasoning-list li {
+    font-size: 0.9rem;
+    color: var(--clr-text);
+  }
+
+  .products-list .label, .reasoning-list .label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--clr-text-light);
+  }
+
+  .financials-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-top: 0.5rem;
+  }
+
+  .financial-card {
+    background: white;
+    border: 1px solid var(--clr-border);
+    padding: 1rem;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .financial-card.highlight {
+    border-color: var(--clr-accent);
+    background: #f0fdf4; /* Light green background for savings */
+  }
+
+  .financial-card .label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--clr-text-light);
+  }
+
+  .financial-value {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--clr-text);
+  }
+
+  .loading-inline {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px dashed var(--clr-border);
+    color: var(--clr-text-light);
+    font-size: 0.875rem;
+  }
+
+  .spinner-small {
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--clr-border);
+    border-top: 2px solid var(--clr-accent);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
   }
 
   .panel-title {

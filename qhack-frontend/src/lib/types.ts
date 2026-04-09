@@ -85,6 +85,90 @@ export interface CustomerResponseDto {
   properties?: PropertyResponseDto[];
 }
 
+export interface OfferLLMRequest {
+  postal_code: string;
+  city: string;
+  country: string;
+  primary_product: string;
+  construction_year: number;
+  heating_type: string;
+}
+
+export interface RangeDouble {
+  min: number;
+  max: number;
+}
+
+export interface RangeEur {
+  min: number;
+  max: number;
+}
+
+export interface LocationOffer {
+  postal_code: string;
+  street?: string;
+  house_number?: string;
+  city: string;
+  country: string;
+}
+
+export interface LeadSummary {
+  location: LocationOffer;
+  primary_products: string[];
+}
+
+export interface MarketContext {
+  summary: string;
+  drivers: string[];
+  why_now: string[];
+}
+
+export interface Subsidy {
+  name: string;
+  status: string;
+  relevance: string;
+  estimated_effect_eur: number;
+  notes: string;
+}
+
+export interface RecommendedOffer {
+  package_name: string;
+  products: string[];
+  reasoning: string[];
+  estimated_cost_range_eur: RangeEur;
+  estimated_annual_savings_eur: RangeEur;
+  estimated_payback_years: RangeDouble;
+}
+
+export interface AlternativeOffer {
+  package_name: string;
+  products: string[];
+  positioning: string;
+  estimated_cost_range_eur: RangeEur;
+}
+
+export interface FinancingOption {
+  scenario: string;
+  down_payment_eur: number;
+  loan_amount_eur: number;
+  term_months: number;
+  apr_percent: number;
+  monthly_payment_eur: number;
+  notes: string;
+}
+
+export interface OfferLLMResponse {
+  lead_summary: LeadSummary;
+  market_context: MarketContext;
+  subsidies: Subsidy[];
+  recommended_offer: RecommendedOffer;
+  alternative_offers: AlternativeOffer[];
+  financing_options: FinancingOption[];
+  sales_talking_points: string[];
+  missing_information: string[];
+  disclaimer: string;
+}
+
 export interface OfferData {
   lead_summary: {
     location: {
