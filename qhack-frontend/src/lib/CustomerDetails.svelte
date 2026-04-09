@@ -52,13 +52,25 @@
 
         // Generate offer automatically after loading customer data
         try {
+          const metadata: Record<string, string> = {};
+          if (customer.details) {
+            Object.entries(customer.details).forEach(([key, value]) => {
+              if (value) metadata[key] = value;
+            });
+          }
+
           const offerRequest: OfferLLMRequest = {
-            postal_code: customer.address?.zip || '',
-            city: customer.address?.city || '',
-            country: 'Germany', // Defaulting to Germany as it's not in the address model yet
-            primary_product: 'Photovoltaik',
-            construction_year: 1990, // Mock value
-            heating_type: 'Gas' // Mock value
+            property_info: {
+              post_code: customer.address?.zip || '',
+              street: customer.address?.street || '',
+              house_number: customer.address?.houseNumber || '',
+              city: customer.address?.city || '',
+              country: 'Germany'
+            },
+            customer_profile: {
+              birth_date: customer.birthDate,
+              metadata: metadata
+            }
           };
           
           console.log('Generating offer with request:', offerRequest);

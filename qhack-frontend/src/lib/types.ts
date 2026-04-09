@@ -85,13 +85,22 @@ export interface CustomerResponseDto {
   properties?: PropertyResponseDto[];
 }
 
-export interface OfferLLMRequest {
-  postal_code: string;
+export interface PropertyInfoOffer {
+  post_code: string;
+  street: string;
+  house_number: string;
   city: string;
   country: string;
-  primary_product: string;
-  construction_year: number;
-  heating_type: string;
+}
+
+export interface CustomerProfileOffer {
+  birth_date: string;
+  metadata: Record<string, string>;
+}
+
+export interface OfferLLMRequest {
+  property_info: PropertyInfoOffer;
+  customer_profile: CustomerProfileOffer;
 }
 
 export interface RangeDouble {
