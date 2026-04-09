@@ -97,7 +97,15 @@
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
             <span>Print PDF</span>
           </button>
-          <button class="btn-primary">Accept Proposal</button>
+          <button class="btn-accept-proposal">
+            <div class="btn-icon-wrapper">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </div>
+            <div class="btn-content">
+              <span class="btn-title">Accept Proposal</span>
+              <span class="btn-desc">Proceed to signature</span>
+            </div>
+          </button>
         </div>
       </div>
     </header>
@@ -331,7 +339,82 @@
   .header-actions-top {
     display: flex;
     gap: 1rem;
-    margin-bottom: 0.5rem;
+    align-items: center;
+  }
+
+  .btn-accept-proposal {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    background: linear-gradient(135deg, var(--clr-accent) 0%, #059669 100%);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--radius-md);
+    border: none;
+    box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.2), 0 4px 6px -4px rgba(16, 185, 129, 0.2);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    text-align: left;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-accept-proposal::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.6s;
+  }
+
+  .btn-accept-proposal:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 20px 25px -5px rgba(16, 185, 129, 0.3), 0 8px 10px -6px rgba(16, 185, 129, 0.3);
+  }
+
+  .btn-accept-proposal:hover::before {
+    transform: translateX(100%);
+  }
+
+  .btn-icon-wrapper {
+    width: 32px;
+    height: 32px;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: transform 0.3s;
+  }
+
+  .btn-accept-proposal:hover .btn-icon-wrapper {
+    transform: scale(1.1) rotate(5deg);
+    background: white;
+    color: var(--clr-accent);
+  }
+
+  .btn-content {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .btn-title {
+    font-size: 0.9375rem;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+  }
+
+  .btn-desc {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.8);
   }
 
   .offer-grid {
