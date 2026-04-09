@@ -1,9 +1,9 @@
 # q-hack-cloover
 Submission of the q-hackathon cloover challenge 2026
 
-# Der KI-Verkaufscoach für Installateure erneuerbarer Energien
+# The AI Sales Coach for Renewable Energy Installers
 
-## Das Problem
+## The problem
 
 Imagine you’re a sales representative at a company that installs solar panels and heat pumps for residential customers in Germany. A new lead comes in—a homeowner in a small town two hours south of Frankfurt. You know his name, his address, and that he clicked on a heat pump ad. That’s it.
 
