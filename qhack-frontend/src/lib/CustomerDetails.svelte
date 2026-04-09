@@ -99,27 +99,9 @@
     editingCustomer = false;
   }
 
-  // Edit project
-  let editingProject = $state(false);
-  let editProjectForm = $state({ name: '', location: '' });
-
-  function openEditProject() {
-    if (!project) return;
-    editProjectForm = { name: project.name, location: project.location };
-    editingProject = true;
-  }
-
-  function saveEditProject() {
-    if (!project) return;
-    project.name = editProjectForm.name;
-    project.location = editProjectForm.location;
-    editingProject = false;
-  }
-
   function onModalKeydown(e: KeyboardEvent) {
     if (e.key === 'Escape') {
       editingCustomer = false;
-      editingProject = false;
     }
   }
 </script>
@@ -236,23 +218,6 @@
             </div>
 
             <div class="info-card card">
-              <div class="card-title-row">
-                <div class="panel-title">Project info</div>
-                <button class="btn-edit" aria-label="Edit project info" onclick={openEditProject}>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                </button>
-              </div>
-              <div class="info-row">
-                <span class="info-label">Project name</span>
-                <span>{project.name}</span>
-              </div>
-              <div class="info-row">
-                <span class="info-label">Location</span>
-                <span>{project.location}</span>
-              </div>
-            </div>
-
-            <div class="info-card card">
               <div class="panel-title ai-title">
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
                 AI hints
@@ -339,31 +304,6 @@
         </div>
         <div class="modal-actions">
           <button type="button" class="btn-modal-cancel" onclick={() => editingCustomer = false}>Cancel</button>
-          <button type="submit" class="btn-modal-save">Save changes</button>
-        </div>
-      </form>
-    </div>
-  </div>
-{/if}
-
-{#if editingProject && project}
-  <div class="modal-backdrop" role="presentation" onkeydown={onModalKeydown}>
-    <div class="modal-card card" tabindex="-1" role="dialog" aria-modal="true" aria-labelledby="edit-project-title">
-      <div class="modal-header">
-        <h2 id="edit-project-title">Edit project info</h2>
-        <p class="modal-subtitle">Update project details.</p>
-      </div>
-      <form onsubmit={(e) => { e.preventDefault(); saveEditProject(); }}>
-        <div class="modal-form-group">
-          <label for="ep-name">Project name *</label>
-          <input id="ep-name" type="text" bind:value={editProjectForm.name} placeholder="Project name" />
-        </div>
-        <div class="modal-form-group">
-          <label for="ep-location">Location *</label>
-          <input id="ep-location" type="text" bind:value={editProjectForm.location} placeholder="Location" />
-        </div>
-        <div class="modal-actions">
-          <button type="button" class="btn-modal-cancel" onclick={() => editingProject = false}>Cancel</button>
           <button type="submit" class="btn-modal-save">Save changes</button>
         </div>
       </form>
