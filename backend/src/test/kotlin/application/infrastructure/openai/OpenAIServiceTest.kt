@@ -86,12 +86,17 @@ class OpenAIServiceTest {
 
         val service = OpenAIService(httpClient)
         val result = service.generateOffer(com.qhack.application.services.openai.OfferLLMRequest(
-            postalCode = "74238",
-            city = "Krautheim",
-            country = "DE",
-            primaryProduct = "heat_pump",
-            constructionYear = 1985,
-            heatingType = "gas"
+            propertyInfo = com.qhack.application.services.openai.PropertyLLMInfo(
+                postCode = "74238",
+                street = "Street",
+                houseNumber = "1",
+                city = "Krautheim",
+                country = "DE"
+            ),
+            customerProfile = com.qhack.application.services.openai.CustomerLLMProfile(
+                birthDate = "1985-05-15",
+                metadata = mapOf("heating_type" to "gas")
+            )
         ))
 
         assertNotNull(result)

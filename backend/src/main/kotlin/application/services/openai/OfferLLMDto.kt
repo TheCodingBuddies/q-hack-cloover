@@ -5,12 +5,23 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class OfferLLMRequest(
-    @SerialName("postal_code") val postalCode: String,
+    @SerialName("property_info") val propertyInfo: PropertyLLMInfo,
+    @SerialName("customer_profile") val customerProfile: CustomerLLMProfile
+)
+
+@Serializable
+data class PropertyLLMInfo(
+    @SerialName("post_code") val postCode: String,
+    val street: String,
+    @SerialName("house_number") val houseNumber: String,
     val city: String,
-    val country: String,
-    @SerialName("primary_product") val primaryProduct: String,
-    @SerialName("construction_year") val constructionYear: Int,
-    @SerialName("heating_type") val heatingType: String
+    val country: String
+)
+
+@Serializable
+data class CustomerLLMProfile(
+    @SerialName("birth_date") val birthDate: String? = null,
+    val metadata: Map<String, String>? = null
 )
 
 @Serializable
