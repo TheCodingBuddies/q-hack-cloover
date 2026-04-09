@@ -40,6 +40,10 @@ Stell dir vor, du bist Vertriebsmitarbeiter bei einem Unternehmen, das Solaranla
 
 ![image](add_new_customer.png)
 
+![image](customer_overview.png)
+
+![image](max_mustermann.png)
+
 ## Wichtige Annahmen die wir getroffen haben
 - Der Kunde hat bereits sein Interesse für eine bestimmte Produktkategorie angezeigt
 - Geodaten wie Solarfaktor, Wärmepumpeneignung (Fläche oder Tiefe) sind für Deutschland vorhanden und können direkt für eine Objekt-Adresse abgefragt werden
