@@ -22,12 +22,17 @@ class OpenAiServiceMockTest {
         }
         val service = OpenAIServiceMock(httpClient)
         val request = OfferLLMRequest(
-            postalCode = "74238",
-            city = "Krautheim",
-            country = "DE",
-            primaryProduct = "heat_pump",
-            constructionYear = 1985,
-            heatingType = "gas"
+            propertyInfo = PropertyLLMInfo(
+                postCode = "74238",
+                street = "Street",
+                houseNumber = "1",
+                city = "Krautheim",
+                country = "DE"
+            ),
+            customerProfile = CustomerLLMProfile(
+                birthDate = "1985-05-15",
+                metadata = mapOf("heating_type" to "gas")
+            )
         )
 
         val response = service.generateOffer(request)
