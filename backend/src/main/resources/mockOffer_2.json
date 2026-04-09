@@ -1,0 +1,173 @@
+{
+  "lead_summary": {
+    "location": {
+      "postal_code": "80331",
+      "street": "Marienplatz",
+      "house_number": "1",
+      "city": "München",
+      "country": "Germany"
+    },
+    "primary_products": [
+      "Wärmepumpe",
+      "PV-/Speicher-Optimierung"
+    ]
+  },
+  "market_context": {
+    "summary": "Für das Objekt in München ist die Kombination aus Wärmepumpe und Optimierung der bestehenden Solaranlage grundsätzlich sehr attraktiv. München weist laut DWD im Klimamittel 1991–2020 an der Station München-Stadt rund 1.841,5 Sonnenstunden pro Jahr auf, also spürbar gute Solarbedingungen für Süddeutschland. Daraus lässt sich für eine gut geplante Dachanlage in München typischerweise ein realistischer spezifischer PV-Ertrag von etwa 950 bis 1.080 kWh/kWp pro Jahr ableiten, abhängig von Dachausrichtung, Neigung, Verschattung und technischer Auslegung. Gleichzeitig ist relevant, dass nach GEG die 65%-EE-Vorgabe für neue Heizungen eng mit der kommunalen Wärmeplanung verknüpft ist und spätestens ab Mitte 2028 flächendeckend greift. München ist zur Wärmeplanung bis spätestens 30.06.2026 verpflichtet; eine erste Version wurde bereits beschlossen. Für ein Einfamilienhaus mit bestehender Ölheizung aus einem älteren Gebäudebestand ist die Wärmepumpe daher sowohl regulatorisch als auch wirtschaftlich ein sehr plausibler Modernisierungspfad. Quellen: DWD Sonnenscheindauer München-Stadt 1991–2020 ; Bundesregierung GEG/65%-EE-Vorgabe ; Stadt München Wärmeplanung ",
+    "drivers": [
+      "Die bestehende Ölheizung ist im Hinblick auf Betriebskosten, CO2-Kosten und zukünftige regulatorische Anforderungen klar unter Druck; beim Austausch werden Wärmepumpen aktuell stark über die KfW bezuschusst. Quelle: KfW Heizungsförderung 458 ",
+      "München bietet im bundesweiten Vergleich gute Solarerträge; bei bereits vorhandener Solaranlage ohne Batterie liegt ein wirtschaftlicher Hebel besonders in Speicher, Energiemanagement und Lastverschiebung in die Mittagsstunden. Quelle: DWD München-Sonnenscheindauer "
+    ],
+    "why_now": [
+      "Für selbstnutzende Eigentümer in Bestandsgebäuden sind derzeit Zuschüsse von bis zu 70 % der förderfähigen Kosten möglich; bei einer alten Ölheizung ist insbesondere der Klimageschwindigkeitsbonus häufig relevant. Quelle: KfW 458 ",
+      "Die kommunale Wärmeplanung in München schafft jetzt mehr Transparenz, ob perspektivisch ein Wärmenetzanschluss sinnvoll ist oder die dezentrale Wärmepumpe die robustere Lösung bleibt; frühes Handeln sichert meist bessere Förder- und Handwerkerverfügbarkeit. Quelle: Stadt München Wärmeplanung "
+    ]
+  },
+  "subsidies": [
+    {
+      "name": "KfW 458 – Heizungsförderung für Privatpersonen – Wohngebäude",
+      "status": "Aktiv",
+      "relevance": "Sehr hoch für den Austausch der Ölheizung gegen eine Wärmepumpe im selbstgenutzten Einfamilienhaus.",
+      "estimated_effect_eur": 16500.0,
+      "notes": "Für Wärmepumpen gilt eine Grundförderung von 30 %. Hinzu kommen bei Erfüllung der Voraussetzungen ein Klimageschwindigkeitsbonus von 20 % und ein Effizienzbonus von 5 %, z. B. bei natürlichem Kältemittel oder bestimmten Wärmequellen. Bei Einfamilienhäusern sind für den Heizungstausch in der Regel bis zu 30.000 EUR förderfähige Kosten ansetzbar. Die Schätzung von 16.500 EUR basiert auf einer plausiblen Förderquote von 55 % auf 30.000 EUR. Quelle: KfW "
+    },
+    {
+      "name": "KfW 358/359 – Einzelmaßnahmen Ergänzungskredit",
+      "status": "Aktiv",
+      "relevance": "Mittel bis hoch bei laufendem Kredit und Wunsch nach Liquiditätsschonung.",
+      "estimated_effect_eur": 0.0,
+      "notes": "Kein direkter Zuschuss, aber ein zusätzlicher Förderkredit für bereits bezuschusste energetische Einzelmaßnahmen. Möglich sind bis zu 120.000 EUR Kredit je Wohneinheit; bei Haushaltsjahreseinkommen bis 90.000 EUR ist ein zusätzlicher Zinsvorteil möglich. Quelle: KfW "
+    },
+    {
+      "name": "0 % Umsatzsteuer auf Photovoltaik und Speicher",
+      "status": "Aktiv",
+      "relevance": "Hoch für Speicher-Nachrüstung und mögliche PV-Erweiterung am Wohngebäude.",
+      "estimated_effect_eur": 2470.0,
+      "notes": "Für Solarmodule sowie wesentliche Komponenten und Speicher gilt unter den gesetzlichen Voraussetzungen der Nullsteuersatz. Bei einem angenommenen PV-/Speicher-Investitionsvolumen von rund 13.000 EUR bruttoäquivalent entspricht der Vorteil gegenüber 19 % Umsatzsteuer grob rund 2.470 EUR. Quelle: BMF FAQ "
+    }
+  ],
+  "recommended_offer": {
+    "package_name": "Effizienz-Paket München: Wärmepumpe + Speicher + PV-Optimierung",
+    "products": [
+      "Luft/Wasser-Wärmepumpe mit natürlichem Kältemittel",
+      "Hydraulischer Abgleich",
+      "Warmwasserspeicher/Pufferspeicher",
+      "Elektrik- und Zählerschrankanpassung",
+      "Batteriespeicher zur bestehenden Solaranlage",
+      "Energiemanagementsystem zur Wärmepumpen- und PV-Kopplung",
+      "Optional: kleinere PV-Erweiterung bei geeigneter Dachfläche"
+    ],
+    "reasoning": [
+      "Das Gebäudejahr 1975 spricht dafür, dass die Gebäudehülle nicht auf Neubauniveau liegt. Dennoch kann eine modern ausgelegte Luft/Wasser-Wärmepumpe wirtschaftlich funktionieren, wenn Heizlast, Vorlauftemperaturen und Heizflächen sauber geprüft und optimiert werden.",
+      "Da bereits eine Solaranlage vorhanden ist, ist die wirtschaftlich stärkste Maßnahme oft nicht der komplette Neubau der PV, sondern die Ergänzung um Speicher und intelligentes Lastmanagement. Dadurch kann die Wärmepumpe einen relevanten Teil ihres Strombedarfs in sonnenreichen Stunden decken.",
+      "München hat mit rund 1.841,5 Sonnenstunden pro Jahr gute Voraussetzungen für hohen Eigenverbrauch und stabile PV-Erträge. Dadurch verbessert sich die Wirtschaftlichkeit der Wärmepumpe gegenüber einem reinen Netzstrombetrieb. Quelle: DWD ",
+      "Der Austausch einer alten Ölheizung ist förderseitig besonders attraktiv und reduziert die Abhängigkeit von fossilen Brennstoffen sowie künftigen Preis- und CO2-Risiken. Quelle: KfW/Bundesregierung "
+    ],
+    "estimated_cost_range_eur": {
+      "min": 28000,
+      "max": 42000
+    },
+    "estimated_annual_savings_eur": {
+      "min": 2200,
+      "max": 3600
+    },
+    "estimated_payback_years": {
+      "min": 8.0,
+      "max": 13.5
+    }
+  },
+  "alternative_offers": [
+    {
+      "package_name": "Budget-Paket: Wärmepumpe ohne Speicher",
+      "products": [
+        "Luft/Wasser-Wärmepumpe",
+        "Hydraulischer Abgleich",
+        "Warmwasserspeicher",
+        "Elektrik-Basisanpassung"
+      ],
+      "positioning": "Geeignet, wenn der Fokus auf schnellem Ersatz der Ölheizung und maximaler Nutzung der KfW-Heizungsförderung liegt. Wirtschaftlich solide, aber mit weniger Eigenverbrauchsvorteil als die Kombination mit Speicher und Energiemanagement.",
+      "estimated_cost_range_eur": {
+        "min": 18000,
+        "max": 30000
+      }
+    },
+    {
+      "package_name": "Solar-Fokus-Paket: Speicher-Nachrüstung und PV-Feinoptimierung",
+      "products": [
+        "Batteriespeicher",
+        "Energiemanagementsystem",
+        "Wechselrichter-/Stringprüfung",
+        "Optional kleinere PV-Erweiterung"
+      ],
+      "positioning": "Sinnvoll, wenn der Heizungstausch noch verschoben werden soll. Die Stromkosten sinken, die vorhandene Solaranlage wird besser genutzt, aber die strukturellen Nachteile der Ölheizung bleiben bestehen.",
+      "estimated_cost_range_eur": {
+        "min": 9000,
+        "max": 17000
+      }
+    },
+    {
+      "package_name": "Sanierungs-Paket: Wärmepumpe plus vorbereitende Hüllmaßnahmen",
+      "products": [
+        "Wärmepumpe",
+        "Heizflächenoptimierung",
+        "Kellerdecken- oder Dachbodendämmung",
+        "Fenster-/Luftdichtheitsmaßnahmen nach Bedarf"
+      ],
+      "positioning": "Für ein Haus Baujahr 1975 oft die technisch beste Lösung, wenn hohe Vorlauftemperaturen oder eine ungünstige Heizlast vorliegen. Höhere Investition, dafür mehr Systemstabilität und niedrigere Betriebskosten.",
+      "estimated_cost_range_eur": {
+        "min": 38000,
+        "max": 70000
+      }
+    }
+  ],
+  "financing_options": [
+    {
+      "scenario": "Barzahlung",
+      "down_payment_eur": 32000,
+      "loan_amount_eur": 0,
+      "term_months": 0,
+      "apr_percent": 0.0,
+      "monthly_payment_eur": 0,
+      "notes": "Sinnvoll nur bei ausreichend freier Liquidität. Vorteil: keine zusätzlichen Finanzierungskosten und maximale Flexibilität."
+    },
+    {
+      "scenario": "Klassische Modernisierungsfinanzierung",
+      "down_payment_eur": 7000,
+      "loan_amount_eur": 28000,
+      "term_months": 120,
+      "apr_percent": 4.3,
+      "monthly_payment_eur": 289,
+      "notes": "Indikatives Marktbeispiel für eine 10-jährige Finanzierung nach Förderabzug. Wegen bestehendem Kredit nur sinnvoll bei sauberer Haushaltsrechnung und ausreichendem Puffer."
+    },
+    {
+      "scenario": "Fördermix mit Ergänzungskredit",
+      "down_payment_eur": 0,
+      "loan_amount_eur": 30000,
+      "term_months": 180,
+      "apr_percent": 3.3,
+      "monthly_payment_eur": 212,
+      "notes": "Indikatives Beispiel für die Finanzierung des Eigenanteils über einen ergänzenden Förderkredit zu bereits bezuschussten Maßnahmen. Zinsvorteile hängen von Bonität und ggf. Einkommensgrenze ab. Quelle: KfW 358/359 "
+    }
+  ],
+  "sales_talking_points": [
+    "Der Austausch einer alten Ölheizung ist einer der klarsten Anwendungsfälle für die aktuelle Heizungsförderung.",
+    "München hat sehr gute Solarvoraussetzungen; die vorhandene Solaranlage wird durch Speicher und Wärmepumpenkopplung deutlich wirtschaftlicher. Quelle: DWD ",
+    "Mit Wärmepumpe plus PV-Eigenverbrauch sinkt die Abhängigkeit von Ölpreisen, CO2-Kosten und regulatorischer Unsicherheit.",
+    "Bei einem laufenden Kredit ist die Kombination aus Zuschuss und Ergänzungsfinanzierung häufig attraktiver als ein rein bankfinanzierter Vollbetrag. Quelle: KfW ",
+    "Gerade bei Baujahr 1975 lohnt sich eine saubere Systemplanung, weil schon kleinere Hüll- oder Heizflächenoptimierungen die Wärmepumpen-Wirtschaftlichkeit stark verbessern."
+  ],
+  "missing_information": [
+    "Exakte Leistung, Alter und technischer Zustand der bestehenden Solaranlage",
+    "Dachausrichtung, Dachneigung, Verschattung und verfügbare Dachfläche",
+    "Baujahr und Zustand der Ölheizung",
+    "Tatsächlicher Ölverbrauch bzw. getrennte Aufschlüsselung von Heiz- und Haushaltsstromverbrauch",
+    "Heizlastberechnung des Gebäudes",
+    "Maximale Vorlauftemperatur im Winter",
+    "Art und Größe der Heizflächen (Radiatoren/Fußbodenheizung)",
+    "Zustand von Fenstern, Dach, Fassade und Kellerdecke",
+    "Zählerschrankzustand und verfügbare elektrische Anschlussleistung",
+    "Ob ein Anschluss an ein perspektivisch sinnvolles Wärmenetz am konkreten Standort realistisch ist",
+    "Ob das Haus vollständig selbst genutzt oder teilweise vermietet wird"
+  ],
+  "disclaimer": "Dieses Angebot ist eine unverbindliche Ersteinschätzung auf Basis der bereitgestellten Objekt- und Profildaten sowie plausibler Annahmen für ein Einfamilienhaus Baujahr 1975 in München. Förderfähigkeit, Fördersätze, kommunaler Wärmeplanbezug, technische Machbarkeit, tatsächliche Solarerträge, Einsparungen und Finanzierungskonditionen müssen vor Auftragserteilung objektbezogen geprüft werden. Förderprogramme stehen unter Haushalts- und Richtlinienvorbehalt; ein Rechtsanspruch besteht nicht. Quellen: KfW/Bundesregierung/Stadt München/DWD "
+}

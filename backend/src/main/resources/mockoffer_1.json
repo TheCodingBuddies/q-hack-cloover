@@ -1,0 +1,179 @@
+{
+  "lead_summary": {
+    "location": {
+      "postal_code": "10115",
+      "street": "Friedrichstraße",
+      "house_number": "1",
+      "city": "Berlin",
+      "country": "Germany"
+    },
+    "primary_products": [
+      "Wärmepumpe",
+      "Photovoltaik-/Speicheroptimierung"
+    ]
+  },
+  "market_context": {
+    "summary": "Für das Objekt in Berlin-Mitte ist der Zeitpunkt für eine Umstellung von Gas auf eine elektrische Wärmepumpe grundsätzlich günstig: In Berlin liegt die mittlere jährliche Sonnenscheindauer an innerstädtischen Stationen bei rund 1.748 Stunden pro Jahr; für Berlin werden außerdem etwa 1.010 kWh/(m²·a) Globalstrahlung auf horizontaler Fläche und bis zu 1.133 kWh/(m²·a) auf optimal ausgerichteten, unverschatteten Flächen ausgewiesen. Daraus lässt sich für eine gut geplante PV-Anlage am Standort ein realistischer spezifischer Stromertrag im Bereich von grob ca. 900 bis 1.050 kWh/kWp pro Jahr ableiten, abhängig von Dachneigung, Ausrichtung und Verschattung. Rechtlich ist relevant, dass in Großstädten wie Berlin der kommunale Wärmeplan bis spätestens 30.06.2026 vorliegen muss; gleichzeitig gilt im Bestand beim Heizungstausch die 65%-EE-Anforderung des GEG in Abhängigkeit von der Wärmeplanung. Für Berlin läuft die gesamtstädtische Wärmeplanung bereits, was die Planbarkeit erhöht. Zusätzlich gilt in Berlin seit 2023 eine Solarpflicht bei Neubauten und wesentlichen Dachumbauten im Bestand, was PV-Investitionen strategisch zusätzlich stützt. ",
+    "drivers": [
+      "Die bestehende Gasheizung aus einem Gebäudejahrgang 1995 ist wirtschaftlich und regulatorisch ein Auslaufmodell; beim Austausch sind Wärmepumpen durch die KfW mit Grundförderung und möglichen Boni deutlich begünstigt. ",
+      "Berlin ist für PV wirtschaftlich solide: gute urbane Sonnenscheindauer, belastbare Globalstrahlungswerte und zusätzlich ein Landesprogramm für Eigenheime mit Fokus auf PV, Speicher und Zählerschrank. "
+    ],
+    "why_now": [
+      "Die Heizungsförderung für selbstnutzende Eigentümer in Bestandsgebäuden beträgt bei Wärmepumpen bis zu 70 % der förderfähigen Kosten; bei einem Einfamilienhaus werden dabei bis zu 30.000 EUR förderfähige Kosten angesetzt. Bei Austausch einer mindestens 20 Jahre alten Gasheizung ist der Klimageschwindigkeitsbonus grundsätzlich relevant. ",
+      "PV-Investitionen bleiben durch den Nullsteuersatz für kleine PV-Anlagen und Zubehör kostenseitig attraktiv; in Berlin ist seit 08.01.2026 zusätzlich SolarPLUS neu strukturiert und unterstützt Eigenheime gezielt. "
+    ]
+  },
+  "subsidies": [
+    {
+      "name": "KfW 458 – Heizungsförderung für Privatpersonen",
+      "status": "Aktiv",
+      "relevance": "Sehr hoch für den Tausch der Gasheizung gegen eine Wärmepumpe im selbstgenutzten Einfamilienhaus.",
+      "estimated_effect_eur": 16500.0,
+      "notes": "Für Wärmepumpen gelten 30 % Grundförderung und 5 % Effizienzbonus, wenn z. B. natürliches Kältemittel oder Erdreich/Wasser/Abwasser als Quelle genutzt werden. Zusätzlich kann bei Austausch einer mindestens 20 Jahre alten Gasheizung der Klimageschwindigkeitsbonus von 20 % relevant sein. Maximal sind bei Einfamilienhäusern 30.000 EUR förderfähige Kosten ansetzbar; insgesamt ist die Förderquote auf 70 % gedeckelt. Die Schätzung von 16.500 EUR basiert auf 55 % von 30.000 EUR und ist damit konservativ-realistisch für eine gut geplante Luft/Wasser-Wärmepumpe mit förderfähiger Ausführung. "
+    },
+    {
+      "name": "Berlin SolarPLUS S / SolarPLUS",
+      "status": "Aktiv",
+      "relevance": "Hoch für Speicher-Nachrüstung, Zählerschrankanpassung und ggf. PV-Erweiterung am Eigenheim in Berlin.",
+      "estimated_effect_eur": 3000.0,
+      "notes": "Berlin hat das Programm zum 08.01.2026 neu strukturiert. Für größere Module des Programms nennt die IBB u. a. 50 % Förderung für Stromspeicher und bis zu 750 EUR pauschal für Zählerschränke bei Ein- und Zweifamilienhäusern; je nach konkreter Projektstruktur ist bei einem EFH mit Speicher- und Elektroanpassung ein Zuschusseffekt im groben Bereich von etwa 1.500 bis 5.000 EUR plausibel. Hier wurden konservativ 3.000 EUR angesetzt. "
+    },
+    {
+      "name": "KfW 358/359 – Einzelmaßnahmen Ergänzungskredit",
+      "status": "Aktiv",
+      "relevance": "Mittel bis hoch, wenn trotz laufendem Kredit Liquidität geschont werden soll.",
+      "estimated_effect_eur": 0.0,
+      "notes": "Kein direkter Zuschuss, aber zinsgünstige Ergänzungsfinanzierung bis zu 120.000 EUR je Wohneinheit zusätzlich zu einer bereits bewilligten Zuschussförderung; bei Haushaltsjahreseinkommen bis 90.000 EUR mit zusätzlichem Zinsvorteil. Sinnvoll bei Finanzierung der Eigenmittel nach Förderabzug. "
+    },
+    {
+      "name": "0 % Umsatzsteuer auf kleine Photovoltaikanlagen",
+      "status": "Aktiv",
+      "relevance": "Hoch für PV-Erweiterung und Batteriespeicher am Wohngebäude.",
+      "estimated_effect_eur": 2280.0,
+      "notes": "Für kleine PV-Anlagen auf oder in der Nähe von Wohngebäuden gilt seit 2023 der Nullsteuersatz. Bei einem angenommenen Investitionsvolumen von 12.000 EUR bruttoäquivalent entspricht der steuerliche Kostenvorteil grob rund 2.280 EUR gegenüber einem 19%-Steuerszenario. "
+    }
+  ],
+  "recommended_offer": {
+    "package_name": "Komfort-Paket: Wärmepumpe + PV-/Speicher-Optimierung mit Energiemanagement",
+    "products": [
+      "Luft/Wasser-Wärmepumpe mit natürlichem Kältemittel",
+      "Hydraulischer Abgleich und Heizflächen-/Regelungsoptimierung",
+      "Warmwasserspeicher/Pufferspeicher",
+      "Energiemanagementsystem",
+      "Batteriespeicher zur bestehenden Solaranlage",
+      "Optional: moderate PV-Erweiterung bei geeigneter Dachfläche",
+      "Zählerschrank-/Elektrik-Anpassung"
+    ],
+    "reasoning": [
+      "Das Gebäudejahr 1995 ist typischerweise ein guter Kandidat für eine moderne Luft/Wasser-Wärmepumpe, sofern Vorlauftemperaturen und Heizflächen sauber geprüft werden. Im Vergleich zu einer neuen Gasheizung ist die Wärmepumpe regulatorisch zukunftssicherer und förderseitig deutlich attraktiver. ",
+      "Da bereits eine Solaranlage ohne Batterie vorhanden ist, ist die wirtschaftlich stärkste Hebelwirkung häufig nicht ein vollständiger Neubeginn, sondern die Kombination aus Wärmepumpe, Speicher, Lastverschiebung und ggf. kleiner PV-Erweiterung. So steigt der Eigenverbrauch des Solarstroms deutlich und die Wärmepumpe kann tagsüber gezielt mit günstiger Eigenenergie laufen. Die Berliner Einstrahlungs- und Sonnenscheindaten stützen diese Strategie klar. ",
+      "Bei den angegebenen 25.000 kWh Jahresverbrauch ist davon auszugehen, dass ein relevanter Wärmebedarf vorliegt. Unter Annahme einer typischen Altanlagen-Effizienz der Gasheizung und einer Jahresarbeitszahl der Wärmepumpe im Bereich von etwa 3,0 bis 3,4 entsteht in Kombination mit Speicher und Energiemanagement ein belastbarer Einsparpfad, ohne dass sofort eine Vollsanierung der Gebäudehülle nötig ist.",
+      "Das Paket ist besonders passend zum Finanzprofil, weil es Fördermittel mit einer stufenweisen Modernisierung verbindet: erst Heizung und Eigenverbrauch, später bei Bedarf Gebäudehülle oder größere PV-Erweiterung."
+    ],
+    "estimated_cost_range_eur": {
+      "min": 22000,
+      "max": 35000
+    },
+    "estimated_annual_savings_eur": {
+      "min": 1700,
+      "max": 2800
+    },
+    "estimated_payback_years": {
+      "min": 8.5,
+      "max": 14.5
+    }
+  },
+  "alternative_offers": [
+    {
+      "package_name": "Budget-Paket: Nur Wärmepumpe mit minimaler Systemanpassung",
+      "products": [
+        "Luft/Wasser-Wärmepumpe",
+        "Hydraulischer Abgleich",
+        "Warmwasserspeicher",
+        "Elektrik-Basisanpassung"
+      ],
+      "positioning": "Für Kunden mit Fokus auf schnellen Gas-Ausstieg und Nutzung der KfW-Heizungsförderung; wirtschaftlich solide, aber schwächer als die Kombi mit Speicher/PV-Optimierung, weil weniger Eigenstrom genutzt wird.",
+      "estimated_cost_range_eur": {
+        "min": 12000,
+        "max": 20000
+      }
+    },
+    {
+      "package_name": "Solar-Fokus-Paket: Speicher-Nachrüstung + PV-Erweiterung, Heizung später",
+      "products": [
+        "Batteriespeicher",
+        "Energiemanagementsystem",
+        "Optional PV-Erweiterung",
+        "Zählerschrankanpassung"
+      ],
+      "positioning": "Für Kunden, die zuerst Stromkosten senken und die bestehende Solaranlage aufwerten wollen. Gute Zwischenlösung, aber die Abhängigkeit von Gas bleibt bestehen und der regulatorische Druck beim späteren Heizungstausch bleibt erhalten.",
+      "estimated_cost_range_eur": {
+        "min": 9000,
+        "max": 18000
+      }
+    },
+    {
+      "package_name": "Zukunfts-Paket: Wärmepumpe + Hüllmaßnahmen in Richtung Effizienzhaus",
+      "products": [
+        "Wärmepumpe",
+        "Fenster-/Dämmmaßnahmen nach Bedarf",
+        "Lüftungskonzept",
+        "Baubegleitung durch Energieeffizienz-Experten"
+      ],
+      "positioning": "Langfristig beste energetische Lösung mit Potenzial für weitere KfW-Finanzierung über Effizienzhaus-Sanierung; jedoch höhere Komplexität, längere Bauzeit und deutlich höherer Kapitalbedarf.",
+      "estimated_cost_range_eur": {
+        "min": 50000,
+        "max": 95000
+      }
+    }
+  ],
+  "financing_options": [
+    {
+      "scenario": "Barzahlung",
+      "down_payment_eur": 26000,
+      "loan_amount_eur": 0,
+      "term_months": 0,
+      "apr_percent": 0.0,
+      "monthly_payment_eur": 0,
+      "notes": "Sinnvoll nur, wenn Liquidität trotz bestehendem Kredit komfortabel vorhanden ist. Vorteil: maximale Zinsersparnis und volle Flexibilität."
+    },
+    {
+      "scenario": "Bankdarlehen 10 Jahre",
+      "down_payment_eur": 7000,
+      "loan_amount_eur": 28000,
+      "term_months": 120,
+      "apr_percent": 4.2,
+      "monthly_payment_eur": 286,
+      "notes": "Indikatives Marktbeispiel für eine klassische Modernisierungsfinanzierung. Gut planbar, aber wegen bereits laufendem Kredit nur sinnvoll bei stabiler Haushaltsrechnung."
+    },
+    {
+      "scenario": "Fördermix mit Ergänzungskredit",
+      "down_payment_eur": 0,
+      "loan_amount_eur": 30000,
+      "term_months": 180,
+      "apr_percent": 3.25,
+      "monthly_payment_eur": 211,
+      "notes": "Indikatives Beispiel für Finanzierung des Eigenanteils und förderfähiger Restkosten über einen ergänzenden Förderkredit nach Zuschusszusage. KfW 358/359 ist grundsätzlich als Ergänzung zu bezuschussten Einzelmaßnahmen vorgesehen; der konkrete Zinssatz hängt von Bank, Bonität und ggf. Einkommensgrenzen ab. "
+    }
+  ],
+  "sales_talking_points": [
+    "Sie ersetzen mit hoher Wahrscheinlichkeit eine förderfähige alte Gasheizung durch eine Lösung, die regulatorisch deutlich robuster ist als ein weiterer fossil geprägter Investitionszyklus.",
+    "Berlin bietet für Solar kein Schönwetterversprechen, aber belastbare Ertragswerte: Die lokale Sonnenscheindauer und die Globalstrahlungsdaten reichen klar aus, um PV in Kombination mit Wärmepumpe wirtschaftlich zu machen. ",
+    "Weil bereits eine Solaranlage vorhanden ist, muss nicht alles neu gebaut werden; Speicher, Energiemanagement und eine saubere Integration in die Wärmepumpe liefern oft den besseren ROI als eine isolierte Einzelmaßnahme.",
+    "Mit laufendem Kredit ist die Kombination aus Zuschuss und gestreckter Finanzierung meist attraktiver als eine Vollinvestition aus Eigenkapital.",
+    "Die Wärmeplanung in Berlin erhöht die Planungssicherheit: dezentrale Lösungen wie Wärmepumpen sind gerade bei Einfamilienhäusern häufig der robuste Standardpfad, solange kein konkret attraktiver Wärmenetzanschluss absehbar ist. "
+  ],
+  "missing_information": [
+    "Exakte Größe, Alter und Leistung der bestehenden Solaranlage (kWp) sowie Wechselrichterdaten",
+    "Dachausrichtung, nutzbare Dachfläche, Verschattung und Statik",
+    "Heizlastberechnung des Gebäudes",
+    "Vorlauftemperaturen im Winter und Art/Größe der Heizflächen",
+    "Ob Fußbodenheizung vorhanden ist",
+    "Exaktes Alter und Zustand der Gasheizung",
+    "Ob das Gebäude selbst genutzt wird oder teilweise vermietet ist",
+    "Aktueller Haushaltsstromverbrauch getrennt vom Gasverbrauch",
+    "Zählerschrankzustand und verfügbare elektrische Anschlussleistung",
+    "Energieausweis bzw. U-Werte relevanter Bauteile"
+  ],
+  "disclaimer": "Dieses Angebot ist eine unverbindliche fachliche Ersteinschätzung auf Basis der bereitgestellten Daten und plausibler Annahmen für ein Einfamilienhaus Baujahr 1995 in Berlin. Förderfähigkeit, Fördersätze, Wärmeplanbezug, technische Machbarkeit, Jahreserträge, Einsparungen und Finanzierungskonditionen müssen vor Auftragserteilung standort- und objektbezogen geprüft werden. Förderprogramme stehen regelmäßig unter Haushalts- und Richtlinienvorbehalt; ein Rechtsanspruch besteht nicht. "
+}
