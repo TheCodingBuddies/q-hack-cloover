@@ -5,36 +5,30 @@ Submission of the q-hackathon cloover challenge 2026
 
 ## Das Problem
 
-Stell dir vor, du bist Vertriebsmitarbeiter bei einem Unternehmen, das Solaranlagen und Wärmepumpen für Privathaushalte in Deutschland installiert. Ein neuer Lead kommt rein — ein Hausbesitzer in einer Kleinstadt zwei Stunden südlich von Frankfurt. Du kennst seinen Namen, seine Adresse und weißt, dass er auf eine Wärmepumpen-Anzeige geklickt hat. Das war's.
+Imagine you’re a sales representative at a company that installs solar panels and heat pumps for residential customers in Germany. A new lead comes in—a homeowner in a small town two hours south of Frankfurt. You know his name, his address, and that he clicked on a heat pump ad. That’s it.
 
 
-# Liefergegenstände
+## How we understood the problem
+- The customer wants a solution as soon as possible but has no idea about:
+  -  Products
+  -  Market conditions
+  -  Installation time and scope
+  -  Laws and incentives
+  -  What information an installer needs
+- Sales reps need as much relevant installation data as possible
+  -  They frequently visit customers but are unable to finalize a quote due to missing data
+  -  Filling in the necessary installation information is a difficult and time-consuming process
+- The sales representative is on the way to meet the customer, and their AI sales coach assistant is giving them final tips
+- Once there, the end customer and the sales representative will go through various scenarios based on a range of offer options, without having to wait for data to be populated by entering optional information
 
-- Ein funktionierender Prototyp oder eine Demo
-- Eine kurze Präsentation (5–10 Min.) mit:
-    - Wie ihr das Problem verstanden habt
-    - Euer Lösungsansatz und eine Live-Demo
-    - Wichtige Annahmen, die ihr getroffen habt
-    - Mögliche Wirkung bei großflächigem Einsatz
+- The salesperson is presented with various options and questions
 
+## A brief demonstration of the demo
+We decided to go with a Svelte + Kotlin + PostgreSQL stack
 
-## Wie haben wir das Problem verstanden
-- Kunde möchte so schnell wie möglich eine Lösung, hat aber keine Ahnung von:
-  -  Produkten
-  -  Marktsituation
-  -  Installationsdauer und Installationsumfang
-  -  Gesetze und Förderungen
-  -  Welche Daten ein Installateur benötgt
-- Vertriebler brauch so umfangreich wie möglich wichtige Daten für die Installation
-  -  fährt häufig zu Kunden und kann wegenen fehlender Daten kein Angebot abschließen
-  -  das Ergänzen von wichtigen Informationen für die Installation ist ein schwieriger Zeitraubender Prozess
-- Der Vertriebler ist auf dem Weg zum Kunden und sein KI-Verkaufs-Coach-Assistent gibt ihm letzte Hinweise.
-- Vor Ort sollen der Endkunde und der Vertriebler aus einer Varianz an Angebotsoptionen verschiedene Szenarien durchgehen, ohne wartezeiten in kauf zu nehmen durch ergänzen von optionalen Daten
-
-- Dem Vertriebler werden wird verschiedene Optionen und Fragen vorgeschlagen
-
-## Kurze Demonstration der Demo
 ![image](architecture_grob.png)
+
+![image](scenarios.png)
 
 ![image](search_view.png)
 
@@ -44,15 +38,20 @@ Stell dir vor, du bist Vertriebsmitarbeiter bei einem Unternehmen, das Solaranla
 
 ![image](max_mustermann.png)
 
-## Wichtige Annahmen die wir getroffen haben
-- Der Kunde hat bereits sein Interesse für eine bestimmte Produktkategorie angezeigt
-- Geodaten wie Solarfaktor, Wärmepumpeneignung (Fläche oder Tiefe) sind für Deutschland vorhanden und können direkt für eine Objekt-Adresse abgefragt werden
-- für Förderungen nur die Deutschen Gesetze und Förderungen 
-- Preise, Verfügbarkeit und Informationen der Produkte sind vorhanden können Ad-oc 
+## Key assumptions we have made
+- The customer has already expressed interest in a specific product category
+- Geodata such as solar factor and heat pump suitability (surface area or depth) are available for Germany and can be queried directly for a property address
+- For subsidies, only German laws and subsidies apply
+- Product prices, availability, and information are available on demand 
 
-## Mögliche Wirkung bei großflächigem Einsatz
-- Kunden werden gezielter gefragt
-- Kunden haben ein größeres Vertrauen in den Prozess
-- Kunden haben eine realistischere Vorstellung der Installation
-- Installateure haben Planungssicherheit
-- Energiewende kann schneller vornschreiten
+## Potential impact of widespread use
+- Customers are asked more targeted questions
+- Customers have greater confidence in the process
+- Customers have a more realistic understanding of the installation
+- Installers have greater planning certainty
+- The energy transition can proceed more quickly
+
+## Problems
+- The AI's API token for backend implementation was constantly invalid
+- AI credits were immediately invalid
+- Internet bandwidth was no longer sufficient
