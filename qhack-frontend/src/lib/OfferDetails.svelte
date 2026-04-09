@@ -1,7 +1,8 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { customerService } from './customerService';
-  import type { Customer, OfferData } from './types';
+  import { offerService } from './offerService';
+  import type { Customer, OfferLLMRequest, OfferLLMResponse } from './types';
 
   interface Props {
     customerId: string;
@@ -10,7 +11,7 @@
   let { customerId }: Props = $props();
   
   let customer: Customer | null = $state(null);
-  let offer: OfferData | null = $state(null);
+  let offer: OfferLLMResponse | null = $state(null);
   let isLoading = $state(true);
   let error: string | null = $state(null);
 
@@ -20,143 +21,32 @@
       if (!customer) {
         error = 'Customer not found';
       } else {
-        // Mocking the offer data from todo.md
-        offer = {
-          "lead_summary": {
-            "location": {
-              "postal_code": "10115",
-              "city": "Berlin",
-              "country": "Germany"
-            },
-            "primary_product": "Solaranlage",
-            "building_assumptions": [
-              "Bestandsgebäude mit Baujahr 1995",
-              "aktuell Gasheizungbasierte Heizung",
-              "typischer Modernisierungsfall für ein Einfamilienhaus oder ähnliches Wohngebäude",
-              "ohne Detaildaten zu Dämmstandard, Heizlast, Vorlauftemperatur und Heizkörperauslegung"
-            ]
+        // Prepare request data from customer
+        const metadata: Record<string, string> = {};
+        if (customer.details) {
+          Object.entries(customer.details).forEach(([key, value]) => {
+            if (value) metadata[key] = value;
+          });
+        }
+
+        const offerRequest: OfferLLMRequest = {
+          property_info: {
+            post_code: customer.address?.zip || '',
+            street: customer.address?.street || '',
+            house_number: customer.address?.houseNumber || '',
+            city: customer.address?.city || '',
+            country: 'Germany'
           },
-          "market_context": {
-            "summary": "Für einen Altbau mit Gasheizungheizung ist der Umstieg auf eine klimafreundliche Heizung wirtschaftlich und regulatorisch relevant, weil fossile Wärmekosten langfristig unter Druck bleiben, die 65%-EE-Vorgaben den Heizungsmarkt prägen und weiterhin attraktive Förderkulissen verfügbar sind.",
-            "drivers": [
-              "Gasheizungen bleiben anfällig für Preis- und CO2-Kostenrisiken.",
-              "Das GEG setzt für neue Heizungen grundsätzlich den 65%-Erneuerbare-Energien-Rahmen.",
-              "Die kommunale Wärmeplanung erhöht mittelfristig den Handlungsdruck und die Entscheidungssicherheit.",
-              "Die Heizungsförderung kann die Anfangsinvestition deutlich reduzieren."
-            ],
-            "why_now": [
-              "Fördermittel senken aktuell die Einstiegskosten spürbar.",
-              "Ein Heizungstausch vor einem Defekt ist planbarer und oft wirtschaftlicher als eine Havarieentscheidung.",
-              "Bei älteren Gasheizungen steigt typischerweise das Risiko für Reparaturen und Effizienzverluste.",
-              "Frühes Handeln schafft mehr Auswahl bei Technik, Installationspartnern und Finanzierung."
-            ]
-          },
-          "subsidies": [
-            {
-              "name": "KfW Heizungsförderung für Privatpersonen – Wohngebäude (458)",
-              "status": "potenziell relevant",
-              "relevance": "Sehr hoch bei selbstgenutztem Bestandswohngebäude und Tausch einer fossilen Heizung gegen eine klimafreundliche Heizung.",
-              "estimated_effect_eur": 9000,
-              "notes": "Die tatsächliche Förderhöhe hängt von Förderfähigkeit, förderfähigen Kosten und persönlichen Zuschlagsvoraussetzungen ab; in der Praxis ist eine Wärmepumpe häufig der zentrale Förderhebel."
-            },
-            {
-              "name": "KfW Ergänzungskredit Wohngebäude (358/359)",
-              "status": "potenziell relevant",
-              "relevance": "Hoch, wenn Zuschuss bewilligt wurde und der Kunde Restkosten finanzieren möchte.",
-              "estimated_effect_eur": 0,
-              "notes": "Kein direkter Zuschuss, aber potenziell zinsgünstige Finanzierung; bei bestimmten Einkommensgrenzen ist ein zusätzlicher Zinsvorteil möglich."
-            }
-          ],
-          "recommended_offer": {
-            "package_name": "Empfohlen: Luft-Wasser-Wärmepumpe mit Heizungsoptimierung",
-            "products": [
-              "Luft-Wasser-Wärmepumpe im Bereich ca. 8-12 kW",
-              "Hydraulischer Abgleich",
-              "Pufferspeicher / Warmwasserspeicher je nach Auslegung",
-              "Anpassung einzelner Heizflächen falls erforderlich",
-              "Einbindung in bestehendes Wärmeverteilsystem",
-              "Optional: Smart-Home- / Energiemanagement-Basis"
-            ],
-            "reasoning": [
-              "Für einen typischen Wohngebäude-Bestand aus den 1980er-Jahren ist die Luft-Wasser-Wärmepumpe oft die wirtschaftlich sinnvollste Einstiegslösung, sofern die Systemtemperaturen beherrschbar sind.",
-              "Der Wechsel von Gas auf Wärmepumpe adressiert das zentrale Kosten- und Regulierungsrisiko des Bestands.",
-              "Ohne weitere Gebäudedaten ist eine konservative Empfehlung mit Fokus auf Heizungsoptimierung sinnvoller als ein technisch maximaler Ausbau.",
-              "Die Förderlandschaft verbessert die Wirtschaftlichkeit deutlich und macht das Angebot vertrieblich gut argumentierbar."
-            ],
-            "estimated_cost_range_eur": { "min": 22000, "max": 34000 },
-            "estimated_annual_savings_eur": { "min": 700, "max": 1800 },
-            "estimated_payback_years": { "min": 8, "max": 15 }
-          },
-          "alternative_offers": [
-            {
-              "package_name": "Einsteiger: Wärmepumpe Basic",
-              "products": ["Luft-Wasser-Wärmepumpe", "Standardinstallation", "Grundlegende Systemeinbindung"],
-              "positioning": "Für Kunden mit Fokus auf schnellen Austausch, solide Förderung und geringere Anfangsinvestition.",
-              "estimated_cost_range_eur": { "min": 18000, "max": 27000 }
-            },
-            {
-              "package_name": "Komfort: Wärmepumpe + Heizflächen-/Effizienzupgrade",
-              "products": ["Luft-Wasser-Wärmepumpe", "Hydraulischer Abgleich", "Teilweiser Heizkörpertausch", "Optimierung von Regelung und Speichertechnik"],
-              "positioning": "Für Kunden, bei denen Vorlauftemperatur, Komfort oder Effizienz im Altbau gezielt verbessert werden sollen.",
-              "estimated_cost_range_eur": { "min": 26000, "max": 38000 }
-            },
-            {
-              "package_name": "Zukunftspaket: Wärmepumpe + PV-Vorbereitung",
-              "products": ["Luft-Wasser-Wärmepumpe", "Energiemanagement-Vorbereitung", "Schnittstellen für spätere PV- oder Speicherintegration"],
-              "positioning": "Für Kunden, die heute die Heizung modernisieren und in einem zweiten Schritt Solar nachziehen wollen.",
-              "estimated_cost_range_eur": { "min": 23000, "max": 36000 }
-            }
-          ],
-          "financing_options": [
-            {
-              "scenario": "Barzahlung",
-              "down_payment_eur": 22000,
-              "loan_amount_eur": 0,
-              "term_months": 0,
-              "apr_percent": 0.0,
-              "monthly_payment_eur": 0,
-              "notes": "Maximale Einfachheit; Förderung reduziert die effektive Nettobelastung im Nachgang bzw. gemäß Förderprozess."
-            },
-            {
-              "scenario": "Teilfinanzierung",
-              "down_payment_eur": 7000,
-              "loan_amount_eur": 16000,
-              "term_months": 120,
-              "apr_percent": 4.9,
-              "monthly_payment_eur": 169,
-              "notes": "Geeignet für Kunden, die Eigenkapital einsetzen, aber Liquidität schonen möchten."
-            },
-            {
-              "scenario": "Vollfinanzierung",
-              "down_payment_eur": 0,
-              "loan_amount_eur": 24000,
-              "term_months": 180,
-              "apr_percent": 5.2,
-              "monthly_payment_eur": 192,
-              "notes": "Für Kunden mit geringem Eigenkapital; Kombination mit Fördermitteln und ggf. Ergänzungskredit prüfen."
-            }
-          ],
-          "sales_talking_points": [
-            "Sie tauschen ein fossiles Preisrisiko gegen ein zukunftsfähiges Heizsystem mit Förderung.",
-            "Gerade bei einem Gebäude aus den 1980ern ist eine Wärmepumpe oft wirtschaftlich machbar, wenn die Systemauslegung sauber geplant wird.",
-            "Heute geplant ist günstiger und stressfreier als später unter Defektdruck.",
-            "Wir empfehlen nicht pauschal das teuerste Paket, sondern die Variante mit dem besten Verhältnis aus Investition, Förderung und Betriebskosten."
-          ],
-          "missing_information": [
-            "Gebäudetyp und Wohnfläche",
-            "Dämmstandard / Sanierungsstand",
-            "Jährlicher Gasverbrauch in kWh",
-            "Aktuelles Heizsystemalter",
-            "Vorlauftemperaturen im Winter",
-            "Art und Größe der Heizkörper / Flächenheizung",
-            "Anzahl der Bewohner",
-            "Ob Selbstnutzung oder Vermietung vorliegt",
-            "Verfügbares Eigenkapital und gewünschte Monatsrate"
-          ],
-          "disclaimer": "Dieses Angebot ist fiktiv und dient der Vertriebs-Vorqualifizierung. Förderfähigkeit, technische Machbarkeit, exakte Dimensionierung, reale Einsparungen und Finanzierungskonditionen müssen vor Vertragsabschluss durch Vor-Ort-Termin, Verbrauchsdaten, Heizlastprüfung und finale Förderprüfung validiert werden."
+          customer_profile: {
+            birth_date: customer.birthDate,
+            metadata: metadata
+          }
         };
+
+        offer = await offerService.generateOffer(offerRequest);
       }
     } catch (err) {
+      console.error('Failed to load data:', err);
       error = 'Failed to load data';
     } finally {
       isLoading = false;
@@ -234,91 +124,91 @@
           </div>
         </section>
 
-        <!-- Financing and Subsidies -->
-        <section class="compact-info">
+        <!-- Market Context -->
+        <section class="market-section span-all">
+          <div class="card">
+            <div class="panel-title">Market Context</div>
+            <p class="market-summary">{offer.market_context.summary}</p>
+            <div class="market-details-grid">
+              <div class="market-list">
+                <h4>Market Drivers</h4>
+                <ul>
+                  {#each offer.market_context.drivers as driver}
+                    <li>{driver}</li>
+                  {/each}
+                </ul>
+              </div>
+              <div class="market-list">
+                <h4>Why Hand Now?</h4>
+                <ul>
+                  {#each offer.market_context.why_now as point}
+                    <li>{point}</li>
+                  {/each}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Financing -->
+        <section class="span-all">
           <div class="card bg-accent-light">
-            <div class="panel-title">Smart Financing</div>
-            <div class="financing-simple">
-              {#each offer.financing_options.filter(o => o.monthly_payment_eur > 0).slice(0, 1) as option}
-                <div class="main-scenario">
-                  <span class="price-big">{formatCurrency(option.monthly_payment_eur)}</span>
-                  <span class="price-label">per month</span>
-                  <p class="scenario-note">{option.scenario} with {formatCurrency(option.down_payment_eur)} down payment</p>
+            <div class="panel-title">Financing Options</div>
+            <div class="financing-grid">
+              {#each offer.financing_options as option}
+                <div class="financing-card">
+                  <div class="financing-header">
+                    <h3>{option.scenario}</h3>
+                    {#if option.monthly_payment_eur > 0}
+                      <span class="monthly-price">{formatCurrency(option.monthly_payment_eur)}/mo</span>
+                    {/if}
+                  </div>
+                  <div class="financing-details">
+                    <div class="fin-row">
+                      <span>Down Payment</span>
+                      <span>{formatCurrency(option.down_payment_eur)}</span>
+                    </div>
+                    {#if option.loan_amount_eur > 0}
+                      <div class="fin-row">
+                        <span>Loan Amount</span>
+                        <span>{formatCurrency(option.loan_amount_eur)}</span>
+                      </div>
+                      <div class="fin-row">
+                        <span>Term</span>
+                        <span>{option.term_months} Months</span>
+                      </div>
+                      <div class="fin-row">
+                        <span>APR</span>
+                        <span>{option.apr_percent}%</span>
+                      </div>
+                    {/if}
+                  </div>
+                  <p class="fin-notes">{option.notes}</p>
                 </div>
               {/each}
             </div>
           </div>
         </section>
 
-        <section class="compact-info">
+        <!-- Subsidies -->
+        <section class="span-all">
           <div class="card highlight-light">
             <div class="panel-title">Available Subsidies</div>
-            <div class="subsidy-simple">
-              {#each offer.subsidies.filter(s => s.estimated_effect_eur > 0) as subsidy}
-                <div class="subsidy-pill">
-                  <span class="subsidy-name">{subsidy.name}</span>
-                  <span class="subsidy-value">-{formatCurrency(subsidy.estimated_effect_eur)}</span>
+            <div class="subsidies-list">
+              {#each offer.subsidies as subsidy}
+                <div class="subsidy-item">
+                  <div class="subsidy-header">
+                    <h3>{subsidy.name}</h3>
+                    <span class="subsidy-amount">-{formatCurrency(subsidy.estimated_effect_eur)}</span>
+                  </div>
+                  <p class="subsidy-relevance"><strong>Relevance:</strong> {subsidy.relevance}</p>
+                  <p class="subsidy-notes">{subsidy.notes}</p>
                 </div>
               {/each}
             </div>
           </div>
         </section>
 
-        <!-- Talking Points -->
-        <section class="talking-points span-all">
-          <div class="card bg-dark">
-            <div class="panel-title text-accent">Key Benefits for You</div>
-            <div class="benefits-grid">
-              {#each offer.sales_talking_points as point}
-                <div class="benefit-item">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                  <span>{point}</span>
-                </div>
-              {/each}
-            </div>
-          </div>
-        </section>
-
-        <!-- Alternative Offers (more compact) -->
-        <section class="alternatives-section span-all">
-          <div class="panel-title">Alternative Options</div>
-          <div class="alternatives-compact">
-            {#each offer.alternative_offers as alt}
-              <div class="alt-pill">
-                <span class="alt-name">{alt.package_name}</span>
-                <span class="alt-price">from {formatCurrency(alt.estimated_cost_range_eur.min)}</span>
-              </div>
-            {/each}
-          </div>
-        </section>
-
-        <!-- Market Context (Hidden by default or simplified) -->
-        <section class="market-section span-all">
-          <details class="market-details">
-            <summary>Market Insights & Building Assumptions</summary>
-            <div class="market-content-inner">
-              <p>{offer.market_context.summary}</p>
-              <div class="context-grid">
-                <div>
-                  <h4>Why now?</h4>
-                  <ul>
-                    {#each offer.market_context.why_now.slice(0, 3) as point}
-                      <li>{point}</li>
-                    {/each}
-                  </ul>
-                </div>
-                <div>
-                  <h4>Building Status</h4>
-                  <ul>
-                    {#each offer.lead_summary.building_assumptions.slice(0, 3) as assumption}
-                      <li>{assumption}</li>
-                    {/each}
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </details>
-        </section>
       </div>
 
       <footer class="offer-footer">
@@ -417,7 +307,15 @@
   }
 
   .bg-accent-light {
-    background-color: #ecfdf5;
+    background-color: #f0f9ff;
+  }
+
+  .bg-warn-light {
+    background-color: #fffbeb;
+  }
+
+  .text-warn {
+    color: #d97706;
   }
 
   .card-badge {
@@ -500,7 +398,7 @@
   }
 
   .product-tag {
-    background: #f1f5f9;
+    background: white;
     color: #475569;
     padding: 0.375rem 0.75rem;
     border-radius: 9999px;
@@ -509,62 +407,178 @@
     border: 1px solid #e2e8f0;
   }
 
-  .compact-info .card {
-    padding: 1.5rem;
+  .market-summary {
+    font-size: 1.125rem;
+    line-height: 1.6;
+    color: #334155;
+    margin-bottom: 2rem;
   }
 
-  .financing-simple {
-    text-align: center;
-    padding: 1rem 0;
+  .market-details-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2.5rem;
   }
 
-  .price-big {
-    display: block;
-    font-size: 2.5rem;
-    font-weight: 900;
-    color: #10b981;
-    line-height: 1;
-  }
-
-  .price-label {
-    font-size: 0.875rem;
-    color: #64748b;
-    font-weight: 600;
+  .market-list h4 {
+    font-size: 0.75rem;
     text-transform: uppercase;
+    color: #94a3b8;
+    margin-bottom: 1rem;
+    font-weight: 700;
   }
 
-  .scenario-note {
-    margin-top: 1rem;
-    font-size: 0.8125rem;
-    color: #475569;
-  }
-
-  .subsidy-simple {
+  .market-list ul {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
   }
 
-  .subsidy-pill {
+  .market-list li {
+    font-size: 0.9375rem;
+    color: #475569;
+    padding-left: 1.5rem;
+    position: relative;
+  }
+
+  .market-list li::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: #cbd5e1;
+    font-weight: bold;
+  }
+
+  .financing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+
+  .financing-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    border: 1px solid #e2e8f0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .financing-header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: baseline;
+    margin-bottom: 1.25rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px dashed #e2e8f0;
+  }
+
+  .financing-header h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0;
+  }
+
+  .monthly-price {
+    font-size: 1.125rem;
+    font-weight: 800;
+    color: #10b981;
+  }
+
+  .financing-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .fin-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8125rem;
+  }
+
+  .fin-row span:first-child {
+    color: #64748b;
+  }
+
+  .fin-row span:last-child {
+    font-weight: 600;
+    color: #0f172a;
+  }
+
+  .fin-notes {
+    font-size: 0.75rem;
+    color: #64748b;
+    margin-top: auto;
+    font-style: italic;
+  }
+
+  .subsidies-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .subsidy-item {
     background: white;
-    padding: 0.75rem 1rem;
+    padding: 1.5rem;
     border-radius: 0.75rem;
     border: 1px solid #d1fae5;
   }
 
-  .subsidy-name {
-    font-size: 0.8125rem;
-    font-weight: 600;
-    color: #334155;
-    max-width: 70%;
+  .subsidy-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
   }
 
-  .subsidy-value {
+  .subsidy-header h3 {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0;
+  }
+
+  .subsidy-amount {
+    font-size: 1.25rem;
     font-weight: 800;
     color: #059669;
+  }
+
+  .subsidy-relevance {
+    font-size: 0.875rem;
+    color: #065f46;
+    background: #ecfdf5;
+    padding: 0.5rem 0.75rem;
+    border-radius: 4px;
+    margin-bottom: 0.75rem;
+  }
+
+  .subsidy-notes {
+    font-size: 0.875rem;
+    color: #475569;
+    line-height: 1.5;
+  }
+
+  .missing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+  }
+
+  .missing-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: white;
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    border: 1px solid #fde68a;
+    font-size: 0.8125rem;
+    color: #92400e;
   }
 
   .benefits-grid {
