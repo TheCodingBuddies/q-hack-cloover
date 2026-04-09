@@ -35,11 +35,10 @@ Stell dir vor, du bist Vertriebsmitarbeiter bei einem Unternehmen, das Solaranla
 
 ## Kurze Demonstration der Demo
 ![image](architecture_grob.png)
-< img src="architecture_grob.png" height="100"/>
 
-![image](search_view.png){ height=100 }
+![image](search_view.png)
 
-![image](add_new_customer.png){ height=100 }
+![image](add_new_customer.png)
 
 ## Wichtige Annahmen die wir getroffen haben
 - Der Kunde hat bereits sein Interesse für eine bestimmte Produktkategorie angezeigt
